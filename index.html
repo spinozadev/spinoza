@@ -333,23 +333,29 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     let index = 0;
 
-    function typeWriter(callback) {
+    function typeWriter() {
         if (index < text.length) {
+            const span = document.createElement("span");
+
             if (links[text[index]]) {
-                element.innerHTML += `<a href="${links[text[index]]}" style="color: #3366cc; font-weight: bold; text-decoration: none;">${text[index]}</a>`;
+                const link = document.createElement("a");
+                link.href = links[text[index]];
+                link.style.color = "#3366cc";
+                link.style.fontWeight = "bold";
+                link.style.textDecoration = "none";
+                link.textContent = text[index];
+                span.appendChild(link);
             } else {
-                element.innerHTML += text[index];
+                span.textContent = text[index];
             }
+
+            element.appendChild(span);
             index++;
-            setTimeout(() => typeWriter(callback), 300);
-        } else if (callback) {
-            callback();
+            setTimeout(typeWriter, 300);
         }
     }
 
-    setTimeout(() => {
-        typeWriter();
-    }, 777);
+    setTimeout(typeWriter, 777);
 });
 
     function startSpinozaText() {
