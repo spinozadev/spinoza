@@ -263,13 +263,10 @@
 <script>
 const typingElement = document.getElementById("typingEffect");
 const titleElement = document.querySelector("title");
-const languages = ["py", "cs", "cpp", "java", "js"];
+const languages = ["spinoza", "support"];
 const languageColors = {
-    py: "#4B8BBE",
-    cs: "#178600",
-    cpp: "#F34B7D",
-    java: "#e86f00",
-    js: "#F7DF1E"
+    spinoza: "#F7DF1E",
+    support: "#F7DF1E"
 };
 let index = 0;
 
@@ -278,24 +275,24 @@ function typeText() {
         const currentText = languages[index];
         const newText = `${currentText}`;
 
-        typingElement.innerHTML = `spinoza.<span style="color: ${languageColors[currentText]}">${newText}</span>`;
-        titleElement.innerText = `{ killwith.fun }`; -
+        typingElement.innerHTML = `killwith.fun/<span style="color: ${languageColors[currentText]}">${newText}</span>`;
+        titleElement.innerText = `{ Spinoza & Support }`; -
 
         index++;
         setTimeout(() => {
             typeText();
-        }, 555);
+        }, 777);
     } else {
         index = 0;
         setTimeout(() => {
             typeText();
-        }, 555);
+        }, 777);
     }
 }
 
 setTimeout(() => {
     typeText();
-}, 555);
+}, 777);
 
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
@@ -330,7 +327,7 @@ setTimeout(() => {
 
 document.addEventListener('DOMContentLoaded', function() {
     const element = document.getElementById('hellofriendEffect');
-    const text = "Hello friend, I'm Spinoza";
+    const text = "/Spinoza & /Support";
     let index = 0;
     
     function typeWriter(text, callback) {
