@@ -203,7 +203,7 @@
                 const newText = `${currentText}`;
 
                 typingElement.innerHTML = `killwith.<span style="color: ${languageColors[currentText]}">${newText}</span>`;
-                titleElement.innerText = '{ Spinoza & Support }'; // Removed unnecessary '-'
+                titleElement.innerText = '{ Spinoza & Support }'; 
 
                 index++;
                 setTimeout(() => {
@@ -252,38 +252,51 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const element = document.getElementById('hellofriendEffect');
-            const text = ["/Spinoza", " & ", "/Support"];
-            const links = {
-                "/Spinoza": "https://killwith.fun/spinoza",
-                "/Support": "https://killwith.fun/support"
-            };
-            let index = 0;
+    const element = document.getElementById('hellofriendEffect');
+    const text = ["/Spinoza", " & ", "/Support"];
+    const links = {
+        "/Spinoza": "https://killwith.fun/spinoza",
+        "/Support": "https://killwith.fun/support"
+    };
+    let index = 0;
 
-            function typeWriter() {
-                if (index < text.length) {
-                    const span = document.createElement("span");
+    function typeWriter(textToType, currentIndex, callback) {
+        if (currentIndex < textToType.length) {
+            const char = textToType[currentIndex];
+            const span = document.createElement("span");
 
-                    if (links[text[index]]) {
-                        const link = document.createElement("a");
-                        link.href = links[text[index]];
-                        link.style.color = "#3366cc";
-                        link.style.fontWeight = "bold";
-                        link.style.textDecoration = "none";
-                        link.textContent = text[index];
-                        span.appendChild(link);
-                    } else {
-                        span.textContent = text[index];
-                    }
-
-                    element.appendChild(span);
-                    index++;
-                    setTimeout(typeWriter, 300);
-                }
+            if (links[char]) {
+                const link = document.createElement("a");
+                link.href = links[char];
+                link.style.color = "#3366cc";
+                link.style.fontWeight = "bold";
+                link.style.textDecoration = "none";
+                link.textContent = char;
+                span.appendChild(link);
+            } else {
+                span.textContent = char;
             }
 
-            setTimeout(typeWriter, 777);
-        });
+            element.appendChild(span);
+            
+            setTimeout(function () {
+                typeWriter(textToType, currentIndex + 1, callback);
+            }, 100);
+        } else {
+            if (index < text.length - 1) {
+                index++;
+                setTimeout(function () {
+                    typeWriter(text[index], 0, callback);
+                }, 500); 
+            }
+        }
+    }
+
+    setTimeout(function () {
+        typeWriter(text[index], 0, typeWriter);
+    }, 777);  
+});
+
     </script>
 
     <script>
