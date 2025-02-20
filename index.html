@@ -251,7 +251,7 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
     const element = document.getElementById('hellofriendEffect');
     const text = ["/Spinoza", " & ", "/Support"];
     const links = {
@@ -265,9 +265,9 @@
             const char = textToType[currentIndex];
             const span = document.createElement("span");
 
-            if (links[char]) {
+            if (links[textToType]) {
                 const link = document.createElement("a");
-                link.href = links[char];
+                link.href = links[textToType];
                 link.style.color = "#3366cc";
                 link.style.fontWeight = "bold";
                 link.style.textDecoration = "none";
@@ -278,7 +278,7 @@
             }
 
             element.appendChild(span);
-            
+
             setTimeout(function () {
                 typeWriter(textToType, currentIndex + 1, callback);
             }, 100);
@@ -294,7 +294,7 @@
 
     setTimeout(function () {
         typeWriter(text[index], 0, typeWriter);
-    }, 777);  
+    }, 777);
 });
 
     </script>
