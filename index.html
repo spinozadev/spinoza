@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.7 user-scalable=no" />
-    <meta property="og:title" content="Spinoza & Support">
+    <meta property="og:title" content="Spinoza">
+    <meta property="og:image" content="https://killwith.fun/img/spinoza.png">
     <meta property="og:site_name" content="killwith.fun">
-    <meta property="og:description" content="Information and contact details about Spinoza and Support.">
+    <meta property="og:description" content="root@spinoza:~$">
     <title> { killwith.fun } </title>
     <link rel="stylesheet" href="https://killwith.fun/fonts/inter.css">
     <link rel="stylesheet" href="https://killwith.fun/npm/@spinoza/style/style.css">
@@ -43,6 +44,10 @@
             text-decoration: none;
         }
 
+        td strong a {
+            text-decoration: none;
+        }
+
         body {
             user-select: none;
         }
@@ -55,6 +60,7 @@
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
+        
 
         header {
             display: flex;
@@ -106,45 +112,78 @@
             scrollbar-width: none;
         }
 
-        blockquote {
-            opacity: 0.9;
-            border-radius: 15px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(5px);
-        }
+           
+    .python {
+        color: #4B8BBE;
+        text-shadow: 0px 0px 2px #4B8BBE;
+    }
 
-        .contact-section {
-            transition: opacity 0.5s ease-in-out, filter 0.5s ease;
-            filter: blur(0);
-            opacity: 1;
-        }
+    .csharp {
+        color: #178600;
+        text-shadow: 0px 0px 2px #178600;
+    }
 
-        .contact-section.hidden {
-            opacity: 0;
-            filter: blur(5px);
-            display: none;
-        }
+    .cplusplus {
+        color: #F34B7D;
+        text-shadow: 0px 0px 2px #F34B7D;;
+    }
 
-        .platform-cell {
-            padding-top: 0px;
-            padding-bottom: 0px;
-        }
+    .java {
+        color: #e86f00;
+        text-shadow: 0px 0px 2px #913721;
+    }
 
-        .hellofriend {
-            font-family: 'Courier New', Courier, monospace;
-            border-right: 2px solid black;
-            white-space: nowrap;
-            overflow: hidden;
-        }
+    .javascript {
+        color: #F7DF1E;
+        text-shadow: 0px 0px 2px #F7DF1E;
 
-        .page-indicator {
-            font-weight: bold;
-            position: absolute;
-            right: 0px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        
+    }
+    
+    blockquote {
+        opacity: 0.9;
+        border-radius: 15px; 
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); 
+        backdrop-filter: blur(5px); 
+    }
+
+    .contact-section {
+        transition: opacity 0.5s ease-in-out, filter 0.5s ease;
+        filter: blur(0);
+        opacity: 1;
+    }
+
+    .contact-section.hidden {
+        opacity: 0;
+        filter: blur(5px);
+        display: none;
+    }
+
+    .platform-cell {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    @keyframes blink {
+    50% {
+        border-color: transparent;
+    }
+    }
+
+    .hellofriend {
+        font-family: 'Courier New', Courier, monospace;
+        border-right: 2px solid black;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .page-indicator {
+        font-weight: bold;
+        position: absolute;
+        right: 0px; 
+        top: 50%; 
+        transform: translateY(-50%); 
+    }
+
     </style>
 </head>
 
@@ -152,38 +191,120 @@
     <header style="padding-bottom: 10px !important">
         <h1>{ <span id="typingEffect"></span> }</h1>
         <nav>
-            <p id="spinozaandsupport"></p>
+            <p id="hellofriendEffect"></p>
         </nav>
     </header>
 
     <div>
-        <blockquote>
+        <blockquote>    
             <span id="spinozaText" class="typeing"></span>
         </blockquote>
     </div>
 
-    <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const typingElement = document.getElementById("typingEffect");
-    const titleElement = document.querySelector("title");
-    
-    const textBefore = "killwith.";
-    const textAfter = "fun";
-    const color = "#950606"; 
+<div id="contactSection1">
+    <blockquote>
+        <h4 style="padding-bottom: 10px; position: relative;">Contact Me<span class="page-indicator">(1/2)</span>:</h4>
+        <table>
+            <tr>
+                <td style="border: 1px solid #E2E2E2"><strong>Type</strong></td>
+                <td style="border: 1px solid #E2E2E2"><strong>Username</strong></td>
+                <td class="platform-cell" style="border: 1px solid #E2E2E2 "><strong>Platform</strong></td>
+            </tr>
+            <tr>
+                <td style="position: relative; top: 3px;">User Profile</td>
+                <td>
+                    <a href="https://discord.com/users/119788257859993601" rel="noreferrer" target="_blank" style="position: relative; top: 3px;">spinoza</a>
+                </td>
+                <td><img src="https://killwith.fun/img/discord.png" class="platform-logo" style="position: relative; top: 4px; margin-right: 1px;"> Discord</td>
+            </tr>
+            <tr>
+                <td style="position: relative; top: 3px;">Mail Address</td>
+                <td>
+                    <a href="mailto:contact@killwith.fun" style="position: relative; top: 3px;">contact</a>
+                </td>
+                <td><img src="https://killwith.fun/img/email.png" class="platform-logo" style="position: relative; top: 4px; margin-right: 1px;"> E-mail</td>
+            </tr>
+        </table>
+    </blockquote>
+</div>
 
-    typingElement.innerHTML = `${textBefore}<span style="color: ${color}; font-weight: bold;">${textAfter}</span>`; 
-    titleElement.innerText = '{ Spinoza & Support }'; 
-});
+<div id="contactSection2" style="display: none;">
+    <blockquote>
+        <h4 style="padding-bottom: 10px; position: relative;">Contact Me<span class="page-indicator">(2/2)</span>:</h4>
+        <table>
+            <tr>
+                <td style="border: 1px solid #E2E2E2"><strong>Type</strong></td>
+                <td style="border: 1px solid #E2E2E2"><strong>Username</strong></td>
+                <td class="platform-cell" style="border: 1px solid #E2E2E2"><strong>Platform</strong></td>
+            </tr>
+            <tr>
+                <td style="position: relative; top: 3px;">User Profile</td>
+                <td>
+                    <a href="https://instagram.com/spinozapy" rel="noreferrer" target="_blank" style="position: relative; top: 3px;">spinozapy</a>
+                </td>
+                <td><img src="https://killwith.fun/img/instagram.png" class="platform-logo" style="position: relative; top: 4px; margin-right: 1px;"> Instagram</td>
+            </tr>
+            <tr>
+                <td style="position: relative; top: 3px;">User Profile</td>
+                <td>
+                    <a href="https://github.com/spinozapy" rel="noreferrer" target="_blank" style="position: relative; top: 3px;">spinozapy</a>
+                </td>
+                <td><img src="https://killwith.fun/img/github.png" class="platform-logo" style="position: relative; top: 4px; margin-right: 1px;"> GitHub</td>
+            </tr>
+        </table>
+    </blockquote>
+</div>
 
-        
-        document.addEventListener('keydown', function (e) {
+    <span style="color: gray; font-size: 17px; display: block; text-align: center; margin: 5; padding: 5;">
+        ~ Most things have both good and bad; find the balance and act wisely. ~
+    </span>
+
+
+<script>
+const typingElement = document.getElementById("typingEffect");
+const titleElement = document.querySelector("title");
+const languages = ["py", "cs", "cpp", "java", "js"];
+const languageColors = {
+    py: "#4B8BBE",
+    cs: "#178600",
+    cpp: "#F34B7D",
+    java: "#e86f00",
+    js: "#F7DF1E"
+};
+let index = 0;
+
+function typeText() {
+    if (index < languages.length) {
+        const currentText = languages[index];
+        const newText = `${currentText}`;
+
+        typingElement.innerHTML = `spinoza.<span style="color: ${languageColors[currentText]}">${newText}</span>`;
+        titleElement.innerText = `{ killwith.fun }`; -
+
+        index++;
+        setTimeout(() => {
+            typeText();
+        }, 555);
+    } else {
+        index = 0;
+        setTimeout(() => {
+            typeText();
+        }, 555);
+    }
+}
+
+setTimeout(() => {
+    typeText();
+}, 555);
+
+        document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
                 e.preventDefault();
                 window.location.href = 'https://killwith.fun/bluescreen';
             }
         });
-
-        document.addEventListener('keydown', function (e) {
+        
+        document.addEventListener('keydown', function(e) {
             if (e.key === 'F12') {
                 e.preventDefault();
                 window.location.href = 'https://killwith.fun/redscreen';
@@ -192,64 +313,121 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let devToolsOpen = false;
         let devToolsTimer;
-
+        
         function checkDevTools() {
             devToolsOpen = window.outerWidth - window.innerWidth > 200 || window.outerHeight - window.innerHeight > 200;
             if (devToolsOpen) {
                 clearInterval(devToolsTimer);
-                window.location.href = 'https://killwith.fun/redscreen';
+                window.location.href = 'https://killwith.fun/redscreen'; 
             }
         }
-
-        devToolsTimer = setInterval(checkDevTools, 0);
+        
+        devToolsTimer = setInterval(checkDevTools, 0); 
 
     </script>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    const element = document.getElementById('spinozaandsupport');
-    const text = ["/Spinoza", " & ", "/Support"];
-    const links = {
-        "/Spinoza": "https://killwith.fun/spinoza",
-        "/Support": "https://killwith.fun/support"
-    };
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const element = document.getElementById('hellofriendEffect');
+    const text = "Hello friend, I'm Spinoza";
     let index = 0;
-
-    function typeWriter(textToType, currentIndex, callback) {
-        if (currentIndex < textToType.length) {
-            const char = textToType[currentIndex];
-            const span = document.createElement("span");
-
-            if (links[textToType]) {
-                const link = document.createElement("a");
-                link.href = links[textToType];
-                link.style.color = "#648bd9";
-                link.style.fontWeight = "bold";
-                link.style.textDecoration = "none";
-                link.textContent = char;
-                span.appendChild(link);
-            } else {
-                span.textContent = char;
-            }
-
-            element.appendChild(span);
-
-            setTimeout(function () {
-                typeWriter(textToType, currentIndex + 1, callback);
-            }, 100);
-        } else {
-            if (index < text.length - 1) {
-                index++;
-                setTimeout(function () {
-                    typeWriter(text[index], 0, callback);
-                }, 500); 
-            }
+    
+    function typeWriter(text, callback) {
+        if (index < text.length) {
+            element.innerHTML += text.charAt(index);
+            index++;
+            setTimeout(() => typeWriter(text, callback), 77);
+        } else if (callback) {
+            setTimeout(callback, 200);
         }
     }
 
-    setTimeout(function () {
-        typeWriter(text[index], 0, typeWriter);
-    }, 777);
+    setTimeout(() => {
+        typeWriter(text, startSpinozaText);
+    }, 777); 
+
+    function startSpinozaText() {
+        var data = [
+          {
+            spinozaText: `<span><h4 style="padding-bottom: 10px;">Who am I?</h4>
+              <i><span>I am a <op>malware</op> and <shadow>goodware</shadow> developer.<br/><br/>I have skills in languages:</span><br/><span class="python">Python</span>, <span class="csharp">C#</span>, <span class="cplusplus">C++</span>, <span class="java">Java</span> and <span class="javascript">JavaScript</span>. </i></span>`
+          }
+        ];
+
+        var allElements = document.getElementsByClassName("typeing");
+        for (var j = 0; j < allElements.length; j++) {
+          var currentElementId = allElements[j].id;
+          var currentElementIdContent = data[0][currentElementId];
+          var element = document.getElementById(currentElementId);
+          var devTypeText = currentElementIdContent;
+
+          var i = 0, isTag, text;
+          (function type() {
+            text = devTypeText.slice(0, ++i);
+            if (text === devTypeText) {
+                setTimeout(() => {
+                    document.getElementById("contactMeSection").style.display = "block";
+                }, 77); 
+                return;
+            }
+            element.innerHTML = text + `<span class='blinker'>&#32;</span>`;
+            var char = text.slice(-1);
+            if (char === "<") isTag = true;
+            if (char === ">") isTag = false;
+            if (isTag) return type();
+            setTimeout(type, 60);
+          })();
+        }
+    }
+});
+        document.addEventListener('DOMContentLoaded', (event) => {
+            let keys = ['w', 'w', 's', 's', 'a', 'd', 'a', 'd', 'b', 'a'];
+            let userInput = [];
+
+            document.addEventListener('keydown', function(e) {
+                const key = e.key.toLowerCase();
+                userInput.push(key);
+                if (userInput.length > keys.length) {
+                    userInput.shift();
+                }
+                if (userInput.join('') === keys.join('')) {
+                    window.location.href = 'https://killwith.fun/konami';
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            let keys = ['l', 'e', 'a', 'k'];
+            let userInput = [];
+
+            document.addEventListener('keydown', function(e) {
+                const key = e.key.toLowerCase();
+                userInput.push(key);
+                if (userInput.length > keys.length) {
+                    userInput.shift();
+                }
+                if (userInput.join('') === keys.join('')) {
+                    window.open('https://leak.run', '_blank');
+                }
+            });
+        });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const section1 = document.getElementById('contactSection1');
+    const section2 = document.getElementById('contactSection2');
+
+    setInterval(toggleContactSections, 5000);
+
+    function toggleContactSections() {
+        if (section1.style.display === 'none') {
+            section1.style.display = 'block';
+            section2.style.display = 'none';
+        } else {
+            section1.style.display = 'none';
+            section2.style.display = 'block';
+        }
+    }
 });
 
     </script>
