@@ -8,6 +8,7 @@
     <meta property="og:image" content="https://killwith.fun/img/support.png">
     <meta property="og:site_name" content="killwith.fun">
     <meta property="og:description" content="Information about Support and contact details.">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <title>{ Support }</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="https://killwith.fun/img/favicon.ico">
@@ -40,9 +41,27 @@
         }
 
         .pfp {
-            margin-top: 50px;
-            border-radius: 50%;
-        }
+        margin-top: 50px;
+        border-radius: 50%;
+        width: 57px;  
+        height: 57px; 
+        object-fit: cover;  
+}
+
+@media (min-width: 768px) {
+    .pfp {
+        width: 86px;  
+        height: 86px; 
+    }
+}
+
+@media (min-width: 1024px) {
+    .pfp {
+        width: 114px;  
+        height: 114px; 
+    }
+}
+
     </style>
 </head>
 <body class="h-screen font-mono" id="body" oncontextmenu="return false;" onkeydown="return disableShortcuts(event);">
@@ -50,9 +69,10 @@
     <div class="main" id="content">
         <main class="rounded-lg p-4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div class="intial-container">
-                <img src="https://killwith.fun/img/support.png" draggable="false" class="pfp" alt="support">
-                <h1 class="color-main text-3xl">Support <span class="dot text-green-500 blink" id="status-dot">•</span></h1>
+                <img id="discordProfile" draggable="false" class="pfp" alt="support">
                 <br>
+                <h1 class="color-main text-3xl">Support <span class="dot text-green-500 blink" id="status-dot">•</span></h1>
+                
                 <p>ela <3</p>
                 <br/>
                 <div class="music-status" id="music-status">
@@ -172,3 +192,23 @@ document.addEventListener('keydown', function(e) {
     </script>
 </body>
 </html>
+<script>
+    const updateDiscordProfile = async () => {
+      try {
+          const DISCORD_USER_ID = '246383236744347648';
+          const response = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
+  
+          if (!response.ok) throw new Error('Failed to fetch Discord profile');
+          
+          const { data } = await response.json();
+          const profileImg = document.getElementById('discordProfile');
+  
+          const avatarHash = data.discord_user.avatar || 'default';
+          profileImg.src = `https://cdn.discordapp.com/avatars/${DISCORD_USER_ID}/${avatarHash}.png?size=512`;
+  
+      } catch (error) {
+          console.error('Failed to fetch Discord profile:', error);
+      }
+    };
+    document.addEventListener('DOMContentLoaded', updateDiscordProfile);
+  </script>
