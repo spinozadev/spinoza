@@ -81,8 +81,11 @@
                 <h2 class="text-2xl">Socials</h2>
                 <ul class="list-none p-4 socials">
                     <li class="mt-4">
-                        <strong class="color-main text-lg"><i class="fab fa-discord"></i> Discord</strong> - 
-                        <a href="https://discordapp.com/users/986197102596079646" target="_blank" class="text-gray-300 social-link">suppxrt</a>
+                        <strong class="color-main text-lg">
+                            <i class="fab fa-discord"></i> Discord </strong> - 
+                            <a href="https://discordapp.com/users/246383236744347648" target="_blank" class="text-gray-300 social-link">
+                            <span id="discord-username">Loading...</span>
+                        </a>
                     </li>
                     <li class="mt-4">
                         <strong class="color-main text-lg"><i class="fab fa-github"></i> Github</strong> - 
@@ -128,59 +131,64 @@ document.addEventListener('keydown', function(e) {
     </script>
 
     <script>
-        const userId = "986197102596079646";
-        const statusDot = document.getElementById("status-dot");
-        const musicStatusElement = document.getElementById("music-status");
+        
+const userId = "246383236744347648";
+const statusDot = document.getElementById("status-dot");
+const musicStatusElement = document.getElementById("music-status");
+const discordUsernameElement = document.getElementById("discord-username");
 
-        async function fetchPresence() {
-            try {
-                const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
-                const data = await response.json();
+async function fetchPresence() {
+    try {
+        const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
+        const data = await response.json();
 
-                if (data.success && data.data) {
-                    const presence = data.data;
-                    const discordStatus = presence.discord_status;
+        if (data.success && data.data) {
+            const presence = data.data;
+            const discordStatus = presence.discord_status;
+            const username = presence.discord_user.username;
 
-                    switch (discordStatus) {
-                        case "online":
-                            statusDot.style.color = "#22C55E";
-                            break;
-                        case "idle":
-                            statusDot.style.color = "#FACC15";
-                            break;
-                        case "dnd":
-                            statusDot.style.color = "#EF4444";
-                            break;
-                        default:
-                            statusDot.style.color = "#6B7280";
-                    }
+            switch (discordStatus) {
+                case "online":
+                    statusDot.style.color = "#22C55E";
+                    break;
+                case "idle":
+                    statusDot.style.color = "#FACC15";
+                    break;
+                case "dnd":
+                    statusDot.style.color = "#EF4444";
+                    break;
+                default:
+                    statusDot.style.color = "#6B7280";
+            }
 
-                    if (presence.listening_to_spotify && presence.spotify) {
-                        const spotify = presence.spotify;
-                        const songInfo = `
-                            <div style="display: flex; align-items: center;">
-                                <img src="${spotify.album_art_url}" alt="Album art" style="width: 50px; height: 50px; margin-right: 10px;">
-                                <div>
-                                    <p>Listening to <strong>${spotify.song}</strong></p>
-                                    <p>by <em>${spotify.artist}</em></p>
-                                </div>
-                            </div>
-                        `;
-                        musicStatusElement.innerHTML = songInfo;
-                    } else {
-                        musicStatusElement.innerHTML = '<p>Currently not playing anything...</p>';
-                    }
-                }
-            } catch (error) {
+            discordUsernameElement.textContent = username;
+
+            if (presence.listening_to_spotify && presence.spotify) {
+                const spotify = presence.spotify;
+                const songInfo = `
+                    <div style="display: flex; align-items: center;">
+                        <img src="${spotify.album_art_url}" alt="Album art" style="width: 50px; height: 50px; margin-right: 10px;">
+                        <div>
+                            <p>Listening to <strong>${spotify.song}</strong></p>
+                            <p>by <em>${spotify.artist}</em></p>
+                        </div>
+                    </div>
+                `;
+                musicStatusElement.innerHTML = songInfo;
+            } else {
                 musicStatusElement.innerHTML = '<p>Currently not playing anything...</p>';
-                console.error("Error fetching presence data:", error);
             }
         }
+    } catch (error) {
+        musicStatusElement.innerHTML = '<p>Currently not playing anything...</p>';
+        console.error("Error fetching presence data:", error);
+    }
+}
 
-        document.addEventListener("DOMContentLoaded", () => {
-            fetchPresence();
-            setInterval(fetchPresence, 1000);
-        });
+document.addEventListener("DOMContentLoaded", () => {
+    fetchPresence();
+    setInterval(fetchPresence, 1000);
+});
 
         function disableShortcuts(event) {
             if (event.keyCode === 123 || (event.ctrlKey && event.shiftKey && event.keyCode === 73) || (event.ctrlKey && event.shiftKey && event.keyCode === 67) || (event.ctrlKey && event.keyCode === 85)) {
@@ -191,7 +199,7 @@ document.addEventListener('keydown', function(e) {
         
     const updateDiscordProfile = async () => {
       try {
-          const DISCORD_USER_ID = '986197102596079646';
+          const DISCORD_USER_ID = '246383236744347648';
           const response = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
   
           if (!response.ok) throw new Error('Failed to fetch Discord profile');
