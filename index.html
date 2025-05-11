@@ -214,20 +214,22 @@ document.addEventListener('keydown', function(e) {
     const img = document.getElementById("discordProfile");
 
     try {
-        const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
-        const json = await res.json();
-        const avatar = json.data.discord_user.avatar;
+        const response = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
+        const result = await response.json();
 
-        if (avatar) {
-            img.src = `https://cdn.discordapp.com/avatars/${DISCORD_USER_ID}/${avatar}.png?size=512`;
+        const avatarHash = result?.data?.discord_user?.avatar;
+
+        if (avatarHash) {
+            const avatarURL = `https://cdn.discordapp.com/avatars/${DISCORD_USER_ID}/${avatarHash}.png?size=512`;
+            img.src = avatarURL;
         } else {
             img.src = DEFAULT_AVATAR;
         }
-    } catch (e) {
+    } catch (error) {
+        console.error("Fetch error:", error);
         img.src = DEFAULT_AVATAR;
     }
-});
-        
+});  
     </script>
 </body>
 </html>
