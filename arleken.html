@@ -3,105 +3,301 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no" />
-    <meta property="og:title" content="Support">
-    <meta property="og:image" content="https://killwith.fun/img/support.png">
+    <meta name="viewport" content="width=device-width, initial-scale=0.7 user-scalable=no" />
+    <meta property="og:title" content="Arleken">
+    <meta property="og:image" content="https://killwith.fun/img/arleken.png">
     <meta property="og:site_name" content="killwith.fun">
-    <meta property="og:description" content="Information about Support and contact details.">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <title>{ Support }</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <meta property="og:description" content="Information about Arleken and contact details.">
+    <title> { Arleken } </title>
+    <link rel="stylesheet" href="https://killwith.fun/fonts/inter.css">
+    <link rel="stylesheet" href="https://killwith.fun/npm/@arleken/style/style.css">
     <link rel="icon" type="image/x-icon" href="https://killwith.fun/img/favicon.ico">
-    <script src="https://unpkg.com/htmx.org@1.6.1"></script>
     <style>
-        body, html {
-            overflow: hidden;
-            background-color: black;
-            color: white;
+        @import url("https://fonts.xz.style/serve/fira-code.css");
+
+        :root {
+            --nc-font-sans: 'Fira Code', monospace;
+            --nc-font-mono: 'Fira Code', monospace;
+            --nc-tx-1: #FFFFFF;
+            --nc-tx-2: #DDDDDD;
+            --nc-bg-1: #111111;
+            --nc-bg-2: #0A0A0A;
+            --nc-bg-3: #000000;
+            --nc-lk-1: #4A90E2;
+            --nc-lk-2: #E2E2E2;
+            --nc-lk-tx: #FFFFFF;
+            --nc-ac-1: #FF7F50;
+            --nc-ac-tx: #FFFFFF;
         }
 
-        .noise {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            opacity: 0.05;
-            z-index: 0;
+        op {
+            opacity: 0.3;
+            text-shadow: 0px 0px 5px rgba(161, 161, 161, 0.7);
         }
 
-        .social-link {
-            transition: color 0.3s ease, text-shadow 0.3s ease;
-        }
-
-        .social-link:hover {
+        shadow {
             color: #ffffff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
+            text-shadow: 0px 0px 3px rgba(255, 255, 255, 0.7);
         }
 
-        .pfp {
-        margin-top: 50px;
-        border-radius: 50%;
-        width: 57px;  
-        height: 57px; 
-        object-fit: cover;  
-}
+        a {
+            text-decoration: none;
+        }
 
-@media (min-width: 768px) {
-    .pfp {
-        width: 86px;  
-        height: 86px; 
-    }
-}
+        td strong a {
+            text-decoration: none;
+        }
 
-@media (min-width: 1024px) {
-    .pfp {
-        width: 114px;  
-        height: 114px; 
+        body {
+            user-select: none;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding-bottom: 5px !important;
+        }
+
+        .platform-logo {
+            width: 20px;
+            height: auto;
+            margin-right: 5px;
+        }
+
+        .typing-effect {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            animation: typing 1.5s steps(20, end), blink-caret 0.5s step-end infinite;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0
+            }
+
+            to {
+                width: 100%
+            }
+        }
+
+        @keyframes blink-caret {
+            from,
+            to {
+                border-color: transparent
+            }
+
+            50% {
+                border-color: #000
+            }
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        html {
+            scrollbar-width: none;
+        }
+
+           
+    .python {
+        color: #4B8BBE;
+        text-shadow: 0px 0px 2px #4B8BBE;
     }
-}
+
+    .csharp {
+        color: #178600;
+        text-shadow: 0px 0px 2px #178600;
+    }
+
+    .cplusplus {
+        color: #F34B7D;
+        text-shadow: 0px 0px 2px #F34B7D;;
+    }
+
+    .java {
+        color: #e86f00;
+        text-shadow: 0px 0px 2px #913721;
+    }
+
+    .javascript {
+        color: #F7DF1E;
+        text-shadow: 0px 0px 2px #F7DF1E;
+
+    }
+    
+    blockquote {
+        opacity: 0.9;
+        border-radius: 15px; 
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); 
+        backdrop-filter: blur(5px); 
+    }
+
+    .contact-section {
+        transition: opacity 0.5s ease-in-out, filter 0.5s ease;
+        filter: blur(0);
+        opacity: 1;
+    }
+
+    .contact-section.hidden {
+        opacity: 0;
+        filter: blur(5px);
+        display: none;
+    }
+
+    .platform-cell {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    @keyframes blink {
+    50% {
+        border-color: transparent;
+    }
+    }
+
+    .hellofriend {
+        font-family: 'Courier New', Courier, monospace;
+        border-right: 2px solid black;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .page-indicator {
+        font-weight: bold;
+        position: absolute;
+        right: 0px; 
+        top: 50%; 
+        transform: translateY(-50%); 
+    }
 
     </style>
 </head>
-<body class="h-screen font-mono" id="body" oncontextmenu="return false;" onkeydown="return disableShortcuts(event);">
-    <div class="noise"></div>
-    <div class="main" id="content">
-        <main class="rounded-lg p-4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <div class="intial-container">
-                <img src="https://killwith.fun/img/default.jpg" id="discordProfile" draggable="false" class="pfp" alt="Support" />
-                <br>
-                <h1 class="color-main text-3xl">Support <span class="dot text-green-500 blink" id="status-dot">•</span></h1>
-                                                                                                                    
-                <br/>
-                <div class="music-status" id="music-status">
-                    <p>Loading...</p>
-                </div>
-                <hr class="my-4 border-gray-600">
-                <h2 class="text-2xl">Socials</h2>
-                <ul class="list-none p-4 socials">
-                    <li class="mt-4">
-                        <strong class="color-main text-lg">
-                            <i class="fab fa-discord"></i> Discord </strong> - 
-                            <a href="https://discordapp.com/users/1175160924919832707" target="_blank" class="text-gray-300 social-link">
-                            <span id="discord-username">Loading...</span>
-                        </a>
-                    </li>
-                    <li class="mt-4">
-                        <strong class="color-main text-lg"><i class="fab fa-github"></i> Github</strong> - 
-                        <a href="https://github.com/dk6m" class="text-gray-300 social-link">dk6m</a> 
-                    </li>
-                </ul>
-                <hr class="my-4 border-gray-600">
-                <p class="text-xl">~ Most things have both good and bad; find the balance and act wisely. ~</p>
-                <hr class="my-4 border-gray-600">
-            </div>
-        </main>
+
+<body>
+    <header style="padding-bottom: 10px !important">
+        <h1>{ <span id="typingEffect"></span> }</h1>
+        <nav>
+            <p id="hellofriendEffect"></p>
+        </nav>
+    </header>
+
+    <div>
+        <blockquote>    
+            <span id="spinozaText" class="typeing"></span>
+        </blockquote>
     </div>
 
-    <script>
+<div id="contactSection1">
+    <blockquote>
+        <h4 style="padding-bottom: 10px; position: relative;">Contact Me<span class="page-indicator">(1/2)</span>:</h4>
+        <table>
+            <tr>
+                <td style="border: 1px solid #E2E2E2"><strong>Type</strong></td>
+                <td style="border: 1px solid #E2E2E2"><strong>Username</strong></td>
+                <td class="platform-cell" style="border: 1px solid #E2E2E2 "><strong>Platform</strong></td>
+            </tr>
+            <tr>
+                <td style="position: relative; top: 3px;">User Profile</td>
+                <td>
+                    <a href="https://discord.com/users/119788257859993601" rel="noreferrer" target="_blank" style="position: relative; top: 3px;">spinoza</a>
+                </td>
+                <td><img src="https://killwith.fun/img/discord.png" class="platform-logo" draggable="false" style="position: relative; top: 4px; margin-right: 1px;"> Discord</td>
+            </tr>
+            <tr>
+                <td style="position: relative; top: 3px;">Mail Address</td>
+                <td>
+                    <a href="mailto:contact@killwith.fun" style="position: relative; top: 3px;">contact</a>
+                </td>
+                <td><img src="https://killwith.fun/img/email.png" class="platform-logo" draggable="false" style="position: relative; top: 4px; margin-right: 1px;"> E-mail</td>
+            </tr>
+        </table>
+    </blockquote>
+</div>
 
-document.addEventListener('keydown', function(e) {
+<div id="contactSection2" style="display: none;">
+    <blockquote>
+        <h4 style="padding-bottom: 10px; position: relative;">Contact Me<span class="page-indicator">(2/2)</span>:</h4>
+        <table>
+            <tr>
+                <td style="border: 1px solid #E2E2E2"><strong>Type</strong></td>
+                <td style="border: 1px solid #E2E2E2"><strong>Username</strong></td>
+                <td class="platform-cell" style="border: 1px solid #E2E2E2"><strong>Platform</strong></td>
+            </tr>
+            <tr>
+                <td style="position: relative; top: 3px;">User Profile</td>
+                <td>
+                    <a href="https://instagram.com/spinozapy" rel="noreferrer" target="_blank" style="position: relative; top: 3px;">spinozapy</a>
+                </td>
+                <td><img src="https://killwith.fun/img/instagram.png" class="platform-logo" draggable="false" style="position: relative; top: 4px; margin-right: 1px;"> Instagram</td>
+            </tr>
+            <tr>
+                <td style="position: relative; top: 3px;">User Profile</td>
+                <td>
+                    <a href="https://github.com/spinozapy" rel="noreferrer" target="_blank" style="position: relative; top: 3px;">spinozapy</a>
+                </td>
+                <td><img src="https://killwith.fun/img/github.png" class="platform-logo" draggable="false" style="position: relative; top: 4px; margin-right: 1px;"> GitHub</td>
+            </tr>
+        </table>
+    </blockquote>
+</div>
+
+    <span style="color: gray; font-size: 17px; display: block; text-align: center; margin: 5; padding: 5;">
+        ~ Most things have both good and bad; find the balance and act wisely. ~
+    </span>
+
+<script>
+    
+const typingElement = document.getElementById("typingEffect");
+const titleElement = document.querySelector("title");
+const languages = ["py", "cs", "cpp", "java", "js"];
+const languageColors = {
+    py: "#4B8BBE",
+    cs: "#178600",
+    cpp: "#F34B7D",
+    java: "#e86f00",
+    js: "#F7DF1E"
+};
+let index = 0;
+
+function typeText() {
+    if (index < languages.length) {
+        const currentText = languages[index];
+        const newText = `${currentText}`;
+
+        typingElement.innerHTML = `Arleken`;
+        titleElement.innerText = `{ Arleken }`; -
+
+        index++;
+        setTimeout(() => {
+            typeText();
+        }, 555);
+    } else {
+        index = 0;
+        setTimeout(() => {
+            typeText();
+        }, 555);
+    }
+}
+
+setTimeout(() => {
+    typeText();
+}, 555);
+
+        document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
                 e.preventDefault();
                 window.location.href = 'https://killwith.fun/bluescreen';
@@ -130,99 +326,94 @@ document.addEventListener('keydown', function(e) {
 
     </script>
 
-    <script>
-        
-const userId = "1175160924919832707";
-const statusDot = document.getElementById("status-dot");
-const musicStatusElement = document.getElementById("music-status");
-const discordUsernameElement = document.getElementById("discord-username");
+<script>
 
-async function fetchPresence() {
-    try {
-        const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
-        const data = await response.json();
-
-        if (data.success && data.data) {
-            const presence = data.data;
-            const discordStatus = presence.discord_status;
-            const username = presence.discord_user.username;
-
-            switch (discordStatus) {
-                case "online":
-                    statusDot.style.color = "#22C55E";
-                    break;
-                case "idle":
-                    statusDot.style.color = "#FACC15";
-                    break;
-                case "dnd":
-                    statusDot.style.color = "#EF4444";
-                    break;
-                default:
-                    statusDot.style.color = "#6B7280";
-            }
-
-            discordUsernameElement.textContent = username;
-
-            if (presence.listening_to_spotify && presence.spotify) {
-                const spotify = presence.spotify;
-                const songInfo = `
-                    <div style="display: flex; align-items: center;">
-                        <img src="${spotify.album_art_url}" alt="Album art" style="width: 50px; height: 50px; margin-right: 10px;">
-                        <div>
-                            <p>Listening to <strong>${spotify.song}</strong></p>
-                            <p>by <em>${spotify.artist}</em></p>
-                        </div>
-                    </div>
-                `;
-                musicStatusElement.innerHTML = songInfo;
-            } else {
-                musicStatusElement.innerHTML = '<p>Currently not playing anything...</p>';
-            }
+document.addEventListener('DOMContentLoaded', function() {
+    const element = document.getElementById('hellofriendEffect');
+    const text = "I’m Arleken... and you are?";
+    let index = 0;
+    
+    function typeWriter(text, callback) {
+        if (index < text.length) {
+            element.innerHTML += text.charAt(index);
+            index++;
+            setTimeout(() => typeWriter(text, callback), 77);
+        } else if (callback) {
+            setTimeout(callback, 200);
         }
-    } catch (error) {
-        musicStatusElement.innerHTML = '<p>Currently not playing anything...</p>';
-        console.error("Error fetching presence data:", error);
     }
-}
 
-document.addEventListener("DOMContentLoaded", () => {
-    fetchPresence();
-    setInterval(fetchPresence, 1000);
+    setTimeout(() => {
+        typeWriter(text, startSpinozaText);
+    }, 777); 
+
+    function startSpinozaText() {
+        var data = [
+          {
+            spinozaText: `<span><h4 style="padding-bottom: 10px;">Who am I?</h4>
+              <i><span>I am a <op>malware</op> and <shadow>goodware</shadow> developer.<br/><br/>I have skills in languages:</span><br/><span class="python">Python</span>, <span class="csharp">C#</span>, <span class="cplusplus">C++</span>, <span class="java">Java</span> and <span class="javascript">JavaScript</span>. </i></span>`
+          }
+        ];
+
+        var allElements = document.getElementsByClassName("typeing");
+        for (var j = 0; j < allElements.length; j++) {
+          var currentElementId = allElements[j].id;
+          var currentElementIdContent = data[0][currentElementId];
+          var element = document.getElementById(currentElementId);
+          var devTypeText = currentElementIdContent;
+
+          var i = 0, isTag, text;
+          (function type() {
+            text = devTypeText.slice(0, ++i);
+            if (text === devTypeText) {
+                setTimeout(() => {
+                    document.getElementById("contactMeSection").style.display = "block";
+                }, 77); 
+                return;
+            }
+            element.innerHTML = text + `<span class='blinker'>&#32;</span>`;
+            var char = text.slice(-1);
+            if (char === "<") isTag = true;
+            if (char === ">") isTag = false;
+            if (isTag) return type();
+            setTimeout(type, 60);
+          })();
+        }
+    }
+});
+        document.addEventListener('DOMContentLoaded', (event) => {
+            let keys = ['w', 'w', 's', 's', 'a', 'd', 'a', 'd', 'b', 'a'];
+            let userInput = [];
+
+            document.addEventListener('keydown', function(e) {
+                const key = e.key.toLowerCase();
+                userInput.push(key);
+                if (userInput.length > keys.length) {
+                    userInput.shift();
+                }
+                if (userInput.join('') === keys.join('')) {
+                    window.location.href = 'https://killwith.fun/konami';
+                }
+            });
+        });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const section1 = document.getElementById('contactSection1');
+    const section2 = document.getElementById('contactSection2');
+
+    setInterval(toggleContactSections, 5000);
+
+    function toggleContactSections() {
+        if (section1.style.display === 'none') {
+            section1.style.display = 'block';
+            section2.style.display = 'none';
+        } else {
+            section1.style.display = 'none';
+            section2.style.display = 'block';
+        }
+    }
 });
 
-        function disableShortcuts(event) {
-            if (event.keyCode === 123 || (event.ctrlKey && event.shiftKey && event.keyCode === 73) || (event.ctrlKey && event.shiftKey && event.keyCode === 67) || (event.ctrlKey && event.keyCode === 85)) {
-                event.preventDefault();
-                return false;
-            }
-        }
-        
-    const updateDiscordProfile = async () => {
-    try {
-        const DISCORD_USER_ID = '1175160924919832707';
-        const response = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
-
-        if (!response.ok) throw new Error('Failed to fetch Discord profile');
-
-        const { data } = await response.json();
-        const profileImg = document.getElementById('discordProfile');
-
-        const avatarHash = data.discord_user.avatar;
-
-        if (avatarHash) {
-            profileImg.src = `https://cdn.discordapp.com/avatars/${DISCORD_USER_ID}/${avatarHash}.png?size=512`;
-        } else {
-            profileImg.src = "https://killwith.fun/img/default.jpg";
-        }
-
-    } catch (error) {
-        console.error('Failed to fetch Discord profile:', error);
-        document.getElementById('discordProfile').src = "https://killwith.fun/img/default.jpg";
-    }
-};
-  
-    document.addEventListener('DOMContentLoaded', updateDiscordProfile);
-        
-  </script>
+    </script>
 </body>
 </html>
