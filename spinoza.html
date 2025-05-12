@@ -431,5 +431,26 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
     </script>
+
+    <script>
+  document.addEventListener('contextmenu', e => {
+    if (!e.target.closest('a')) e.preventDefault();
+  });
+
+  document.addEventListener('selectstart', e => {
+    if (!e.target.closest('a')) e.preventDefault();
+  });
+
+  document.addEventListener('dragstart', e => {
+    if (!e.target.closest('a')) e.preventDefault();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey && ['a','c','s','x','v','p'].includes(e.key.toLowerCase())) || e.key === 'PrintScreen') {
+      e.preventDefault();
+    }
+  });
+</script>
+    
 </body>
 </html>
