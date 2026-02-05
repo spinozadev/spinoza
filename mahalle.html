@@ -1,28 +1,22 @@
 <!DOCTYPE html>
 <html lang="tr">
-    <meta name="apple-mobile-web-app-title" content="mahalle.life">
-    <title>mahalle.life | Mahalle</title>
-    
+    <title>Mahalle</title>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta http-equiv="Content-Language" content="tr">
-    <meta name="author" content="Mahalle">
-    <link rel="canonical" href="https://mahalle.life">
-
+    <meta name="description" id="main-desc" content="Topluluğun kalbi burada atıyor.">
+    
+    <meta property="og:site_name" content="mahalle.life">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://mahalle.life">
-    <meta id="meta-title" property="og:title" content="Mahalle | Yükleniyor...">
+    <meta id="meta-title" property="og:title" content="Mahalle">
     <meta id="meta-desc" property="og:description" content="Topluluğun kalbi burada atıyor.">
-    <meta id="meta-icon" itemprop="image" content="">
-    <meta id="meta-banner" property="og:image" content="">
     
+    <meta id="meta-banner" property="og:image" content="">
     <meta name="twitter:card" content="summary_large_image">
-    <meta id="tw-title" name="twitter:title" content="Mahalle">
-    <meta id="tw-desc" name="twitter:description" content="Topluluğun kalbi burada atıyor.">
     <meta id="tw-banner" name="twitter:image" content="">
 
-    <link rel="icon" href="" type="image/png" sizes="16x16"/>
-    <link rel="icon" href="" type="image/png" sizes="32x32"/>
+    <meta id="meta-icon" itemprop="image" content="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -337,21 +331,57 @@
         document.getElementById('homeLink').addEventListener('click', (e) => { e.preventDefault(); location.reload(); });
         document.querySelectorAll('.disabled').forEach(l => l.addEventListener('click', e => e.preventDefault()));
 
-        const name = guild.name;
-const description = `Mahalle: ${data.approximate_member_count} üye ile topluluğun merkezi! ${data.approximate_presence_count} kişi şu an çevrim içi.`;
+async function fetchDiscordData() {
+            try {
+                const response = await fetch(`https://discord.com/api/v9/invites/${INVITE_CODE}?with_counts=true&t=${Date.now()}`);
+                if (!response.ok) return;
 
-document.getElementById('meta-title').content = name + " | mahalle.life";
-document.getElementById('meta-desc').content = description;
-document.getElementById('tw-title').content = name;
-document.getElementById('tw-desc').content = description;
+                const data = await response.json();
+                if (data.guild) {
+                    const guild = data.guild;
+                    
+                    const name = guild.name;
+                    const online = data.approximate_presence_count || 0;
+                    const total = data.approximate_member_count || 0;
+                    const inviteDesc = `Mahalle: ${total} üye, ${online} çevrim içi. Topluluğun yeni merkezi çok yakında!`;
 
-if (iconUrl) {
-    document.getElementById('meta-icon').content = iconUrl;
-}
-if (bannerUrl) {
-    document.getElementById('meta-banner').content = bannerUrl;
-    document.getElementById('tw-banner').content = bannerUrl;
-}
+                    const iconExt = guild.icon?.startsWith("a_") ? "gif" : "png";
+                    const iconUrl = guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.${iconExt}?size=256` : "";
+                    
+                    const bannerExt = guild.banner?.startsWith("a_") ? "gif" : "png";
+                    const bannerUrl = guild.banner ? `https://cdn.discordapp.com/banners/${guild.id}/${guild.banner}.${bannerExt}?size=1200` : "";
+
+                    elName.innerText = name;
+                    elOnline.innerText = online;
+                    elTotal.innerText = total;
+                    if (iconUrl) elIcon.src = iconUrl;
+                    if (bannerUrl) elBanner.style.backgroundImage = `url('${bannerUrl}')`;
+
+                    document.getElementById('meta-title').content = name;
+                    document.getElementById('meta-desc').content = inviteDesc;
+                    document.getElementById('main-desc').content = inviteDesc;
+                    
+                    if (bannerUrl) {
+                        document.getElementById('meta-banner').content = bannerUrl;
+                        document.getElementById('tw-banner').content = bannerUrl;
+                    }
+                    if (iconUrl) {
+                        document.getElementById('meta-icon').content = iconUrl;
+                    }
+
+                    localStorage.setItem('mahalle_full_cache', JSON.stringify({
+                        name: name,
+                        online: online,
+                        total: total,
+                        icon: iconUrl,
+                        banner: bannerUrl,
+                        desc: inviteDesc
+                    }));
+                }
+            } catch (err) {
+                console.log("Bağlantı sorunu.");
+            }
+        }
     </script>
 </body>
 </html>
