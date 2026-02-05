@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html lang="tr">
-    <meta name="description" content="Mahalle - Topluluğun kalbi burada atıyor. Yeni özellikler ve dijital deneyim çok yakında sizlerle.">
-    <meta name="keywords" content="mahalle, mahalle life, discord topluluk, dijital mahalle, sosyal topluluk">
-
-    <link rel="canonical" href="https://mahalle.life">
+    <meta name="apple-mobile-web-app-title" content="mahalle.life">
+    <title>mahalle.life | Mahalle</title>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="Content-Language" content="tr">
-    <meta http-equiv="Copyright" content="Mahalle">
+    <meta name="author" content="Mahalle">
+    <link rel="canonical" href="https://mahalle.life">
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://mahalle.life">
-    <meta property="og:title" content="Mahalle">
-    <meta property="og:description" content="Topluluğun yeni dijital merkezi. Çok yakında buradayız.">
-    <meta property="og:image" content="/images/logo.png"> <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://mahalle.life">
-    <meta name="twitter:title" content="Mahalle">
-    <meta name="twitter:description" content="Topluluğun yeni dijital merkezi. Çok yakında buradayız.">
-    <meta name="twitter:image" content="/images/logo.png"> <link rel="icon" href="/images/favicon-16x16.png" type="image/png" sizes="16x16">
-    <link rel="icon" href="/images/favicon-32x32.png" type="image/png" sizes="32x32">
-    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <meta id="meta-title" property="og:title" content="Mahalle | Yükleniyor...">
+    <meta id="meta-desc" property="og:description" content="Topluluğun kalbi burada atıyor.">
+    <meta id="meta-icon" itemprop="image" content="">
+    <meta id="meta-banner" property="og:image" content="">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta id="tw-title" name="twitter:title" content="Mahalle">
+    <meta id="tw-desc" name="twitter:description" content="Topluluğun kalbi burada atıyor.">
+    <meta id="tw-banner" name="twitter:image" content="">
+
+    <link rel="icon" href="" type="image/png" sizes="16x16"/>
+    <link rel="icon" href="" type="image/png" sizes="32x32"/>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -331,6 +336,22 @@
 
         document.getElementById('homeLink').addEventListener('click', (e) => { e.preventDefault(); location.reload(); });
         document.querySelectorAll('.disabled').forEach(l => l.addEventListener('click', e => e.preventDefault()));
+
+        const name = guild.name;
+const description = `Mahalle: ${data.approximate_member_count} üye ile topluluğun merkezi! ${data.approximate_presence_count} kişi şu an çevrim içi.`;
+
+document.getElementById('meta-title').content = name + " | mahalle.life";
+document.getElementById('meta-desc').content = description;
+document.getElementById('tw-title').content = name;
+document.getElementById('tw-desc').content = description;
+
+if (iconUrl) {
+    document.getElementById('meta-icon').content = iconUrl;
+}
+if (bannerUrl) {
+    document.getElementById('meta-banner').content = bannerUrl;
+    document.getElementById('tw-banner').content = bannerUrl;
+}
     </script>
 </body>
 </html>
