@@ -46,7 +46,8 @@
         #dvd-container {
             position: absolute;
             z-index: 10;
-            width: 550px;
+            width: 90%; 
+            max-width: 550px; 
             will-change: transform;
             cursor: grab !important;
             opacity: 0;
@@ -55,6 +56,7 @@
 
         .widget-card {
             width: 100%;
+            min-height: fit-content; 
             background-color: var(--discord-black);
             border-radius: 12px;
             overflow: hidden;
@@ -283,7 +285,24 @@
         window.onresize = () => {
             const wasMobile = isMobile;
             isMobile = window.innerWidth <= 768;
-            if (wasMobile && !isMobile) initPosition();
+    
+            if (wasMobile && !isMobile) {
+                initPosition();
+            }
+
+            if (!isMobile) {
+                const rect = container.getBoundingClientRect();
+        
+                if (posX + rect.width > window.innerWidth) {
+                    posX = window.innerWidth - rect.width;
+                }
+               if (posY + rect.height > window.innerHeight) {
+                    posY = window.innerHeight - rect.height;
+                }
+        
+                posX = Math.max(0, posX);
+                posY = Math.max(0, posY);
+            }
         };
 
         setInterval(fetchDiscord, 30000);
