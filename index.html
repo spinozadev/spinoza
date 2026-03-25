@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 
 <head>
     <meta charset="UTF-8">
@@ -7,171 +7,279 @@
     <meta property="og:title" content="KILL WITH FUN">
     <meta property="og:site_name" content="spinoza.lol">
     <meta property="og:description" content="Most things have both good and bad; find the balance and act wisely.">
+    <meta name="theme-color" content="#5865f2">
     <title>{ spinoza.lol }</title>
     <link rel="icon" type="image/x-icon" href="https://spinoza.lol/img/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.cdnfonts.com/css/vcr-osd-mono" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <style>
-       @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&display=swap");
-
-* {
-    font-family: "VCR OSD Mono", sans-serif;
-    color: white;
-    user-select: none !important;
-}
-
-html, body {
-    overflow: hidden !important; 
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    background-color: black;
-}
-
-    body::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: linear-gradient(rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0.9)),
-        url(https://spinoza.lol/img/background.gif);
-        background-size: 100% 100%;
-        background-repeat: no-repeat;
-        background-position: center;
-        z-index: -1; 
-    }
-
-    @media (max-width: 768px) {
-        body::before {
-            display: none;
+        :root {
+            --discord-dark: #313338;
+            --discord-darker: #2b2d31;
+            --discord-black: #1e1f22;
+            --discord-blue: #5865f2;
+            --discord-green: #23a55a;
+            --text-white: #ffffff;
+            --text-muted: #949ba4;
         }
-        body {
-            background-color: black;
-        }
-    }
-        
-        pre {
+
+        * {
+            font-family: 'Montserrat', sans-serif !important;
             color: white;
-            font-size: 10px;
-            animation: glitch 7s infinite;
-            overflow: hidden; 
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        @keyframes glitch {
-            0%, 50%, 100% {
-                color: white;
-                text-shadow: none;
-            }
-
-            25%, 75% {
-                color: red;
-                text-shadow: 0 0 5px red;
-            }
+        html, body {
+            overflow: hidden !important;
+            height: 100%;
+            width: 100%;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0.9)),
+            url(https://cdn.discordapp.com/splashes/1347668939941089451/8f19e3c435f81c6779861ceac89c1754.jpg?size=2048);
+            background-size: cover;
+            background-position: center;
+            position: fixed;
+            touch-action: none;
         }
 
-        .center-screen {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-        }
-
-        .box-brrr {
-            width: 47%;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .box-contain {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        #dvd-container {
+            position: absolute;
+            z-index: 10;
             width: 550px;
-            text-align: center;
-            gap: 20px;
+            will-change: transform;
+            cursor: grab !important;
         }
 
-        .pfp {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            cursor: pointer;
-            margin-bottom: 20px;
+        .widget-card {
+            width: 100%;
+            background-color: var(--discord-black);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            pointer-events: none;
         }
 
-        .nickname {
-            font-size: 22px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: color 0.5s ease; 
+        .widget-header {
+            height: 200px;
+            background-color: #000000;
+            background-size: contain; 
+            background-position: calc(100% - 35px) center; 
+            background-repeat: no-repeat;
+            transition: background-position 0.3s ease;
         }
 
-        .nickname a {
-            text-decoration: none;
+        .widget-body {
+            padding: 55px 30px 30px;
+            position: relative;
+            text-align: left;
         }
 
-        .nickname:hover {
-            color: red;
+        .server-pp {
+            width: 100px; height: 100px;
+            border-radius: 28px;
+            background-color: var(--discord-dark);
+            border: 7px solid var(--discord-black);
+            position: absolute;
+            top: -50px; left: 25px;
+            object-fit: cover;
         }
 
-        .nickname span {
-            color: red;
+        .server-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 15px;
         }
 
-        .text {
-            font-size: 14px;
-            text-align: center;
-        }
+        .server-titles h2 { font-size: 1.8rem; font-weight: 900; color: #fff; }
+        .server-titles p { color: var(--text-muted); font-size: 1rem; font-weight: 500; }
 
-        footer {
-            font-size: 16px;
+        .stats-group { display: flex; gap: 15px; }
+        .stat-item { background: var(--discord-darker); padding: 10px 18px; border-radius: 10px; min-width: 110px; }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; display: block; margin-bottom: 5px; }
+        .stat-value { font-size: 1.1rem; font-weight: 900; display: flex; align-items: center; gap: 6px; }
+        .dot { width: 9px; height: 9px; border-radius: 50%; }
+
+        .btn-join {
+            display: block; width: 100%; background: var(--discord-green); color: #fff !important;
+            text-decoration: none; text-align: center; padding: 16px; border-radius: 8px;
+            font-weight: 900; margin-top: 25px; font-size: 1rem; transition: 0.3s;
+            pointer-events: auto;
+        }
+        .btn-join:hover { background: #1a8347; }
+
+        @media (max-width: 768px) {
+            html, body {
+                background-image: linear-gradient(rgba(0, 0, 0, 0.50), rgba(0, 0, 0, 0.9)), none;
+                background-color: white; 
+            }
+            #dvd-container { 
+                width: 90%; max-width: 400px; 
+                left: 50% !important; top: 50% !important; 
+                transform: translate(-50%, -50%) !important; 
+                position: fixed;
+            }
+            .widget-header {
+                background-position: center !important; 
+                background-size: cover !important; 
+            }
+            .server-info-row { flex-direction: column; align-items: flex-start; }
+            .stats-group { width: 100%; justify-content: space-between; margin-top: 15px; }
+            .server-titles h2 { font-size: 1.4rem; }
+            .stat-item { min-width: 48%; }
         }
     </style>
 </head>
-<body class="center-screen wallpaper">
-    <pre>                ______             __                                             __                 __                     
-               /      \           |  \                                           |  \               |  \                    
-              |  $$$$$$\  ______   \$$ _______    ______   ________  ______      | $$       ______  | $$                    
- ______       | $$___\$$ /      \ |  \|       \  /      \ |        \|      \     | $$      /      \ | $$             ______ 
-|      \       \$$    \ |  $$$$$$\| $$| $$$$$$$\|  $$$$$$\ \$$$$$$$$ \$$$$$$\    | $$     |  $$$$$$\| $$            |      \
- \$$$$$$       _\$$$$$$\| $$  | $$| $$| $$  | $$| $$  | $$  /    $$ /      $$    | $$     | $$  | $$| $$             \$$$$$$
-              |  \__| $$| $$__/ $$| $$| $$  | $$| $$__/ $$ /  $$$$_|  $$$$$$$ __ | $$_____| $$__/ $$| $$_____               
-               \$$    $$| $$    $$| $$| $$  | $$ \$$    $$|  $$    \\$$    $$|  \| $$     \\$$    $$| $$     \              
-                \$$$$$$ | $$$$$$$  \$$ \$$   \$$  \$$$$$$  \$$$$$$$$ \$$$$$$$ \$$ \$$$$$$$$ \$$$$$$  \$$$$$$$$              
-                        | $$                                                                                                
-                        | $$                                                                                                
-                         \$$                                                                                                
-                                                                                                                  
-                                                                                                                                                                                                                                                                                                                                                                                                           
-    </pre>
-    <div class="box-contain">
-        <div class="box-brrr">
-            <a href="https://discord.gg/palyaco">
-                <img draggable="false" src="https://spinoza.lol/img/spinoza.png" class="pfp" alt="Spinoza" />
-            </a>
-            <h3 class="nickname"><span>• </span><a href="https://discord.gg/palyaco">Spinoza</a><span> •</span></h3>
-            <a href="https://discord.gg/palyaco">
-                <p>discord.gg/palyaco</p>
-            </a>
+
+<body>
+
+    <div id="dvd-container">
+        <div class="widget-card">
+            <div class="widget-header" id="guild-banner"></div>
+            <div class="widget-body">
+                <img src="https://spinoza.lol/img/discordpp.png" id="guild-icon" class="server-pp" alt="Palyaco">
+                <div class="server-info-row">
+                    <div class="server-titles">
+                        <h2 id="guild-name">palyacolar</h2>
+                        <p>discord.gg/palyaco</p>
+                    </div>
+                    <div class="stats-group">
+                        <div class="stat-item">
+                            <span class="stat-label">Aktif</span>
+                            <span class="stat-value">
+                                <span class="dot" style="background:var(--discord-green)"></span>
+                                <span id="online-count">...</span>
+                            </span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Üyeler</span>
+                            <span class="stat-value">
+                                <span class="dot" style="background:var(--text-muted)"></span>
+                                <span id="total-count">...</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <a href="https://discord.gg/palyaco" target="_blank" class="btn-join">SUNUCUYA KATIL</a>
+            </div>
         </div>
     </div>
-    <footer>~ Your God can't help you within my walls -but rest assured, you shall be on your knees. ~</footer>
+
+    <script>
+        const container = document.getElementById('dvd-container');
+        const joinBtn = document.querySelector('.btn-join');
+        const INVITE_CODE = "palyaco";
+        
+        let isMobile = window.innerWidth <= 768;
+        let posX, posY, velX = 1.5, velY = 1.5;
+        const baseSpeed = 1.5;
+        const friction = 0.98;
+        let isDragging = false;
+        let speedMultiplier = 1;
+        let lastMouseX, lastMouseY;
+
+        joinBtn.addEventListener('mouseenter', () => { speedMultiplier = 0.5; });
+        joinBtn.addEventListener('mouseleave', () => { speedMultiplier = 1; });
+
+        function initPosition() {
+            isMobile = window.innerWidth <= 768;
+            if (!isMobile) {
+                const rect = container.getBoundingClientRect();
+                posX = (window.innerWidth / 2) - (rect.width / 2);
+                posY = (window.innerHeight / 2) - (rect.height / 2);
+                container.style.transform = "none";
+            }
+        }
+
+        container.onmousedown = (e) => {
+            if (isMobile || e.target.classList.contains('btn-join')) return;
+            isDragging = true;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        };
+
+        window.onmousemove = (e) => {
+            if (isMobile || !isDragging) return;
+            let deltaX = e.clientX - lastMouseX;
+            let deltaY = e.clientY - lastMouseY;
+            posX += deltaX;
+            posY += deltaY;
+            velX = deltaX * 0.5; velY = deltaY * 0.5;
+            lastMouseX = e.clientX; lastMouseY = e.clientY;
+        };
+
+        window.onmouseup = () => isDragging = false;
+
+        function animate() {
+            if (!isMobile) {
+                if (!isDragging) {
+                    const rect = container.getBoundingClientRect();
+                    if (posX + rect.width >= window.innerWidth) { posX = window.innerWidth - rect.width; velX = -Math.abs(velX); }
+                    else if (posX <= 0) { posX = 0; velX = Math.abs(velX); }
+
+                    if (posY + rect.height >= window.innerHeight) { posY = window.innerHeight - rect.height; velY = -Math.abs(velY); }
+                    else if (posY <= 0) { posY = 0; velY = Math.abs(velY); }
+
+                    if (Math.abs(velX) > baseSpeed) velX *= friction;
+                    if (Math.abs(velY) > baseSpeed) velY *= friction;
+                    if (Math.abs(velX) < baseSpeed) velX = (velX > 0 ? baseSpeed : -baseSpeed);
+                    if (Math.abs(velY) < baseSpeed) velY = (velY > 0 ? baseSpeed : -baseSpeed);
+
+                    posX += velX * speedMultiplier;
+                    posY += velY * speedMultiplier;
+                }
+                container.style.left = posX + 'px';
+                container.style.top = posY + 'px';
+            } else {
+                container.style.left = "";
+                container.style.top = "";
+            }
+            requestAnimationFrame(animate);
+        }
+
+        async function fetchDiscord() {
+            try {
+                const r = await fetch(`https://discord.com/api/v9/invites/${INVITE_CODE}?with_counts=true`);
+                const data = await r.json();
+                const g = data.guild || {};
+                document.getElementById('guild-name').innerText = g.name || "palyacolar";
+                document.getElementById('online-count').innerText = data.approximate_presence_count || "200+";
+                document.getElementById('total-count').innerText = data.approximate_member_count || "1100+";
+                const icon = g.id ? `https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=256` : "https://spinoza.lol/img/discordpp.png";
+                document.getElementById('guild-icon').src = icon;
+                const bannerUrl = g.banner ? `https://cdn.discordapp.com/banners/${g.id}/${g.banner}.png?size=1024` : "https://spinoza.lol/img/discordbanner.png";
+                document.getElementById('guild-banner').style.backgroundImage = `url('${bannerUrl}')`;
+            } catch (e) {}
+        }
+
+        window.onload = () => {
+            initPosition();
+            animate();
+            fetchDiscord();
+        };
+
+        window.onresize = () => {
+            const wasMobile = isMobile;
+            isMobile = window.innerWidth <= 768;
+            if (wasMobile && !isMobile) initPosition();
+        };
+
+        setInterval(fetchDiscord, 30000);
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) e.preventDefault();
+            if (e.key === 'F12') e.preventDefault();
+        });
+    </script>
 
     <script>
 
-document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
                 e.preventDefault();
                 window.location.href = 'https://spinoza.lol/bluescreen';
@@ -201,11 +309,3 @@ document.addEventListener('keydown', function(e) {
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
