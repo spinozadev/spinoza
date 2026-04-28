@@ -2,98 +2,106 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Discord | Palyacolar Dashboard</title>
+    <title>Palyacolar | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.cdnfonts.com/css/gg-sans');
-        :root { --bg-primary: #313338; --bg-secondary: #2b2d31; --bg-tertiary: #1e1f22; --bg-quaternary: #111214; --text-normal: #dbdee1; --brand: #5865f2; }
-        body { background: var(--bg-tertiary); color: var(--text-normal); font-family: 'gg sans', sans-serif; margin: 0; overflow: hidden; }
+        :root {
+            --bg-1: #111214; --bg-2: #1e1f22; --bg-3: #2b2d31; --bg-4: #313338;
+            --brand: #5865f2; --green: #23a55a; --text-1: #ffffff; --text-2: #dbdee1; --text-muted: #949ba4;
+        }
+        body { background: var(--bg-1); color: var(--text-2); font-family: 'gg sans', sans-serif; overflow: hidden; margin: 0; }
 
-        .server-sidebar { width: 72px; background: var(--bg-quaternary); flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding-top: 12px; }
-        .channel-sidebar { width: 240px; background: var(--bg-secondary); flex-shrink: 0; display: flex; flex-direction: column; }
-        .main-view { flex-grow: 1; background: var(--bg-primary); display: flex; flex-direction: column; }
+        .app-container { display: grid; grid-template-columns: 72px 240px 1fr; height: 100vh; }
         
-        .channel-link { margin: 2px 8px; padding: 6px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; color: #949ba4; }
-        .channel-link:hover { background: #35373c; color: #dbdee1; }
-        .channel-link.active { background: #3f4147; color: #fff; }
-        
-        .stat-card { background: var(--bg-secondary); border-radius: 8px; border: 1px solid transparent; transition: 0.1s; cursor: pointer; }
-        .stat-card:hover { border-color: var(--brand); background: #383a40; }
+        .channel-btn { padding: 8px; margin: 2px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.1s; color: var(--text-muted); font-weight: 500; }
+        .channel-btn:hover { background: #35373c; color: var(--text-2); }
+        .channel-btn.active { background: #3f4147; color: var(--text-1); }
 
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 100; }
-        .profile-container { width: 340px; background: var(--bg-quaternary); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.4); }
-        .profile-banner { height: 100px; background: var(--brand); position: relative; }
-        .profile-avatar { width: 94px; height: 94px; border-radius: 50%; border: 6px solid var(--bg-quaternary); position: absolute; top: 50px; left: 16px; background: var(--bg-quaternary); }
-        .role-tag { background: #2b2d31; font-size: 11px; padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
+        .stat-row { background: transparent; transition: 0.1s; cursor: pointer; border-radius: 4px; padding: 4px 8px; }
+        .stat-row:hover { background: rgba(78, 80, 88, 0.3); }
+
+        .profile-modal { width: 340px; background: #111214; border-radius: 8px; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .profile-banner { height: 120px; background: var(--brand); position: relative; }
+        .profile-avatar-container { position: absolute; top: 76px; left: 16px; border: 6px solid #111214; border-radius: 50%; }
+        .role-badge { background: #2b2d31; border-radius: 4px; padding: 4px 8px; font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+        .role-circle { width: 12px; height: 12px; border-radius: 50%; }
+
+        .fade-in { animation: fadeIn 0.2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
-<body class="flex h-screen">
+<body class="app-container">
 
-    <div class="server-sidebar">
-        <div class="w-12 h-12 bg-brand rounded-[16px] flex items-center justify-center text-white text-xl mb-2 cursor-pointer transition-all hover:rounded-[12px]">
+    <div class="flex flex-col items-center py-3 bg-[#111214] border-r border-[#1e1f22]">
+        <div class="w-12 h-12 bg-brand rounded-[16px] flex items-center justify-center text-white text-xl hover:rounded-[12px] transition-all duration-300">
             <i class="fa-solid fa-clown"></i>
         </div>
-        <div class="w-8 h-[2px] bg-[#35373c] mb-2"></div>
+        <div class="w-8 h-[2px] bg-[#35373c] my-2"></div>
     </div>
 
-    <div class="channel-sidebar">
-        <div class="h-12 border-b border-[#232428] flex items-center px-4 font-bold text-white shadow-sm"> PALYACOLAR </div>
+    <div class="flex flex-col bg-[#2b2d31]">
+        <div class="h-12 flex items-center px-4 font-bold text-white shadow-md border-b border-[#1e1f22]">PALYACOLAR</div>
         <div class="flex-1 py-4">
-            <div class="px-4 mb-2 text-[11px] font-bold text-[#949ba4] uppercase tracking-wider">İstatistik Paneli</div>
-            <div onclick="setView('daily')" id="nav-daily" class="channel-link active"><i class="fa-solid fa-hashtag"></i> günlük-aktiflik</div>
-            <div onclick="setView('all_time')" id="nav-all_time" class="channel-link"><i class="fa-solid fa-hashtag"></i> efsaneler-tablosu</div>
+            <div class="px-4 mb-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Sıralamalar</div>
+            <div onclick="switchTab('daily')" id="tab-daily" class="channel-btn active"><i class="fa-solid fa-hashtag"></i> günlük-aktiflik</div>
+            <div onclick="switchTab('all_time')" id="tab-all_time" class="channel-btn"><i class="fa-solid fa-hashtag"></i> efsaneler-tablosu</div>
         </div>
-        <div class="bg-[#232428] p-2 flex items-center gap-2">
-            <img id="bot-status-avatar" src="" class="w-8 h-8 rounded-full bg-gray-700">
+        <div class="bg-[#232428] p-2 flex items-center gap-3">
+            <img id="bot-avatar" src="" class="w-8 h-8 rounded-full bg-gray-700">
             <div class="flex-1 overflow-hidden">
                 <div class="text-xs font-bold text-white leading-none">Palyacolar Bot</div>
-                <div class="text-[10px] text-green-500">Çevrimiçi</div>
+                <div class="text-[10px] text-green-500 font-medium">Çevrimiçi</div>
             </div>
+            <i class="fa-solid fa-gear text-gray-400 text-xs"></i>
         </div>
     </div>
 
-    <div class="main-view">
-        <div class="h-12 border-b border-[#232428] flex items-center px-4 gap-4 shadow-sm">
-            <i class="fa-solid fa-hashtag text-[#80848e] text-xl"></i>
-            <span class="font-bold text-white" id="current-title">günlük-aktiflik</span>
+    <div class="flex flex-col bg-[#313338]">
+        <div class="h-12 flex items-center px-4 gap-3 shadow-sm border-b border-[#2b2d31]">
+            <i class="fa-solid fa-hashtag text-gray-400 text-xl"></i>
+            <span class="font-bold text-white uppercase text-sm tracking-wide" id="header-text">günlük-aktiflik</span>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-6 flex flex-col items-center">
-            <div class="w-full max-w-5xl grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <div class="flex-1 overflow-y-auto p-8 flex justify-center">
+            <div class="w-full max-w-6xl grid grid-cols-1 xl:grid-cols-2 gap-12">
                 
                 <div>
-                    <h3 class="text-xs font-bold text-[#949ba4] uppercase tracking-widest mb-4 px-2">Mesaj Gönderimi</h3>
-                    <div id="msg-box" class="space-y-1"></div>
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 border-b border-[#3f4147] pb-2">Mesaj Gönderimi</h3>
+                    <div id="msg-list" class="space-y-1"></div>
                 </div>
 
                 <div>
-                    <h3 class="text-xs font-bold text-[#949ba4] uppercase tracking-widest mb-4 px-2">Ses Süresi</h3>
-                    <div id="voice-box" class="space-y-1"></div>
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 border-b border-[#3f4147] pb-2">Ses Aktifliği</h3>
+                    <div id="voice-list" class="space-y-1"></div>
                 </div>
 
             </div>
         </div>
     </div>
 
-    <div id="p-modal" class="modal-overlay" onclick="this.style.display='none'">
-        <div class="profile-container" onclick="event.stopPropagation()">
+    <div id="modal-overlay" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4" onclick="this.style.display='none'">
+        <div class="profile-modal fade-in" onclick="event.stopPropagation()">
             <div id="m-banner" class="profile-banner"></div>
-            <div class="relative h-14">
-                <img id="m-avatar" src="" class="profile-avatar">
+            <div class="profile-avatar-container">
+                <img id="m-avatar" src="" class="w-20 h-20 rounded-full">
             </div>
-            <div class="p-4">
-                <div class="mb-4">
-                    <div id="m-display" class="text-xl font-bold text-white leading-tight"></div>
-                    <div id="m-name" class="text-[#b5bac1] text-sm"></div>
+            <div class="p-4 mt-12 bg-[#111214]">
+                <div class="bg-[#1e1f22] rounded-lg p-4 mb-4">
+                    <h3 id="m-nickname" class="text-xl font-bold text-white leading-tight"></h3>
+                    <p id="m-username" class="text-gray-400 text-sm font-medium"></p>
+                    <div class="w-full h-[1px] bg-[#2b2d31] my-3"></div>
+                    <p class="text-[11px] font-bold text-gray-300 uppercase mb-2">Hakkında / Durum</p>
+                    <p id="m-status" class="text-sm text-gray-300 italic"></p>
                 </div>
-                <div class="bg-[#2b2d31] p-3 rounded-lg mb-4">
-                    <p class="text-[10px] font-bold text-[#b5bac1] uppercase mb-2">Üyelik Tarihi</p>
-                    <p id="m-joined" class="text-xs text-white"></p>
-                </div>
-                <div>
-                    <p class="text-[10px] font-bold text-[#b5bac1] uppercase mb-2 px-1">Roller</p>
-                    <div id="m-roles" class="flex flex-wrap gap-1"></div>
+
+                <div class="bg-[#1e1f22] rounded-lg p-4">
+                    <p class="text-[11px] font-bold text-gray-300 uppercase mb-3">Roller</p>
+                    <div id="m-roles" class="flex flex-wrap gap-2"></div>
+                    <div class="w-full h-[1px] bg-[#2b2d31] my-3"></div>
+                    <p class="text-[11px] font-bold text-gray-300 uppercase mb-1">Üyelik Tarihi</p>
+                    <p id="m-joined" class="text-xs text-gray-400"></p>
                 </div>
             </div>
         </div>
@@ -106,61 +114,67 @@
         const firebaseConfig = { databaseURL: "https://palyacolar-d9f70-default-rtdb.firebaseio.com/" };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        let view = 'daily';
+        let currentTab = 'daily';
 
         onValue(ref(db, 'palyacolar_stats/settings'), (s) => {
-            const d = s.val(); if(d) document.getElementById('bot-status-avatar').src = d.bot_avatar;
+            if(s.exists()) document.getElementById('bot-avatar').src = s.val().bot_avatar;
         });
 
-        window.setView = (v) => {
-            view = v;
-            document.querySelectorAll('.channel-link').forEach(l => l.classList.remove('active'));
-            document.getElementById('nav-'+v).classList.add('active');
-            document.getElementById('current-title').innerText = v === 'daily' ? 'günlük-aktiflik' : 'efsaneler-tablosu';
-            load();
+        window.switchTab = (t) => {
+            currentTab = t;
+            document.querySelectorAll('.channel-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-'+t).classList.add('active');
+            document.getElementById('header-text').innerText = t === 'daily' ? 'günlük-aktiflik' : 'efsaneler-tablosu';
+            loadData();
         };
 
-        function load() {
-            const key = view === 'daily' ? new Date().toISOString().split('T')[0] : 'all_time';
-            onValue(ref(db, `palyacolar_stats/messages/${view}/${key}`), (s) => render(s.val(), 'msg-box', 'count', 'MESAJ'));
-            onValue(ref(db, `palyacolar_stats/voice/${view}/${key}`), (s) => render(s.val(), 'voice-box', 'minutes', 'DAKİKA'));
+        function loadData() {
+            const key = currentTab === 'daily' ? new Date().toISOString().split('T')[0] : 'all_time';
+            onValue(ref(db, `palyacolar_stats/messages/${currentTab}/${key}`), (s) => render(s.val(), 'msg-list', 'count', 'MESAJ'));
+            onValue(ref(db, `palyacolar_stats/voice/${currentTab}/${key}`), (s) => render(s.val(), 'voice-list', 'minutes', 'DAKİKA'));
         }
 
-        function render(data, containerId, field, unit) {
-            const div = document.getElementById(containerId);
+        function render(data, container, field, unit) {
+            const div = document.getElementById(container);
             div.innerHTML = "";
-            if(!data) { div.innerHTML = "<div class='text-[#949ba4] text-xs p-4'>Burada henüz kimse yok...</div>"; return; }
+            if(!data) { div.innerHTML = "<div class='p-4 text-gray-500 text-sm italic'>Veri bulunamadı...</div>"; return; }
 
-            Object.values(data).sort((a,b) => b[field] - a[field]).slice(0, 20).forEach((u, i) => {
+            Object.values(data).sort((a,b) => b[field] - a[field]).slice(0, 15).forEach((u, i) => {
                 div.innerHTML += `
-                <div class="stat-card flex items-center justify-between p-3 mb-1" onclick='openUser(${JSON.stringify(u)})'>
+                <div class="stat-row flex items-center justify-between" onclick='openProfile(${JSON.stringify(u)})'>
                     <div class="flex items-center gap-3">
-                        <span class="w-5 text-xs font-bold text-[#80848e]">${i+1}</span>
-                        <img src="${u.avatar}" class="w-8 h-8 rounded-full bg-quaternary">
-                        <div class="leading-tight">
-                            <div class="text-sm font-bold text-white">${u.display_name}</div>
-                            <div class="text-[10px] text-[#b5bac1]">@${u.name}</div>
+                        <span class="w-4 text-center font-bold text-gray-500 text-xs">${i+1}</span>
+                        <img src="${u.avatar}" class="w-8 h-8 rounded-full">
+                        <div>
+                            <div class="text-sm font-bold text-white" style="color:${u.top_role_color}">${u.nickname}</div>
+                            <div class="text-[10px] text-gray-500 font-medium">@${u.username}</div>
                         </div>
                     </div>
                     <div class="text-right">
-                        <span class="text-sm font-bold text-brand">${u[field]}</span>
-                        <span class="text-[9px] text-[#80848e] font-bold uppercase ml-1">${unit}</span>
+                        <span class="text-sm font-black text-brand">${u[field]}</span>
+                        <span class="text-[9px] text-gray-500 font-bold uppercase ml-1">${unit}</span>
                     </div>
                 </div>`;
             });
         }
 
-        window.openUser = (u) => {
-            document.getElementById('m-display').innerText = u.display_name;
-            document.getElementById('m-name').innerText = "@" + u.name;
+        window.openProfile = (u) => {
+            document.getElementById('m-nickname').innerText = u.nickname;
+            document.getElementById('m-username').innerText = u.username;
             document.getElementById('m-avatar').src = u.avatar;
-            document.getElementById('m-banner').style.background = u.banner ? `url(${u.banner}) center/cover` : (u.color || '#5865f2');
+            document.getElementById('m-banner').style.background = u.banner ? `url(${u.banner}) center/cover` : (u.accent || '#5865f2');
+            document.getElementById('m-status').innerText = u.status;
             document.getElementById('m-joined').innerText = u.joined_at;
-            document.getElementById('m-roles').innerHTML = u.roles.map(r => `<span class="role-tag">${r}</span>`).join('');
-            document.getElementById('p-modal').style.display = 'flex';
+            document.getElementById('m-roles').innerHTML = u.roles.map(r => `
+                <div class="role-badge">
+                    <div class="role-circle" style="background:${r.color}"></div>
+                    ${r.name}
+                </div>
+            `).join('');
+            document.getElementById('modal-overlay').style.display = 'flex';
         }
 
-        load();
+        loadData();
     </script>
 </body>
 </html>
