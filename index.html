@@ -1,3 +1,115 @@
-<script>
-    window.location.href = "https://guns.lol/spinoza";
-</script>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palyacolar | Sunucu İstatistikleri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #313338; color: #dbdee1; }
+        .discord-card { background: #2b2d31; border-radius: 12px; transition: 0.3s; }
+        .discord-card:hover { background: #1e1f22; transform: translateY(-2px); }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+        .active-tab { border-bottom: 2px solid #5865f2; color: white; }
+        .rank-1 { color: #f1c40f; font-weight: bold; }
+        .avatar-glow { box-shadow: 0 0 15px rgba(88, 101, 242, 0.5); }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+
+    <div class="max-w-6xl mx-auto flex items-center justify-between mb-10 glass p-6 rounded-2xl">
+        <div class="flex items-center gap-4">
+            <img src="https://cdn.discordapp.com/icons/SUNUCU_ID/LOGO.png" id="server-logo" class="w-16 h-16 rounded-full avatar-glow">
+            <div>
+                <h1 class="text-2xl font-bold text-white">PALYACOLAR</h1>
+                <p class="text-sm text-gray-400">Sunucu Özel İstatistik Paneli</p>
+            </div>
+        </div>
+        <div class="hidden md:block text-right">
+            <div id="live-clock" class="text-xl font-mono">00:00:00</div>
+            <div class="text-xs text-[#5865f2]">CANLI VERİ AKIŞI</div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto flex gap-6 mb-6 overflow-x-auto pb-2 text-sm">
+        <button onclick="changePeriod('daily')" class="tab-btn active-tab px-4 py-2">GÜNLÜK</button>
+        <button onclick="changePeriod('weekly')" class="tab-btn px-4 py-2">HAFTALIK</button>
+        <button onclick="changePeriod('monthly')" class="tab-btn px-4 py-2">AYLIK</button>
+        <button onclick="changePeriod('all_time')" class="tab-btn px-4 py-2">TÜM ZAMANLAR</button>
+    </div>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="discord-card p-6">
+            <h3 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-message text-[#5865f2]"></i> Mesaj Sıralaması
+            </h3>
+            <div id="msg-leaderboard" class="space-y-4">
+                </div>
+        </div>
+
+        <div class="discord-card p-6">
+            <h3 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-microphone text-[#f04747]"></i> Ses Aktifliği
+            </h3>
+            <div id="voice-leaderboard" class="space-y-4">
+                </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            databaseURL: "https://palyacolar-d9f70-default-rtdb.firebaseio.com/",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        let currentPeriod = 'daily';
+
+        window.changePeriod = (p) => {
+            currentPeriod = p;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
+            event.target.classList.add('active-tab');
+            fetchData();
+        };
+
+        function fetchData() {
+            const dateKey = new Date().toISOString().split('T')[0]; 
+            const msgPath = `palyacolar_stats/messages/${currentPeriod}/${currentPeriod == 'all_time' ? 'all_time' : dateKey}`;
+            
+            onValue(ref(db, msgPath), (snapshot) => {
+                const data = snapshot.val();
+                const container = document.getElementById('msg-leaderboard');
+                container.innerHTML = "";
+                if(!data) { container.innerHTML = "Veri bulunamadı."; return; }
+
+                const sorted = Object.values(data).sort((a,b) => b.count - a.count);
+                sorted.forEach((u, i) => {
+                    container.innerHTML += `
+                        <div class="flex items-center justify-between p-3 glass rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <span class="w-6 font-bold ${i==0?'rank-1':''}">${i+1}</span>
+                                <img src="${u.avatar}" class="w-10 h-10 rounded-full border-2 border-[#5865f2]">
+                                <div>
+                                    <div class="font-bold text-white text-sm">${u.display_name}</div>
+                                    <div class="text-xs text-gray-400">@${u.name}</div>
+                                </div>
+                            </div>
+                            <div class="text-[#5865f2] font-bold">${u.count} <span class="text-[10px] text-gray-500">MSG</span></div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        setInterval(() => {
+            document.getElementById('live-clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        fetchData();
+    </script>
+</body>
+</html>
