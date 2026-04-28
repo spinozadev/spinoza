@@ -2,106 +2,93 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Palyacolar | Dashboard</title>
+    <title>Palyacolar Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.cdnfonts.com/css/gg-sans');
         :root {
-            --bg-1: #111214; --bg-2: #1e1f22; --bg-3: #2b2d31; --bg-4: #313338;
-            --brand: #5865f2; --green: #23a55a; --text-1: #ffffff; --text-2: #dbdee1; --text-muted: #949ba4;
+            --bg-base: #111214; --bg-side: #2b2d31; --bg-main: #313338;
+            --brand: #5865f2; --text-primary: #f2f3f5; --text-muted: #949ba4;
         }
-        body { background: var(--bg-1); color: var(--text-2); font-family: 'gg sans', sans-serif; overflow: hidden; margin: 0; }
-
-        .app-container { display: grid; grid-template-columns: 72px 240px 1fr; height: 100vh; }
+        body { background: var(--bg-base); color: var(--text-primary); font-family: 'gg sans', sans-serif; overflow: hidden; margin: 0; }
         
-        .channel-btn { padding: 8px; margin: 2px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.1s; color: var(--text-muted); font-weight: 500; }
-        .channel-btn:hover { background: #35373c; color: var(--text-2); }
-        .channel-btn.active { background: #3f4147; color: var(--text-1); }
+        .sidebar { width: 240px; background: #2b2d31; display: flex; flex-direction: column; }
+        .content { flex: 1; background: #313338; display: flex; flex-direction: column; }
 
-        .stat-row { background: transparent; transition: 0.1s; cursor: pointer; border-radius: 4px; padding: 4px 8px; }
-        .stat-row:hover { background: rgba(78, 80, 88, 0.3); }
+        .nav-item { margin: 2px 8px; padding: 8px 12px; border-radius: 4px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; gap: 12px; transition: 0.2s; font-weight: 500; }
+        .nav-item:hover { background: #35373c; color: #dbdee1; }
+        .nav-item.active { background: #404249; color: #fff; }
 
-        .profile-modal { width: 340px; background: #111214; border-radius: 8px; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        .profile-banner { height: 120px; background: var(--brand); position: relative; }
-        .profile-avatar-container { position: absolute; top: 76px; left: 16px; border: 6px solid #111214; border-radius: 50%; }
-        .role-badge { background: #2b2d31; border-radius: 4px; padding: 4px 8px; font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
-        .role-circle { width: 12px; height: 12px; border-radius: 50%; }
+        .user-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; border-radius: 4px; transition: 0.1s; cursor: pointer; }
+        .user-row:hover { background: rgba(78, 80, 88, 0.3); }
 
-        .fade-in { animation: fadeIn 0.2s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .modal-wrap { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .profile-card { width: 340px; background: #111214; border-radius: 8px; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.5); border: 1px solid #2b2d31; }
+        .banner { height: 120px; background: var(--brand); position: relative; }
+        .p-avatar { width: 92px; height: 92px; border-radius: 50%; border: 6px solid #111214; position: absolute; top: 76px; left: 16px; background: #111214; }
+        .p-body { padding: 52px 16px 16px 16px; }
+        .p-info { background: #1e1f22; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+        .role-pill { background: #2b2d31; border-radius: 4px; padding: 4px 8px; font-size: 12px; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.05); }
+        .role-dot { width: 12px; height: 12px; border-radius: 50%; }
     </style>
 </head>
-<body class="app-container">
+<body class="flex h-screen">
 
-    <div class="flex flex-col items-center py-3 bg-[#111214] border-r border-[#1e1f22]">
-        <div class="w-12 h-12 bg-brand rounded-[16px] flex items-center justify-center text-white text-xl hover:rounded-[12px] transition-all duration-300">
-            <i class="fa-solid fa-clown"></i>
-        </div>
-        <div class="w-8 h-[2px] bg-[#35373c] my-2"></div>
-    </div>
-
-    <div class="flex flex-col bg-[#2b2d31]">
-        <div class="h-12 flex items-center px-4 font-bold text-white shadow-md border-b border-[#1e1f22]">PALYACOLAR</div>
+    <div class="sidebar">
+        <div class="h-12 flex items-center px-4 font-bold text-white border-b border-[#1e1f22] shadow-sm">PALYACOLAR</div>
         <div class="flex-1 py-4">
-            <div class="px-4 mb-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Sıralamalar</div>
-            <div onclick="switchTab('daily')" id="tab-daily" class="channel-btn active"><i class="fa-solid fa-hashtag"></i> günlük-aktiflik</div>
-            <div onclick="switchTab('all_time')" id="tab-all_time" class="channel-btn"><i class="fa-solid fa-hashtag"></i> efsaneler-tablosu</div>
+            <div class="px-4 mb-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest">İstatistik Kanalları</div>
+            <div onclick="setTab('daily')" id="tab-daily" class="nav-item active"><i class="fa-solid fa-hashtag text-gray-500"></i> günlük-aktiflik</div>
+            <div onclick="setTab('total')" id="tab-total" class="nav-item"><i class="fa-solid fa-hashtag text-gray-500"></i> efsaneler-tablosu</div>
         </div>
-        <div class="bg-[#232428] p-2 flex items-center gap-3">
-            <img id="bot-avatar" src="" class="w-8 h-8 rounded-full bg-gray-700">
+        <div class="bg-[#232428] p-3 flex items-center gap-3">
+            <img id="bot-img" src="" class="w-8 h-8 rounded-full">
             <div class="flex-1 overflow-hidden">
                 <div class="text-xs font-bold text-white leading-none">Palyacolar Bot</div>
-                <div class="text-[10px] text-green-500 font-medium">Çevrimiçi</div>
+                <div class="text-[10px] text-green-500">online</div>
             </div>
-            <i class="fa-solid fa-gear text-gray-400 text-xs"></i>
         </div>
     </div>
 
-    <div class="flex flex-col bg-[#313338]">
-        <div class="h-12 flex items-center px-4 gap-3 shadow-sm border-b border-[#2b2d31]">
-            <i class="fa-solid fa-hashtag text-gray-400 text-xl"></i>
-            <span class="font-bold text-white uppercase text-sm tracking-wide" id="header-text">günlük-aktiflik</span>
+    <div class="content">
+        <div class="h-12 flex items-center px-4 gap-3 border-b border-[#2b2d31] shadow-sm">
+            <i class="fa-solid fa-hashtag text-gray-500 text-xl"></i>
+            <span class="font-bold text-white text-sm uppercase" id="page-title">günlük-aktiflik</span>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-8 flex justify-center">
-            <div class="w-full max-w-6xl grid grid-cols-1 xl:grid-cols-2 gap-12">
-                
+        <div class="flex-1 overflow-y-auto p-6 flex flex-col items-center scroller">
+            <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <div>
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 border-b border-[#3f4147] pb-2">Mesaj Gönderimi</h3>
+                    <h3 class="text-xs font-bold text-gray-500 uppercase mb-4 px-2 border-b border-[#3f4147] pb-2">Mesaj Liderliği</h3>
                     <div id="msg-list" class="space-y-1"></div>
                 </div>
-
                 <div>
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 border-b border-[#3f4147] pb-2">Ses Aktifliği</h3>
+                    <h3 class="text-xs font-bold text-gray-500 uppercase mb-4 px-2 border-b border-[#3f4147] pb-2">Ses Liderliği</h3>
                     <div id="voice-list" class="space-y-1"></div>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <div id="modal-overlay" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4" onclick="this.style.display='none'">
-        <div class="profile-modal fade-in" onclick="event.stopPropagation()">
-            <div id="m-banner" class="profile-banner"></div>
-            <div class="profile-avatar-container">
-                <img id="m-avatar" src="" class="w-20 h-20 rounded-full">
-            </div>
-            <div class="p-4 mt-12 bg-[#111214]">
-                <div class="bg-[#1e1f22] rounded-lg p-4 mb-4">
-                    <h3 id="m-nickname" class="text-xl font-bold text-white leading-tight"></h3>
-                    <p id="m-username" class="text-gray-400 text-sm font-medium"></p>
-                    <div class="w-full h-[1px] bg-[#2b2d31] my-3"></div>
-                    <p class="text-[11px] font-bold text-gray-300 uppercase mb-2">Hakkında / Durum</p>
-                    <p id="m-status" class="text-sm text-gray-300 italic"></p>
+    <div id="modal" class="modal-wrap" onclick="this.style.display='none'">
+        <div class="profile-card" onclick="event.stopPropagation()">
+            <div id="p-banner" class="banner"></div>
+            <img id="p-img" src="" class="p-avatar">
+            <div class="p-body">
+                <div class="p-info">
+                    <h2 id="p-nick" class="text-xl font-bold text-white leading-tight"></h2>
+                    <p id="p-user" class="text-gray-400 text-sm mb-3"></p>
+                    <div class="h-[1px] bg-[#2b2d31] my-3"></div>
+                    <p class="text-[10px] font-bold text-gray-300 uppercase mb-1 tracking-wider">Durum</p>
+                    <p id="p-status" class="text-sm text-gray-200"></p>
                 </div>
-
-                <div class="bg-[#1e1f22] rounded-lg p-4">
-                    <p class="text-[11px] font-bold text-gray-300 uppercase mb-3">Roller</p>
-                    <div id="m-roles" class="flex flex-wrap gap-2"></div>
-                    <div class="w-full h-[1px] bg-[#2b2d31] my-3"></div>
-                    <p class="text-[11px] font-bold text-gray-300 uppercase mb-1">Üyelik Tarihi</p>
-                    <p id="m-joined" class="text-xs text-gray-400"></p>
+                <div class="p-info">
+                    <p class="text-[10px] font-bold text-gray-300 uppercase mb-3 tracking-wider">Roller</p>
+                    <div id="p-roles" class="flex flex-wrap gap-2"></div>
+                    <div class="h-[1px] bg-[#2b2d31] my-3"></div>
+                    <p class="text-[10px] font-bold text-gray-300 uppercase mb-1 tracking-wider">Sunucu Katılımı</p>
+                    <p id="p-date" class="text-xs text-gray-400"></p>
                 </div>
             </div>
         </div>
@@ -111,70 +98,70 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const firebaseConfig = { databaseURL: "https://palyacolar-d9f70-default-rtdb.firebaseio.com/" };
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        const fb = initializeApp({ databaseURL: "https://palyacolar-d9f70-default-rtdb.firebaseio.com/" });
+        const db = getDatabase(fb);
         let currentTab = 'daily';
 
-        onValue(ref(db, 'palyacolar_stats/settings'), (s) => {
-            if(s.exists()) document.getElementById('bot-avatar').src = s.val().bot_avatar;
+        onValue(ref(db, 'palyacolar_stats/settings'), s => {
+            if(s.exists()) document.getElementById('bot-img').src = s.val().bot_avatar;
         });
 
-        window.switchTab = (t) => {
+        window.setTab = (t) => {
             currentTab = t;
-            document.querySelectorAll('.channel-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-'+t).classList.add('active');
-            document.getElementById('header-text').innerText = t === 'daily' ? 'günlük-aktiflik' : 'efsaneler-tablosu';
-            loadData();
+            document.getElementById('page-title').innerText = t === 'daily' ? 'günlük-aktiflik' : 'efsaneler-tablosu';
+            load();
         };
 
-        function loadData() {
-            const key = currentTab === 'daily' ? new Date().toISOString().split('T')[0] : 'all_time';
-            onValue(ref(db, `palyacolar_stats/messages/${currentTab}/${key}`), (s) => render(s.val(), 'msg-list', 'count', 'MESAJ'));
-            onValue(ref(db, `palyacolar_stats/voice/${currentTab}/${key}`), (s) => render(s.val(), 'voice-list', 'minutes', 'DAKİKA'));
+        function load() {
+            const date = new Date().toISOString().split('T')[0];
+            const key = currentTab === 'daily' ? date : 'all';
+            
+            onValue(ref(db, `palyacolar_stats/msg/${currentTab}/${key}`), s => render(s.val(), 'msg-list', 'score', 'MESAJ'));
+            onValue(ref(db, `palyacolar_stats/voice/${currentTab}/${key}`), s => render(s.val(), 'voice-list', 'score', 'DAKİKA'));
         }
 
-        function render(data, container, field, unit) {
-            const div = document.getElementById(container);
+        function render(data, containerId, field, unit) {
+            const div = document.getElementById(containerId);
             div.innerHTML = "";
-            if(!data) { div.innerHTML = "<div class='p-4 text-gray-500 text-sm italic'>Veri bulunamadı...</div>"; return; }
+            if(!data) { div.innerHTML = "<p class='p-4 text-xs text-gray-600 italic uppercase'>Kayıt bulunamadı...</p>"; return; }
 
             Object.values(data).sort((a,b) => b[field] - a[field]).slice(0, 15).forEach((u, i) => {
                 div.innerHTML += `
-                <div class="stat-row flex items-center justify-between" onclick='openProfile(${JSON.stringify(u)})'>
+                <div class="user-row" onclick='openProfile(${JSON.stringify(u)})'>
                     <div class="flex items-center gap-3">
-                        <span class="w-4 text-center font-bold text-gray-500 text-xs">${i+1}</span>
+                        <span class="w-4 text-center font-bold text-gray-600 text-[10px]">${i+1}</span>
                         <img src="${u.avatar}" class="w-8 h-8 rounded-full">
                         <div>
-                            <div class="text-sm font-bold text-white" style="color:${u.top_role_color}">${u.nickname}</div>
-                            <div class="text-[10px] text-gray-500 font-medium">@${u.username}</div>
+                            <div class="text-sm font-bold" style="color:${u.top_color}">${u.display_name}</div>
+                            <div class="text-[10px] text-gray-500">@${u.username}</div>
                         </div>
                     </div>
                     <div class="text-right">
-                        <span class="text-sm font-black text-brand">${u[field]}</span>
-                        <span class="text-[9px] text-gray-500 font-bold uppercase ml-1">${unit}</span>
+                        <span class="text-sm font-bold text-brand">${u[field]}</span>
+                        <span class="text-[9px] text-gray-600 font-bold uppercase ml-1">${unit}</span>
                     </div>
                 </div>`;
             });
         }
 
         window.openProfile = (u) => {
-            document.getElementById('m-nickname').innerText = u.nickname;
-            document.getElementById('m-username').innerText = u.username;
-            document.getElementById('m-avatar').src = u.avatar;
-            document.getElementById('m-banner').style.background = u.banner ? `url(${u.banner}) center/cover` : (u.accent || '#5865f2');
-            document.getElementById('m-status').innerText = u.status;
-            document.getElementById('m-joined').innerText = u.joined_at;
-            document.getElementById('m-roles').innerHTML = u.roles.map(r => `
-                <div class="role-badge">
-                    <div class="role-circle" style="background:${r.color}"></div>
+            document.getElementById('p-nick').innerText = u.display_name;
+            document.getElementById('p-user').innerText = "@" + u.username;
+            document.getElementById('p-img').src = u.avatar;
+            document.getElementById('p-banner').style.background = u.banner ? `url(${u.banner}) center/cover` : (u.accent || '#5865f2');
+            document.getElementById('p-status').innerText = u.status;
+            document.getElementById('p-date').innerText = u.joined;
+            document.getElementById('p-roles').innerHTML = u.roles.map(r => `
+                <div class="role-pill">
+                    <div class="role-dot" style="background:${r.color}"></div>
                     ${r.name}
-                </div>
-            `).join('');
-            document.getElementById('modal-overlay').style.display = 'flex';
+                </div>`).join('');
+            document.getElementById('modal').style.display = 'flex';
         }
 
-        loadData();
+        load();
     </script>
 </body>
 </html>
