@@ -2,182 +2,93 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Palyacolar | Elite Stats Dashboard</title>
+    <title>Palyacolar | Server Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=GG+Sans:wght@400;700&display=swap');
+        body { background: #111214; color: #dbdee1; font-family: 'GG Sans', sans-serif; }
+        .sidebar { background: #1e1f22; border-right: 1px solid #2b2d31; }
+        .nav-btn { color: #949ba4; transition: 0.2s; }
+        .nav-btn:hover, .nav-btn.active { background: #35373c; color: white; }
+        .glass-card { background: #2b2d31; border-radius: 8px; transition: transform 0.2s; }
+        .glass-card:hover { transform: scale(1.01); background: #313338; }
 
-        :root {
-            --discord-blurple: #5865f2;
-            --discord-dark: #1e1f22;
-            --discord-black: #111214;
-            --discord-card: #2b2d31;
-        }
-
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: var(--discord-black); 
-            color: #dbdee1;
-            overflow-x: hidden;
-        }
-
-        .bg-glow {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% -20%, #5865f233, transparent);
-            pointer-events: none; z-index: -1;
-        }
-
-        .glass {
-            background: rgba(43, 45, 49, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .sidebar-item {
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-
-        .sidebar-item.active {
-            background: rgba(88, 101, 242, 0.1);
-            color: white;
-            border-left-color: var(--discord-blurple);
-        }
-
-        .leaderboard-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .leaderboard-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.4);
-            border-color: rgba(88, 101, 242, 0.4);
-        }
-
-        .rank-1 { background: linear-gradient(45deg, #f1c40f, #f39c12); color: black; box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
-        .rank-2 { background: linear-gradient(45deg, #bdc3c7, #95a5a6); color: black; }
-        .rank-3 { background: linear-gradient(45deg, #e67e22, #d35400); color: white; }
-
-        .modal-animate {
-            animation: modalFade 0.3s ease-out;
-        }
-
-        @keyframes modalFade {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--discord-black); }
-        ::-webkit-scrollbar-thumb { background: #35373c; border-radius: 10px; }
+        .profile-banner { height: 120px; background: #5865f2; border-radius: 8px 8px 0 0; }
+        .avatar-border { border: 6px solid #111214; background: #111214; }
+        .status-badge { background: #111214; border-radius: 4px; padding: 12px; font-size: 13px; }
+        
+        .rank-1 { border-left: 4px solid #f1c40f; }
+        .rank-2 { border-left: 4px solid #bdc3c7; }
+        .rank-3 { border-left: 4px solid #e67e22; }
     </style>
 </head>
-<body class="flex">
+<body class="flex h-screen overflow-hidden">
 
-    <div class="bg-glow"></div>
-
-    <aside class="w-64 fixed h-full bg-[#111214] border-r border-[#2b2d31] hidden lg:flex flex-col">
-        <div class="p-8">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-[#5865f2] rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                    <i class="fa-solid fa-clown text-white text-xl"></i>
-                </div>
-                <span class="font-extrabold text-xl tracking-tight text-white">PALYACOLAR</span>
-            </div>
+    <div class="sidebar w-72 flex flex-col p-4">
+        <div class="flex items-center gap-3 px-2 mb-8 mt-2">
+            <img id="site-logo" src="" class="w-12 h-12 rounded-full shadow-lg bg-indigo-500">
+            <h1 class="font-bold text-xl tracking-tight text-white">PALYACOLAR</h1>
         </div>
 
-        <nav class="flex-1 px-4 space-y-2 mt-4">
-            <p class="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">İstatistikler</p>
-            <button onclick="changePeriod('daily')" id="btn-daily" class="sidebar-item active w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold">
-                <i class="fa-solid fa-clock-rotate-left"></i> Günlük Aktiflik
+        <nav class="space-y-1 flex-1">
+            <button onclick="changeMode('daily')" id="btn-daily" class="nav-btn active w-full flex items-center gap-3 p-3 rounded-md font-medium text-sm">
+                <i class="fa-solid fa-bolt w-5 text-center"></i> GÜNLÜK AKTİFLİK
             </button>
-            <button onclick="changePeriod('weekly')" id="btn-weekly" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold">
-                <i class="fa-solid fa-calendar-week"></i> Haftalık Rekabet
+            <button onclick="changeMode('weekly')" id="btn-weekly" class="nav-btn w-full flex items-center gap-3 p-3 rounded-md font-medium text-sm">
+                <i class="fa-solid fa-calendar-alt w-5 text-center"></i> HAFTALIK REKABET
             </button>
-            <button onclick="changePeriod('all_time')" id="btn-all_time" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold">
-                <i class="fa-solid fa-crown"></i> Tüm Zamanlar
+            <button onclick="changeMode('all_time')" id="btn-all_time" class="nav-btn w-full flex items-center gap-3 p-3 rounded-md font-medium text-sm">
+                <i class="fa-solid fa-crown w-5 text-center"></i> EFSANELER (TÜM)
             </button>
         </nav>
+    </div>
 
-        <div class="p-6">
-            <div class="glass p-4 rounded-xl border border-white/5">
-                <p class="text-[10px] font-bold text-[#5865f2] uppercase mb-1">Durum</p>
-                <div class="flex items-center gap-2">
-                    <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                    </span>
-                    <span class="text-xs font-semibold text-white">Canlı Veri Aktif</span>
+    <div class="flex-1 overflow-y-auto p-8 bg-[#313338]">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-extrabold text-white uppercase tracking-tight" id="header-title">GÜNLÜK SIRALAMA</h2>
+                <div class="bg-[#1e1f22] px-4 py-2 rounded text-xs font-bold text-gray-400">CANLI TAKİP SİSTEMİ</div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="flex items-center gap-2 mb-4 font-bold text-gray-400 text-sm uppercase">
+                        <i class="fa-solid fa-message text-[#5865f2]"></i> Mesajlaşma Liderleri
+                    </h3>
+                    <div id="msg-list" class="space-y-2"></div>
+                </div>
+
+                <div>
+                    <h3 class="flex items-center gap-2 mb-4 font-bold text-gray-400 text-sm uppercase">
+                        <i class="fa-solid fa-microphone text-[#23a559]"></i> Ses Aktifliği (Dakika)
+                    </h3>
+                    <div id="voice-list" class="space-y-2"></div>
                 </div>
             </div>
         </div>
-    </aside>
+    </div>
 
-    <main class="flex-1 lg:ml-64 p-4 lg:p-12">
-        <header class="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
-            <div>
-                <h2 id="period-title" class="text-3xl font-extrabold text-white">Günlük İstatistikler</h2>
-                <p class="text-gray-400 mt-1">Sunucu üyelerinin anlık mesaj ve ses aktiviteleri.</p>
-            </div>
-            <div class="glass px-6 py-3 rounded-2xl flex items-center gap-4 border border-white/5">
-                <div class="text-right">
-                    <p class="text-[10px] font-bold text-gray-500 uppercase">Anlık Saat</p>
-                    <p id="clock" class="text-lg font-mono font-bold text-white">00:00:00</p>
+    <div id="modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4" onclick="closeModal()">
+        <div class="bg-[#111214] w-full max-w-[340px] rounded-xl overflow-hidden shadow-2xl transition-all" onclick="event.stopPropagation()">
+            <div id="u-banner" class="profile-banner relative"></div>
+            <div class="px-4 pb-6">
+                <div class="relative inline-block -mt-14 mb-3">
+                    <img id="u-avatar" src="" class="w-24 h-24 rounded-full avatar-border">
                 </div>
-                <i class="fa-solid fa-clock text-[#5865f2] text-xl"></i>
-            </div>
-        </header>
-
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-10">
-            <section class="glass p-8 rounded-3xl border border-white/5">
-                <div class="flex items-center justify-between mb-8">
-                    <h3 class="text-xl font-extrabold text-white flex items-center gap-3">
-                        <i class="fa-solid fa-message text-[#5865f2]"></i> Mesajlaşma
-                    </h3>
-                    <span class="text-[10px] font-bold bg-[#5865f2]/10 text-[#5865f2] px-3 py-1 rounded-full">SIRALAMA</span>
-                </div>
-                <div id="msg-list" class="space-y-3">
-                    </div>
-            </section>
-
-            <section class="glass p-8 rounded-3xl border border-white/5">
-                <div class="flex items-center justify-between mb-8">
-                    <h3 class="text-xl font-extrabold text-white flex items-center gap-3">
-                        <i class="fa-solid fa-microphone text-[#2ecc71]"></i> Ses Aktifliği
-                    </h3>
-                    <span class="text-[10px] font-bold bg-[#2ecc71]/10 text-[#2ecc71] px-3 py-1 rounded-full">DAKİKA</span>
-                </div>
-                <div id="voice-list" class="space-y-3">
-                    </div>
-            </section>
-        </div>
-    </main>
-
-    <div id="modal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 transition-all" onclick="closeModal()">
-        <div class="bg-[#111214] w-full max-w-[360px] rounded-3xl overflow-hidden shadow-2xl border border-[#2b2d31] modal-animate" onclick="event.stopPropagation()">
-            <div id="u-banner" class="h-28 bg-[#5865f2] relative">
-                <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/20 hover:bg-black/40 w-8 h-8 rounded-full text-white transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div class="px-6 pb-8">
-                <div class="relative inline-block -mt-12 mb-4">
-                    <img id="u-avatar" src="" class="w-24 h-24 rounded-full border-[8px] border-[#111214] shadow-xl bg-[#111214]">
-                    <div class="absolute bottom-1 right-1 w-6 h-6 bg-green-500 border-4 border-[#111214] rounded-full"></div>
-                </div>
-                <h3 id="u-name" class="text-2xl font-extrabold text-white">İsim</h3>
-                <p id="u-tag" class="text-gray-400 font-medium mb-6">@kullanici</p>
+                <h3 id="u-name" class="text-xl font-bold text-white"></h3>
+                <p id="u-tag" class="text-gray-400 text-sm mb-4"></p>
                 
+                <div class="status-badge mb-4 italic text-gray-300" id="u-status"></div>
+
                 <div class="space-y-4">
-                    <div class="bg-[#1e1f22] p-4 rounded-2xl">
-                        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Sunucuya Katılım</p>
-                        <p id="u-joined" class="text-sm font-semibold text-white italic">...</p>
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">Hakkında</p>
+                        <p class="text-xs" id="u-joined"></p>
                     </div>
                     <div>
-                        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 px-1">Roller</p>
-                        <div id="u-roles" class="flex flex-wrap gap-2"></div>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-2">Roller</p>
+                        <div id="u-roles" class="flex flex-wrap gap-1"></div>
                     </div>
                 </div>
             </div>
@@ -188,109 +99,66 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const firebaseConfig = {
-            databaseURL: "https://palyacolar-d9f70-default-rtdb.firebaseio.com/"
-        };
-
+        const firebaseConfig = { databaseURL: "https://palyacolar-d9f70-default-rtdb.firebaseio.com/" };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        let currentPeriod = 'daily';
+        let currentMode = 'daily';
 
-        window.changePeriod = (p) => {
-            currentPeriod = p;
-            document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
-            document.getElementById(`btn-${p}`).classList.add('active');
-            
-            const titles = { daily: 'Günlük İstatistikler', weekly: 'Haftalık Rekabet', all_time: 'Efsaneler Tablosu' };
-            document.getElementById('period-title').innerText = titles[p];
-            
+        onValue(ref(db, 'palyacolar_stats/settings'), (s) => {
+            const data = s.val();
+            if(data) document.getElementById('site-logo').src = data.bot_avatar;
+        });
+
+        window.changeMode = (m) => {
+            currentMode = m;
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-'+m).classList.add('active');
+            document.getElementById('header-title').innerText = m === 'all_time' ? 'EFSANELER TABLOSU' : m.toUpperCase() + ' SIRALAMA';
             loadData();
         };
 
-        function getPeriodKey() {
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('tr-TR', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('.').reverse().join('-');
-            
-            if (currentPeriod === 'daily') return dateStr;
-            if (currentPeriod === 'all_time') return 'all_time';
-
-            const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
-            const pastDaysOfYear = (now - firstDayOfYear) / 86400000;
-            const weekNum = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
-            return `${now.getFullYear()}-${weekNum.toString().padStart(2, '0')}`;
-        }
-
         function loadData() {
-            const key = getPeriodKey();
+            const dateStr = new Date().toISOString().split('T')[0];
+            const key = currentMode === 'all_time' ? 'all_time' : (currentMode === 'daily' ? dateStr : ''); 
             
-            // Mesajları Dinle
-            onValue(ref(db, `palyacolar_stats/messages/${currentPeriod}/${key}`), (snapshot) => {
-                renderLeaderboard(snapshot.val(), 'msg-list', 'count', 'Mesaj');
-            });
-
-            // Sesleri Dinle
-            onValue(ref(db, `palyacolar_stats/voice/${currentPeriod}/${key}`), (snapshot) => {
-                renderLeaderboard(snapshot.val(), 'voice-list', 'minutes', 'Dakika');
-            });
+            onValue(ref(db, `palyacolar_stats/messages/${currentMode}/${key || 'all_time'}`), (snap) => render(snap.val(), 'msg-list', 'count', 'MESAJ'));
+            onValue(ref(db, `palyacolar_stats/voice/${currentMode}/${key || 'all_time'}`), (snap) => render(snap.val(), 'voice-list', 'minutes', 'DAKİKA'));
         }
 
-        function renderLeaderboard(data, containerId, field, unit) {
+        function render(data, containerId, field, unit) {
             const container = document.getElementById(containerId);
             container.innerHTML = "";
+            if(!data) { container.innerHTML = "<div class='p-4 text-gray-600 text-xs uppercase'>Veri yok...</div>"; return; }
 
-            if (!data) {
-                container.innerHTML = `<div class="text-center py-10 text-gray-600 font-medium">Bu dönemde veri bulunmuyor.</div>`;
-                return;
-            }
-
-            const sorted = Object.values(data).sort((a, b) => b[field] - a[field]).slice(0, 15);
-
-            sorted.forEach((user, i) => {
-                const rankClass = i === 0 ? 'rank-1' : (i === 1 ? 'rank-2' : (i === 2 ? 'rank-3' : 'bg-[#1e1f22]'));
+            const sorted = Object.values(data).sort((a,b) => b[field] - a[field]).slice(0, 10);
+            sorted.forEach((u, i) => {
                 container.innerHTML += `
-                    <div class="leaderboard-card glass flex items-center justify-between p-4 rounded-2xl border border-white/5 cursor-pointer" onclick='openProfile(${JSON.stringify(user)})'>
-                        <div class="flex items-center gap-4">
-                            <div class="rank-badge ${rankClass} w-7 h-7 flex items-center justify-center rounded-full font-bold text-xs">
-                                ${i + 1}
-                            </div>
-                            <div class="relative">
-                                <img src="${user.avatar}" class="w-10 h-10 rounded-full shadow-lg bg-gray-800">
-                            </div>
-                            <div>
-                                <p class="text-white font-bold text-sm leading-none mb-1">${user.display_name}</p>
-                                <p class="text-gray-500 text-[10px] font-medium">@${user.name}</p>
-                            </div>
+                    <div class="glass-card flex items-center justify-between p-3 rank-${i+1} cursor-pointer" onclick='openProfile(${JSON.stringify(u)})'>
+                        <div class="flex items-center gap-3">
+                            <span class="w-4 text-xs font-bold text-gray-500">${i+1}</span>
+                            <img src="${u.avatar}" class="w-8 h-8 rounded-full">
+                            <span class="text-sm font-bold text-white">${u.display_name}</span>
                         </div>
                         <div class="text-right">
-                            <p class="text-[#5865f2] font-black text-sm">${user[field].toLocaleString()}</p>
-                            <p class="text-gray-600 text-[9px] font-bold uppercase">${unit}</p>
+                            <span class="text-sm font-bold text-[#5865f2]">${u[field]}</span>
+                            <span class="text-[9px] font-bold text-gray-500 ml-1">${unit}</span>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
-        window.openProfile = (user) => {
-            document.getElementById('u-avatar').src = user.avatar;
-            document.getElementById('u-name').innerText = user.display_name;
-            document.getElementById('u-tag').innerText = "@" + user.name;
-            document.getElementById('u-banner').style.backgroundColor = user.color || '#5865f2';
-            document.getElementById('u-joined').innerText = user.joined_at || "Bilinmiyor";
-            
-            const rolesBox = document.getElementById('u-roles');
-            rolesBox.innerHTML = user.roles && user.roles.length > 0 
-                ? user.roles.map(r => `<span class="bg-[#1e1f22] px-3 py-1 rounded-full text-[10px] font-bold border border-white/5 text-gray-300 shadow-sm">${r}</span>`).join('')
-                : '<span class="text-gray-600 text-xs italic">Rol bulunamadı.</span>';
-            
+        window.openProfile = (u) => {
+            document.getElementById('u-name').innerText = u.display_name;
+            document.getElementById('u-tag').innerText = "@" + u.name;
+            document.getElementById('u-avatar').src = u.avatar;
+            document.getElementById('u-banner').style.background = u.banner ? `url(${u.banner}) center/cover` : (u.color || '#5865f2');
+            document.getElementById('u-status').innerText = u.status || "Durum yok";
+            document.getElementById('u-joined').innerText = u.joined_at + " tarihinde katıldı";
+            document.getElementById('u-roles').innerHTML = u.roles.map(r => `<span class="bg-[#2b2d31] border border-gray-700 px-2 py-1 rounded text-[10px]">${r}</span>`).join('');
             document.getElementById('modal').style.display = 'flex';
         };
 
-        window.closeModal = () => { document.getElementById('modal').style.display = 'none'; };
-
-        setInterval(() => {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR');
-        }, 1000);
-
+        window.closeModal = () => document.getElementById('modal').style.display = 'none';
         loadData();
     </script>
 </body>
