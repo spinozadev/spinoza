@@ -2,234 +2,242 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord | Palyacolar Dashboard</title>
+    <title>Palyacolar | Infinite Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.cdnfonts.com/css/gg-sans');
 
         :root {
-            --bg-guilds: #1e1f22;
-            --bg-channels: #2b2d31;
-            --bg-main: #313338;
-            --bg-profile: #232428;
-            --bg-popout: #111214;
+            --d-base: #020202; /* Ultra Dark */
+            --d-sidebar: #111214;
+            --d-channels: #1e1f22;
+            --d-main: #2b2d31;
+            --d-card: rgba(43, 45, 49, 0.6);
             --brand: #5865f2;
-            --brand-hover: #4752c4;
-            --text-normal: #dbdee1;
-            --text-muted: #949ba4;
-            --header-secondary: #b5bac1;
-            --interactive-normal: #b5bac1;
-            --interactive-hover: #dbdee1;
-            --interactive-active: #fff;
+            --brand-glow: rgba(88, 101, 242, 0.4);
+            --gold: #f0b232;
+            --silver: #949ba4;
+            --bronze: #a652bb;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
         body { 
-            background: var(--bg-guilds); 
-            color: var(--text-normal); 
+            background: var(--d-base); 
+            color: #dbdee1; 
             font-family: 'gg sans', sans-serif; 
-            margin: 0; 
             height: 100vh; 
-            overflow: hidden; 
-            user-select: none;
+            overflow: hidden;
+            display: flex;
         }
 
-        #discord-loader {
-            position: fixed; inset: 0; background: var(--bg-popout);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 99999;
+        /* --- SÜPER YÜKLENME EKRANI --- */
+        #ultra-loader {
+            position: fixed; inset: 0; background: #000; z-index: 99999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .loader-icon {
-            width: 100px;
-            animation: pulse-discord 1.5s infinite ease-in-out;
+        .shimmer-logo {
+            width: 120px; filter: drop-shadow(0 0 15px var(--brand));
+            animation: infinite-glow 2s infinite alternate;
         }
-        @keyframes pulse-discord {
-            0% { transform: scale(0.95); filter: drop-shadow(0 0 0px var(--brand)); }
-            50% { transform: scale(1.05); filter: drop-shadow(0 0 20px var(--brand)); }
-            100% { transform: scale(0.95); filter: drop-shadow(0 0 0px var(--brand)); }
-        }
-
-        .custom-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
-        .custom-scroll::-webkit-scrollbar-corner { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #1a1b1e; border-radius: 4px; border: 2px solid transparent; background-clip: padding-box; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-
-        .guild-item {
-            width: 48px; height: 48px; border-radius: 50%;
-            background: var(--bg-main); display: flex; align-items: center;
-            justify-content: center; transition: all 0.2s ease; cursor: pointer;
-            position: relative; margin-bottom: 8px;
-        }
-        .guild-item:hover, .guild-item.active { border-radius: 16px; background: var(--brand); color: white; }
-        .guild-item.active::before {
-            content: ""; position: absolute; left: -12px; width: 4px; height: 40px;
-            background: white; border-radius: 0 4px 4px 0;
-        }
-        
-        .guild-item:hover::after {
-            content: attr(data-label); position: absolute; left: 65px;
-            background: black; color: white; padding: 6px 12px; border-radius: 4px;
-            font-size: 14px; font-weight: bold; white-space: nowrap; z-index: 100;
+        @keyframes infinite-glow {
+            from { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 10px var(--brand)); }
+            to { transform: scale(1.1) rotate(5deg); filter: drop-shadow(0 0 30px var(--brand)); }
         }
 
-        .rank-card {
-            display: flex; align-items: center; padding: 10px 16px; border-radius: 8px;
-            transition: background 0.1s; cursor: pointer; margin-bottom: 2px;
-            border: 1px solid transparent;
-        }
-        .rank-card:hover { background: rgba(78, 80, 88, 0.25); }
-        .rank-card.top-1 { background: rgba(240, 178, 50, 0.05); border-color: rgba(240, 178, 50, 0.1); }
-        .rank-card.top-1:hover { background: rgba(240, 178, 50, 0.1); }
+        /* --- ANA YAPI --- */
+        .guilds-panel { width: 72px; background: var(--d-base); display: flex; flex-direction: column; align-items: center; padding-top: 12px; gap: 8px; flex-shrink: 0; }
+        .channels-panel { width: 240px; background: var(--d-sidebar); display: flex; flex-direction: column; flex-shrink: 0; border-radius: 12px 12px 0 0; margin-top: 4px; }
+        .main-stage { flex: 1; background: var(--d-main); display: flex; flex-direction: column; margin-top: 4px; border-radius: 12px 0 0 0; position: relative; overflow: hidden; }
 
-        .modal-container {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-            display: none; align-items: center; justify-content: center; z-index: 10000;
-            backdrop-filter: blur(2px);
+        /* Cam Efekti Arkaplan (Hareketli Nebula) */
+        .nebula-bg {
+            position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+            background: radial-gradient(circle at center, #1e1f22 0%, #020202 100%);
+            z-index: 0; opacity: 0.5; pointer-events: none;
         }
-        .discord-popout {
-            width: 340px; background: var(--bg-popout); border-radius: 8px;
-            overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.4);
-            animation: popOut 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popOut { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        .banner-large { height: 120px; background: var(--brand); position: relative; }
-        .p-avatar-large {
-            width: 94px; height: 94px; border-radius: 50%; border: 7px solid var(--bg-popout);
-            position: absolute; top: 75px; left: 16px; background: var(--bg-popout);
+        /* --- GUILD ICONS --- */
+        .g-icon {
+            width: 48px; height: 48px; border-radius: 24px; background: var(--d-channels);
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1); cursor: pointer;
+            position: relative; color: #fff; font-size: 20px;
         }
-        .p-content { padding: 60px 16px 16px; }
-        .p-box { background: var(--bg-sidebar); border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .g-icon:hover, .g-icon.active { border-radius: 14px; background: var(--brand); box-shadow: 0 0 20px var(--brand-glow); }
+        .g-icon.active::after { content: ""; position: absolute; left: -14px; width: 4px; height: 32px; background: #fff; border-radius: 0 4px 4px 0; }
 
-        .role-chip {
-            background: var(--bg-channels); border-radius: 4px; padding: 4px 8px;
-            font-size: 11px; display: flex; align-items: center; gap: 4px;
-            border: 1px solid rgba(255,255,255,0.03); font-weight: 500;
+        /* --- RANK CARDS (BUG FIXED) --- */
+        .card-container {
+            display: flex; align-items: center; padding: 12px 16px;
+            background: var(--d-card); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.03); border-radius: 12px;
+            margin-bottom: 8px; transition: 0.2s; cursor: pointer; position: relative;
         }
+        .card-container:hover { 
+            transform: translateX(4px); background: rgba(78, 80, 88, 0.4);
+            border-color: var(--brand); box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .avatar-box {
+            position: relative; width: 44px; height: 44px; flex-shrink: 0; /* Kaymayı önleyen kritik kilit */
+            margin-right: 12px; display: flex; align-items: center; justify-content: center;
+        }
+        .avatar-img { 
+            width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+            border: 2px solid transparent; transition: 0.2s;
+        }
+        .card-container:hover .avatar-img { border-color: var(--brand); }
+
+        .rank-glow {
+            position: absolute; inset: -2px; border-radius: 50%;
+            z-index: -1; opacity: 0; transition: 0.3s;
+        }
+        .top-1 .rank-glow { opacity: 1; box-shadow: 0 0 15px var(--gold); background: var(--gold); }
+
+        /* --- DISCORD MODERN MODAL --- */
+        .infinite-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            display: none; align-items: center; justify-content: center; z-index: 100000;
+            backdrop-filter: blur(8px);
+        }
+        .popout-v3 {
+            width: 380px; background: #111214; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.05);
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .banner-v3 { height: 120px; background: var(--brand); position: relative; }
+        .av-v3 {
+            width: 100px; height: 100px; border-radius: 50%; border: 8px solid #111214;
+            position: absolute; top: 65px; left: 16px; background: #111214;
+        }
+
+        /* --- SCROLLBAR --- */
+        .scroller-v3::-webkit-scrollbar { width: 6px; }
+        .scroller-v3::-webkit-scrollbar-thumb { background: #111214; border-radius: 10px; }
+        .scroller-v3::-webkit-scrollbar-track { background: transparent; }
     </style>
 </head>
-<body class="flex">
+<body>
 
-    <div id="discord-loader">
-        <img src="https://cdn.prod.website-files.com/6257adef93867e3d0394e296/636e0a6a49f9a757c1aa1750_633d53690623a6064d6023d5_discord-icon.svg" class="loader-icon">
-        <div class="mt-8 text-white font-bold text-sm tracking-widest animate-pulse uppercase">Veriler Senkronize Ediliyor...</div>
-    </div>
-
-    <div class="w-[72px] bg-[--bg-guilds] flex flex-col items-center py-3 flex-shrink-0">
-        <div class="guild-item active" data-label="Palyacolar">
-            <i class="fa-solid fa-clown text-2xl"></i>
-        </div>
-        <div class="w-8 h-[2px] bg-[#35373c] my-1"></div>
-        <div class="guild-item text-green-500 hover:bg-green-500 hover:text-white" data-label="Sunucu Ekle">
-            <i class="fa-solid fa-plus text-xl"></i>
-        </div>
-        <div class="guild-item text-green-500 hover:bg-green-500 hover:text-white" data-label="Keşfet">
-            <i class="fa-solid fa-compass text-xl"></i>
+    <div id="ultra-loader">
+        <img src="https://cdn.prod.website-files.com/6257adef93867e3d0394e296/636e0a6a49f9a757c1aa1750_633d53690623a6064d6023d5_discord-icon.svg" class="shimmer-logo">
+        <div class="mt-10 flex flex-col items-center">
+            <div class="w-48 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                <div id="bar" class="w-0 h-full bg-indigo-500 transition-all duration-700"></div>
+            </div>
+            <p class="text-[10px] text-zinc-500 mt-4 font-black tracking-[4px] uppercase">Palyacolar Infinite OS</p>
         </div>
     </div>
 
-    <div class="w-[240px] bg-[--bg-channels] flex flex-col flex-shrink-0">
-        <div class="h-12 px-4 flex items-center justify-between shadow-sm border-b border-[#1f2023] font-bold text-white">
-            PALYACOLAR <i class="fa-solid fa-chevron-down text-xs"></i>
+    <div class="guilds-panel">
+        <div class="g-icon active"><i class="fa-solid fa-clown"></i></div>
+        <div class="w-8 h-[2px] bg-zinc-800"></div>
+        <div class="g-icon text-green-500"><i class="fa-solid fa-plus"></i></div>
+        <div class="g-icon text-green-500"><i class="fa-solid fa-compass"></i></div>
+    </div>
+
+    <div class="channels-panel">
+        <div class="h-12 flex items-center px-4 font-black text-white text-sm tracking-tight shadow-md">
+            PALYACOLAR <i class="fa-solid fa-circle-check ml-2 text-indigo-400 text-[10px]"></i>
+            <i class="fa-solid fa-chevron-down ml-auto text-xs opacity-50"></i>
         </div>
-        <div class="flex-1 overflow-y-auto custom-scroll py-3">
-            <div class="px-4 mb-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest flex items-center justify-between">
-                İstatistik Kanalları <i class="fa-solid fa-plus text-xs"></i>
+        <div class="flex-1 overflow-y-auto scroller-v3 py-4 px-2">
+            <p class="text-[10px] font-bold text-zinc-500 uppercase px-3 mb-2 tracking-widest">Global Stats</p>
+            <div onclick="changeTab('daily')" id="btn-daily" class="flex items-center gap-2 px-3 py-2 rounded-md bg-zinc-700/50 text-white cursor-pointer mb-1">
+                <i class="fa-solid fa-hashtag text-zinc-500"></i> günlük-aktiflik
             </div>
-            <div id="nav-daily" onclick="switchView('daily')" class="mx-2 px-2 py-1.5 rounded flex items-center gap-3 cursor-pointer bg-[#3f4147] text-white">
-                <i class="fa-solid fa-hashtag text-gray-400 text-lg"></i> günlük-aktiflik
+            <div onclick="changeTab('weekly')" id="btn-weekly" class="flex items-center gap-2 px-3 py-2 rounded-md text-zinc-400 hover:bg-zinc-800 cursor-pointer mb-1">
+                <i class="fa-solid fa-hashtag text-zinc-500"></i> haftalık-rekabet
             </div>
-            <div id="nav-weekly" onclick="switchView('weekly')" class="mx-2 px-2 py-1.5 rounded flex items-center gap-3 cursor-pointer text-[#949ba4] hover:bg-[#35373c] hover:text-[#dbdee1] mt-1">
-                <i class="fa-solid fa-hashtag text-gray-400 text-lg"></i> haftalık-rekabet
+            <div onclick="changeTab('monthly')" id="btn-monthly" class="flex items-center gap-2 px-3 py-2 rounded-md text-zinc-400 hover:bg-zinc-800 cursor-pointer mb-1">
+                <i class="fa-solid fa-hashtag text-zinc-500"></i> aylık-zirve
             </div>
-            <div id="nav-monthly" onclick="switchView('monthly')" class="mx-2 px-2 py-1.5 rounded flex items-center gap-3 cursor-pointer text-[#949ba4] hover:bg-[#35373c] hover:text-[#dbdee1] mt-1">
-                <i class="fa-solid fa-hashtag text-gray-400 text-lg"></i> aylık-zirve
-            </div>
-            <div id="nav-all_time" onclick="switchView('all_time')" class="mx-2 px-2 py-1.5 rounded flex items-center gap-3 cursor-pointer text-[#949ba4] hover:bg-[#35373c] hover:text-[#dbdee1] mt-1">
-                <i class="fa-solid fa-hashtag text-gray-400 text-lg"></i> efsaneler-tablosu
+            <div onclick="changeTab('all_time')" id="btn-all_time" class="flex items-center gap-2 px-3 py-2 rounded-md text-zinc-400 hover:bg-zinc-800 cursor-pointer mb-1">
+                <i class="fa-solid fa-hashtag text-zinc-500"></i> efsaneler-tablosu
             </div>
         </div>
-        <div class="bg-[#232428] p-2 flex items-center gap-2 h-14">
-            <div class="relative">
-                <img id="bot-av" src="" class="w-8 h-8 rounded-full">
+        <div class="bg-[#232428] p-2 flex items-center gap-3">
+            <div class="relative w-8 h-8 flex-shrink-0">
+                <img id="bot-avatar" src="" class="w-full h-full rounded-full">
                 <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#232428] rounded-full"></div>
             </div>
-            <div class="flex-1 overflow-hidden">
-                <div class="text-xs font-bold text-white truncate">Palyacolar Dashboard</div>
-                <div class="text-[10px] text-gray-400">#0001</div>
+            <div class="flex-1 min-w-0">
+                <p class="text-xs font-bold text-white truncate">Palyacolar Bot</p>
+                <p class="text-[10px] text-zinc-500">online</p>
             </div>
-            <div class="flex gap-2 text-gray-400">
-                <i class="fa-solid fa-microphone hover:text-white cursor-pointer"></i>
-                <i class="fa-solid fa-gear hover:text-white cursor-pointer"></i>
-            </div>
+            <i class="fa-solid fa-gear text-zinc-400 hover:text-white cursor-pointer"></i>
         </div>
     </div>
 
-    <div class="flex-1 bg-[--bg-main] flex flex-col min-w-0">
-        <div class="h-12 px-4 flex items-center gap-2 border-b border-[#26272d] shadow-sm">
-            <i class="fa-solid fa-hashtag text-gray-400 text-xl"></i>
-            <span class="font-bold text-white" id="view-title">günlük-aktiflik</span>
-            <div class="ml-auto flex gap-4 text-gray-400">
-                <i class="fa-solid fa-bell-slash"></i>
+    <div class="main-stage">
+        <div class="nebula-bg"></div>
+        <div class="h-12 flex items-center px-4 gap-3 border-b border-white/5 relative z-10">
+            <i class="fa-solid fa-hashtag text-zinc-500 text-xl"></i>
+            <span id="tab-name" class="font-bold text-white text-sm uppercase">günlük-aktiflik</span>
+            <div class="ml-auto flex items-center gap-5 text-zinc-400">
+                <i class="fa-solid fa-bell"></i>
                 <i class="fa-solid fa-thumbtack"></i>
-                <i class="fa-solid fa-user-group"></i>
-                <div class="bg-[#1e1f22] px-2 rounded flex items-center gap-2 text-xs">
-                    Arama <i class="fa-solid fa-magnifying-glass scale-75"></i>
-                </div>
+                <i class="fa-solid fa-users"></i>
+                <div class="bg-black/20 px-2 py-1 rounded text-xs border border-white/5">Ara... <i class="fa-solid fa-magnifying-glass ml-2 opacity-50"></i></div>
             </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto custom-scroll p-8">
-            <div class="max-w-6xl mx-auto">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    
-                    <div>
-                        <div class="flex items-center gap-2 mb-6 text-white font-bold text-xl">
-                            <div class="w-8 h-8 bg-blue-500/20 text-blue-400 rounded flex items-center justify-center">
-                                <i class="fa-solid fa-message"></i>
-                            </div>
-                            Mesajlaşma Liderleri
-                        </div>
-                        <div id="msg-list" class="space-y-0.5">
-                            <div class="animate-pulse flex gap-4 p-4 bg-[#2b2d31] rounded"></div>
-                        </div>
+        <div class="flex-1 overflow-y-auto scroller-v3 p-6 relative z-10">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-2 gap-10">
+                
+                <div class="animate-fade-in">
+                    <div class="flex items-center justify-between mb-6 px-2">
+                        <h3 class="font-black text-white text-lg tracking-tighter uppercase italic">Mesaj İmparatorları</h3>
+                        <span class="text-[10px] bg-indigo-500/20 text-indigo-400 px-2 py-1 rounded-full font-bold">LIVE UPDATE</span>
                     </div>
-
-                    <div>
-                        <div class="flex items-center gap-2 mb-6 text-white font-bold text-xl">
-                            <div class="w-8 h-8 bg-green-500/20 text-green-400 rounded flex items-center justify-center">
-                                <i class="fa-solid fa-microphone"></i>
-                            </div>
-                            Ses Aktifliği (Dakika)
-                        </div>
-                        <div id="voice-list" class="space-y-0.5"></div>
-                    </div>
-
+                    <div id="msg-list" class="space-y-2"></div>
                 </div>
+
+                <div class="animate-fade-in">
+                    <div class="flex items-center justify-between mb-6 px-2">
+                        <h3 class="font-black text-white text-lg tracking-tighter uppercase italic">Ses Efendileri</h3>
+                        <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-full font-bold">STABLE</span>
+                    </div>
+                    <div id="voice-list" class="space-y-2"></div>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <div id="profile-modal" class="modal-container" onclick="this.style.display='none'">
-        <div class="discord-popout" onclick="event.stopPropagation()">
-            <div id="m-banner" class="banner-large"></div>
-            <div class="relative h-1">
-                <img id="m-avatar" src="" class="p-avatar-large">
+    <div id="m-modal" class="infinite-modal" onclick="this.style.display='none'">
+        <div class="popout-v3" onclick="event.stopPropagation()">
+            <div id="m-bn" class="banner-v3"></div>
+            <div class="relative h-12">
+                <img id="m-av" src="" class="av-v3">
             </div>
-            <div class="p-content">
-                <div class="p-box">
-                    <h2 id="m-display-name" class="text-xl font-bold text-white leading-none"></h2>
-                    <p id="m-username" class="text-[#b5bac1] text-sm mt-1"></p>
-                    <div class="h-[1px] bg-[#3f4147] my-3"></div>
-                    <p class="text-[10px] font-bold text-gray-300 uppercase mb-2 tracking-wider">Durum</p>
-                    <p id="m-status" class="text-sm text-gray-200"></p>
+            <div class="p-6 pt-10">
+                <div class="bg-black/20 p-4 rounded-xl border border-white/5">
+                    <h2 id="m-dn" class="text-2xl font-black text-white mb-1"></h2>
+                    <p id="m-un" class="text-zinc-500 text-sm mb-4"></p>
+                    <div class="flex gap-2 mb-4" id="m-badges">
+                        <i class="fa-solid fa-shield-halved text-indigo-400"></i>
+                        <i class="fa-solid fa-gem text-pink-400"></i>
+                        <i class="fa-solid fa-bolt text-yellow-400"></i>
+                    </div>
+                    <p class="text-[10px] font-bold text-zinc-500 uppercase mb-2">Hakkımda</p>
+                    <p id="m-st" class="text-sm text-zinc-300 leading-relaxed"></p>
                 </div>
-                <div class="p-box">
-                    <p class="text-[10px] font-bold text-gray-300 uppercase mb-3 tracking-wider">Roller</p>
-                    <div id="m-roles" class="flex flex-wrap gap-1.5"></div>
-                    <div class="h-[1px] bg-[#3f4147] my-3"></div>
-                    <p class="text-[10px] font-bold text-gray-300 uppercase mb-1 tracking-wider">Üyelik Tarihi</p>
-                    <p id="m-joined" class="text-xs text-[#b5bac1]"></p>
+                
+                <div class="mt-4 bg-black/20 p-4 rounded-xl border border-white/5">
+                    <p class="text-[10px] font-bold text-zinc-500 uppercase mb-3">Roller</p>
+                    <div id="m-rl" class="flex flex-wrap gap-1.5"></div>
+                    <div class="h-[1px] bg-white/5 my-4"></div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] font-bold text-zinc-500 uppercase">Katılım Tarihi</p>
+                            <p id="m-jd" class="text-xs text-zinc-400"></p>
+                        </div>
+                        <button class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-md font-bold transition">Mesaj At</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -239,105 +247,90 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const firebaseConfig = { databaseURL: "https://palyacolar-d9f70-default-rtdb.firebaseio.com/" };
-        const app = initializeApp(firebaseConfig);
+        const app = initializeApp({ databaseURL: "https://palyacolar-d9f70-default-rtdb.firebaseio.com/" });
         const db = getDatabase(app);
+        let tab = 'daily';
+        let loadCheck = { m: false, v: false };
 
-        let currentView = 'daily';
-        let isLoaded = { msg: false, voice: false };
-        
         onValue(ref(db, 'stats_v2/meta'), s => {
-            if(s.exists()) document.getElementById('bot-av').src = s.val().bot_av;
+            if(s.exists()) document.getElementById('bot-avatar').src = s.val().bot_av;
         });
 
-        window.switchView = (v) => {
-            currentView = v;
-            document.querySelectorAll('.channel-btn, [id^="nav-"]').forEach(el => {
-                el.classList.remove('bg-[#3f4147]', 'text-white');
-                el.classList.add('text-[#949ba4]');
-            });
-            const active = document.getElementById('nav-'+v);
-            active.classList.add('bg-[#3f4147]', 'text-white');
-            active.classList.remove('text-[#949ba4]');
-            document.getElementById('view-title').innerText = v.replace('_', '-');
-            loadData();
-        };
+        window.changeTab = (t) => {
+            tab = t;
+            document.querySelectorAll('[id^="btn-"]').forEach(el => el.className = "flex items-center gap-2 px-3 py-2 rounded-md text-zinc-400 hover:bg-zinc-800 cursor-pointer mb-1");
+            document.getElementById('btn-'+t).className = "flex items-center gap-2 px-3 py-2 rounded-md bg-zinc-700/50 text-white cursor-pointer mb-1";
+            document.getElementById('tab-name').innerText = t.replace('_','-');
+            load();
+        }
 
-        function loadData() {
-            onValue(ref(db, `stats_v2/msg/${currentView}`), s => {
-                renderList(s.val(), 'msg-list', 'sc', 'mesaj');
-                isLoaded.msg = true;
-                checkLoading();
+        function load() {
+            document.getElementById('bar').style.width = "40%";
+            onValue(ref(db, `stats_v2/msg/${tab}`), s => {
+                render(s.val(), 'msg-list', 'sc', 'MSJS');
+                loadCheck.m = true; checkDone();
             });
-            onValue(ref(db, `stats_v2/voice/${currentView}`), s => {
-                renderList(s.val(), 'voice-list', 'sc', 'dk');
-                isLoaded.voice = true;
-                checkLoading();
+            onValue(ref(db, `stats_v2/voice/${tab}`), s => {
+                render(s.val(), 'voice-list', 'sc', 'DK');
+                loadCheck.v = true; checkDone();
             });
         }
 
-        function renderList(data, containerId, field, unit) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = "";
-            if(!data) {
-                container.innerHTML = `<div class="p-8 text-center text-gray-500 italic border-2 border-dashed border-[#2b2d31] rounded-lg">Bu dönemde henüz veri toplanmamış...</div>`;
-                return;
+        function checkDone() {
+            if(loadCheck.m && loadCheck.v) {
+                document.getElementById('bar').style.width = "100%";
+                setTimeout(() => document.getElementById('ultra-loader').style.opacity = '0', 600);
+                setTimeout(() => document.getElementById('ultra-loader').style.display = 'none', 1000);
             }
+        }
 
-            const sorted = Object.values(data).sort((a,b) => b[field] - a[field]).slice(0, 50);
+        function render(data, cid, field, unit) {
+            const div = document.getElementById(cid);
+            div.innerHTML = "";
+            if(!data) { div.innerHTML = "<div class='text-zinc-600 text-xs italic p-10 text-center border border-white/5 rounded-xl'>Henüz kimse zirveye oynamamış...</div>"; return; }
 
-            sorted.forEach((u, i) => {
+            Object.values(data).sort((a,b) => b[field] - a[field]).slice(0, 30).forEach((u, i) => {
                 const isTop = i === 0 ? 'top-1' : '';
-                const rankColor = i === 0 ? 'text-yellow-500' : (i === 1 ? 'text-gray-300' : (i === 2 ? 'text-orange-400' : 'text-[#6d6f78]'));
+                const rankColor = i === 0 ? 'var(--gold)' : (i === 1 ? '#cbd5e1' : (i === 2 ? '#fb923c' : '#52525b'));
 
-                container.innerHTML += `
-                    <div class="rank-card ${isTop}" onclick='openProfile(${JSON.stringify(u)})'>
-                        <div class="flex items-center gap-4 flex-1">
-                            <div class="w-6 text-center font-black ${rankColor} italic">${i+1}</div>
-                            <div class="relative">
-                                <img src="${u.av}" class="w-10 h-10 rounded-full shadow-lg">
-                                <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-4 border-[#313338] rounded-full"></div>
+                div.innerHTML += `
+                    <div class="card-container ${isTop}" onclick='openModal(${JSON.stringify(u)})'>
+                        <div class="rank-glow"></div>
+                        <div class="avatar-box">
+                            <img src="${u.av}" class="avatar-img shadow-2xl">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-black truncate" style="color:${u.tc}">${u.dn}</span>
+                                ${i < 3 ? `<i class="fa-solid fa-medal" style="color:${rankColor}"></i>` : ''}
                             </div>
-                            <div class="flex flex-col">
-                                <span class="font-bold text-base" style="color: ${u.tc || '#fff'}">${u.dn}</span>
-                                <span class="text-[11px] text-gray-500 font-medium">@${u.un}</span>
-                            </div>
+                            <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-tighter">@${u.un}</p>
                         </div>
                         <div class="text-right">
-                            <div class="text-white font-black text-lg leading-none">${u[field]}</div>
-                            <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">${unit}</div>
+                            <span class="text-xl font-black text-white italic tracking-tighter">${u[field]}</span>
+                            <span class="text-[9px] block font-bold text-zinc-500 leading-none">${unit}</span>
                         </div>
                     </div>
                 `;
             });
         }
 
-        function checkLoading() {
-            if(isLoaded.msg && isLoaded.voice) {
-                setTimeout(() => {
-                    document.getElementById('discord-loader').style.display = 'none';
-                }, 1500);
-            }
-        }
-
-        window.openProfile = (u) => {
-            const modal = document.getElementById('profile-modal');
-            document.getElementById('m-display-name').innerText = u.dn;
-            document.getElementById('m-username').innerText = u.un;
-            document.getElementById('m-avatar').src = u.av;
-            document.getElementById('m-banner').style.background = u.bn ? `url(${u.bn}) center/cover` : (u.ac || '#5865f2');
-            document.getElementById('m-status').innerText = u.st || "Palyacolar sunucusunda takılıyor.";
-            document.getElementById('m-joined').innerText = u.jd;
-            document.getElementById('m-roles').innerHTML = (u.rl || []).map(r => `
-                <div class="role-chip">
-                    <div class="w-3 h-3 rounded-full" style="background: ${r.c}"></div>
-                    ${r.n}
+        window.openModal = (u) => {
+            document.getElementById('m-dn').innerText = u.dn;
+            document.getElementById('m-un').innerText = "@" + u.un;
+            document.getElementById('m-av').src = u.av;
+            document.getElementById('m-bn').style.background = u.bn ? `url(${u.bn}) center/cover` : (u.ac || '#5865f2');
+            document.getElementById('m-st').innerText = u.st || "Palyacoların derinliklerinden gelen bir ses...";
+            document.getElementById('m-jd').innerText = u.jd;
+            document.getElementById('m-rl').innerHTML = (u.rl || []).map(r => `
+                <div class="px-2 py-1 bg-white/5 border border-white/5 rounded flex items-center gap-1.5 text-[10px] text-zinc-300">
+                    <div class="w-2 h-2 rounded-full" style="background:${r.c}"></div>${r.n}
                 </div>
             `).join('');
-            modal.style.display = 'flex';
+            document.getElementById('m-modal').style.display = 'flex';
         }
 
-        loadData();
+        load();
     </script>
 </body>
 </html>
