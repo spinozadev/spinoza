@@ -3,286 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Palyacolar | Discord</title>
+    <title>Palyacolar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Whitney:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=gg+sans:wght@300;400;500;600;700&display=swap');
         
         :root {
-            --bg-primary: #36393f;
-            --bg-secondary: #2f3136;
-            --bg-tertiary: #202225;
-            --bg-quaternary: #292b2f;
-            --bg-modifier-hover: rgba(79, 84, 92, 0.16);
-            --bg-modifier-active: rgba(79, 84, 92, 0.24);
-            --bg-modifier-selected: rgba(79, 84, 92, 0.32);
+            --background-primary: #36393f;
+            --background-secondary: #2f3136;
+            --background-secondary-alt: #292b2f;
+            --background-tertiary: #202225;
+            --background-modifier-hover: rgba(79,84,92,.16);
+            --background-modifier-active: rgba(79,84,92,.24);
+            --background-modifier-selected: rgba(79,84,92,.32);
             
             --text-normal: #dcddde;
             --text-muted: #72767d;
             --text-link: #00aff4;
             
-            --brand-experiment: #5865f2;
-            --danger: #ed4245;
-            --success: #57f287;
+            --brand-experiment-500: #5865f2;
+            --brand-experiment-600: #4752c4;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Whitney', sans-serif;
-            background: var(--bg-tertiary);
+            font-family: 'gg sans', sans-serif;
+            background: var(--background-tertiary);
             color: var(--text-normal);
             height: 100vh;
             overflow: hidden;
-            display: flex;
         }
 
-        .app {
-            display: flex;
-            width: 100%;
-            height: 100vh;
-        }
+        .app { display: flex; height: 100vh; }
 
-        /* Sunucu Listesi */
-        .servers {
+        .guilds {
             width: 70px;
-            background: var(--bg-quaternary);
+            background: var(--background-secondary-alt);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 12px 0;
-            gap: 8px;
+            padding: 16px 0;
+            gap: 12px;
         }
 
-        .server-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--bg-secondary);
+        .guild-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: rgba(47,49,54,.6);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: border-radius .2s,transform .2s;
             position: relative;
         }
 
-        .server-icon:hover {
-            background: var(--brand-experiment);
+        .guild-icon:hover {
+            background: var(--brand-experiment-500);
+            border-radius: 16px;
             transform: scale(1.05);
         }
 
-        .server-icon.active {
-            background: var(--brand-experiment);
+        .guild-icon.active {
+            background: var(--brand-experiment-500);
+            border-radius: 16px;
         }
 
-        .server-icon.active::before {
+        .guild-icon.active::before {
             content: '';
             position: absolute;
             left: -4px;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 12px;
             width: 3px;
-            height: 32px;
-            background: white;
+            height: 36px;
+            background: #fff;
             border-radius: 0 2px 2px 0;
         }
 
-        /* Kanallar */
         .channels {
             width: 240px;
-            background: var(--bg-primary);
+            background: var(--background-primary);
             display: flex;
             flex-direction: column;
-            border-right: 1px solid rgba(0,0,0,0.2);
+            flex-shrink: 0;
         }
 
-        .channel-header {
+        .channels-header {
             height: 48px;
             display: flex;
             align-items: center;
             padding: 0 16px;
             font-weight: 600;
             font-size: 16px;
-            border-bottom: 1px solid rgba(0,0,0,0.2);
+            border-bottom: 1px solid rgba(32,34,37,.6);
         }
 
-        .channels-list {
+        .channels-scroller {
             flex: 1;
             overflow-y: auto;
-            padding: 12px 8px;
+            padding: 12px 8px 0;
         }
 
         .channel-category {
             font-size: 12px;
             font-weight: 600;
             color: var(--text-muted);
-            padding: 8px 8px 4px;
+            padding: 0 0 8px 16px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: .5px;
+            margin-bottom: 4px;
         }
 
-        .channel-item {
-            padding: 6px 12px;
-            margin: 2px 8px;
+        .channel {
+            padding: 6px 16px;
+            margin: 1px 8px;
             border-radius: 4px;
             cursor: pointer;
             font-weight: 500;
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: all 0.15s ease;
+            transition: all .15s ease;
             color: var(--text-muted);
+            font-size: 15px;
         }
 
-        .channel-item:hover {
-            background: var(--bg-modifier-hover);
+        .channel:hover {
+            background: var(--background-modifier-hover);
             color: var(--text-normal);
         }
 
-        .channel-item.active {
-            background: var(--bg-modifier-selected);
+        .channel.active {
+            background: var(--background-modifier-selected);
             color: var(--text-normal);
         }
 
-        /* Ana Alan */
-        .main-content {
+        .main {
             flex: 1;
             display: flex;
             flex-direction: column;
             min-width: 0;
         }
 
-        .chat-header {
+        .header {
             height: 48px;
             display: flex;
             align-items: center;
             padding: 0 16px;
-            border-bottom: 1px solid rgba(0,0,0,0.2);
-            background: var(--bg-secondary);
-        }
-
-        .chat-title {
+            border-bottom: 1px solid rgba(32,34,37,.6);
+            background: var(--background-secondary);
             font-weight: 600;
             font-size: 16px;
         }
 
-        .chat-messages {
+        .messages {
             flex: 1;
             overflow-y: auto;
-            padding: 24px;
+            padding: 32px 48px 24px;
         }
 
-        .stats-card {
-            background: var(--bg-secondary);
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-card {
+            background: var(--background-secondary);
             border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 24px;
-            border: 1px solid rgba(0,0,0,0.2);
+            padding: 32px;
+            margin-bottom: 32px;
+            border: 1px solid rgba(32,34,37,.6);
+            text-align: center;
         }
 
-        .stats-header {
+        .hero-title {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #dcddde 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .leaderboards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 1200px) {
+            .leaderboards { grid-template-columns: 1fr; }
+        }
+
+        .leaderboard-card {
+            background: var(--background-secondary);
+            border-radius: 8px;
+            border: 1px solid rgba(32,34,37,.6);
+            overflow: hidden;
+        }
+
+        .leaderboard-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(32,34,37,.6);
+            font-size: 18px;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 20px;
-            font-size: 20px;
-            font-weight: 700;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .leaderboard {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        .leaderboard-list {
+            max-height: 600px;
+            overflow-y: auto;
         }
 
         .leaderboard-item {
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 12px;
-            border-radius: 6px;
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(32,34,37,.3);
+            transition: background .15s ease;
             cursor: pointer;
-            transition: all 0.15s ease;
         }
 
         .leaderboard-item:hover {
-            background: var(--bg-modifier-hover);
+            background: var(--background-modifier-hover);
         }
 
-        .rank-badge {
-            width: 32px;
-            height: 32px;
+        .rank {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            color: white;
+            font-size: 16px;
+            margin-right: 16px;
             flex-shrink: 0;
         }
 
-        .rank-1 { background: #f47c21; }
-        .rank-2 { background: #9c9c9c; }
-        .rank-3 { background: #cd7f32; }
-        .rank-normal { background: var(--brand-experiment); }
+        .rank-1 { background: #f47c21; color: #fff; }
+        .rank-2 { background: #9c9c9c; color: #fff; }
+        .rank-3 { background: #cd7f32; color: #fff; }
+        .rank-default { background: var(--brand-experiment-500); color: #fff; }
 
-        .user-info {
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .user-details {
             flex: 1;
             min-width: 0;
         }
 
         .user-name {
             font-weight: 600;
-            margin-bottom: 4px;
+            font-size: 16px;
+            margin-bottom: 2px;
         }
 
-        .user-stats {
+        .user-score {
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 15px;
+            font-weight: 500;
         }
 
-        .progress-bar {
-            height: 4px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--brand-experiment);
-            border-radius: 2px;
-            transition: width 0.5s ease;
-        }
-
-        /* Üyeler */
-        .members-panel {
+        .members {
             width: 240px;
-            background: var(--bg-primary);
-            border-left: 1px solid rgba(0,0,0,0.2);
+            background: var(--background-primary);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            border-left: 1px solid rgba(32,34,37,.6);
         }
 
         .members-header {
-            padding: 12px 16px;
+            padding: 16px;
             font-size: 12px;
             font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(0,0,0,0.2);
+            letter-spacing: .5px;
+            border-bottom: 1px solid rgba(32,34,37,.6);
         }
 
         .members-list {
@@ -291,147 +304,144 @@
             padding: 12px;
         }
 
-        .member-item {
+        .member {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 8px 0;
             cursor: pointer;
             border-radius: 4px;
-            transition: all 0.15s ease;
+            transition: background .15s ease;
+            font-size: 15px;
         }
 
-        .member-item:hover {
-            background: var(--bg-modifier-hover);
+        .member:hover {
+            background: var(--background-modifier-hover);
         }
 
         .member-avatar {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: var(--bg-secondary);
+            background: var(--background-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
 
-        .member-name {
-            font-weight: 500;
-            flex: 1;
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
+        .members-panel::-webkit-scrollbar,
+        .channels-scroller::-webkit-scrollbar,
+        .messages::-webkit-scrollbar,
+        .leaderboard-list::-webkit-scrollbar {
             width: 8px;
         }
 
-        ::-webkit-scrollbar-track {
+        .members-panel::-webkit-scrollbar-track,
+        .channels-scroller::-webkit-scrollbar-track,
+        .messages::-webkit-scrollbar-track,
+        .leaderboard-list::-webkit-scrollbar-track {
             background: transparent;
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: rgba(79, 84, 92, 0.3);
+        .members-panel::-webkit-scrollbar-thumb,
+        .channels-scroller::-webkit-scrollbar-thumb,
+        .messages::-webkit-scrollbar-thumb,
+        .leaderboard-list::-webkit-scrollbar-thumb {
+            background: rgba(79,84,92,.3);
             border-radius: 4px;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(79, 84, 92, 0.5);
+        .members-panel::-webkit-scrollbar-thumb:hover,
+        .channels-scroller::-webkit-scrollbar-thumb:hover,
+        .messages::-webkit-scrollbar-thumb:hover,
+        .leaderboard-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(79,84,92,.5);
         }
 
-        /* Loading */
         .loading {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--bg-tertiary);
+            inset: 0;
+            background: var(--background-tertiary);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 9999;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--bg-secondary);
-            border-top: 3px solid var(--brand-experiment);
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(88,101,242,.3);
+            border-top: 3px solid var(--brand-experiment-500);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div id="loading" class="loading">
+    <div class="loading" id="loading">
         <div class="spinner"></div>
-        <div style="margin-top: 16px; font-size: 14px; color: var(--text-muted);">Yükleniyor...</div>
     </div>
 
     <div class="app" id="app" style="display: none;">
-        <!-- Sunucu Listesi -->
-        <div class="servers">
-            <div class="server-icon active">
-                <i class="fab fa-discord" style="font-size: 24px; color: white;"></i>
+        <div class="guilds">
+            <div class="guild-icon active">
+                <i class="fas fa-clown" style="font-size: 24px; color: #fff;"></i>
             </div>
         </div>
 
-        <!-- Kanallar -->
         <div class="channels">
-            <div class="channel-header">
-                <i class="fas fa-clown" style="margin-right: 8px; color: var(--brand-experiment);"></i>
+            <div class="channels-header">
+                <i class="fas fa-clown" style="margin-right: 12px; color: var(--brand-experiment-500); font-size: 18px;"></i>
                 Palyacolar
             </div>
-            <div class="channels-list">
-                <div class="channel-category">İstatistikler</div>
-                <div class="channel-item active" onclick="switchTab('daily')">
-                    <i class="fas fa-fire" style="width: 18px;"></i>
-                    # günlük-liderlik
+            <div class="channels-scroller">
+                <div class="channel-category">🏆 Sıralamalar</div>
+                <div class="channel active" data-tab="daily">
+                    <i class="fas fa-fire" style="width: 20px; opacity: .6;"></i>
+                    <span>günlük</span>
                 </div>
-                <div class="channel-item" onclick="switchTab('weekly')">
-                    <i class="fas fa-chart-line"></i>
-                    # haftalık-rekabet
+                <div class="channel" data-tab="weekly">
+                    <i class="fas fa-chart-line" style="width: 20px; opacity: .6;"></i>
+                    <span>haftalık</span>
                 </div>
-                <div class="channel-item" onclick="switchTab('monthly')">
-                    <i class="fas fa-calendar-alt"></i>
-                    # aylık-zirve
+                <div class="channel" data-tab="monthly">
+                    <i class="fas fa-calendar-alt" style="width: 20px; opacity: .6;"></i>
+                    <span>aylık</span>
                 </div>
-                <div class="channel-item" onclick="switchTab('alltime')">
-                    <i class="fas fa-crown"></i>
-                    # tüm-zamanların-en-iyileri
+                <div class="channel" data-tab="all_time">
+                    <i class="fas fa-crown" style="width: 20px; opacity: .6;"></i>
+                    <span>efsaneler</span>
                 </div>
             </div>
         </div>
 
-        <!-- Ana İçerik -->
-        <div class="main-content">
-            <div class="chat-header">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <i class="fas fa-hashtag" style="color: var(--text-muted);"></i>
-                    <span class="chat-title" id="current-tab">günlük-liderlik</span>
-                </div>
+        <div class="main">
+            <div class="header">
+                <i class="fas fa-hashtag" style="margin-right: 12px; color: var(--text-muted); opacity: .6;"></i>
+                <span id="current-channel">günlük</span>
             </div>
-
-            <div class="chat-messages" id="content">
-                <!-- İçerik buraya yüklenecek -->
+            <div class="messages" id="messages">
+                <div class="stats-container">
+                    <div class="hero-card">
+                        <div class="hero-title">LİDERLER</div>
+                    </div>
+                    <div class="leaderboards" id="leaderboards"></div>
+                </div>
             </div>
         </div>
 
-        <!-- Üyeler -->
-        <div class="members-panel">
+        <div class="members" id="members-panel">
             <div class="members-header">
-                Çevrimiçi <span id="online-count">24</span>
+                ZİRVE <span id="member-count">24</span>
             </div>
-            <div class="members-list" id="members-list">
-                <!-- Üye listesi buraya yüklenecek -->
-            </div>
+            <div class="members-list" id="members-list"></div>
         </div>
     </div>
 
@@ -439,144 +449,106 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const firebaseConfig = {
-            databaseURL: "https://palyacolar-d9f70-default-rtdb.firebaseio.com/"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+        const config = { databaseURL: "https://palyacolar-d9f70-default-rtdb.firebaseio.com/" };
+        const app = initializeApp(config);
+        const db = getDatabase(app);
 
         let currentTab = 'daily';
-        let messageData = {};
+        let msgData = {};
         let voiceData = {};
 
-        // Tab değiştirme
-        window.switchTab = (tab) => {
-            currentTab = tab;
-            document.querySelectorAll('.channel-item').forEach(item => item.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            document.getElementById('current-tab').textContent = tab === 'alltime' ? 'tüm-zamanların-en-iyileri' : `${tab}-liderlik`;
-            renderContent();
-        };
-
-        // Sayı formatlama
-        function formatNumber(num) {
-            if (num >= 1000) {
-                return (num / 1000).toFixed(1) + 'K';
-            }
-            return num.toString();
+        function formatNumber(n) {
+            if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
+            if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
+            return n;
         }
 
-        // Liderlik tablosu oluştur
-        function createLeaderboard(data, type) {
-            if (!data) return '<div style="padding: 40px; text-align: center; color: var(--text-muted);">Veri yükleniyor...</div>';
-            
-            const items = Object.values(data)
-                .sort((a, b) => b.sc - a.sc)
-                .slice(0, 20);
-
+        function renderLeaderboard(data, type) {
+            if (!data) return '';
+            const items = Object.values(data).sort((a,b) => b.sc - a.sc).slice(0,15);
             let html = '';
-            items.forEach((user, index) => {
-                const rankClass = index < 3 ? `rank-${index + 1}` : 'rank-normal';
-                const rankText = index < 3 ? ['1', '2', '3'][index] : `${index + 1}`;
-                
+            items.forEach((user,i) => {
+                const rankClass = i<3 ? `rank-${i+1}` : 'rank-default';
+                const rankNum = i<3 ? i+1 : i+1;
                 html += `
                     <div class="leaderboard-item">
-                        <div class="rank-badge ${rankClass}">${rankText}</div>
-                        <div class="member-avatar">
-                            <img src="${user.av || 'https://via.placeholder.com/32/7289da/ffffff?text=👤'}" 
-                                 style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" 
-                                 onerror="this.parentNode.innerHTML='<i style=\'color: var(--text-muted); font-size: 12px;\'>👤</i>'">
-                        </div>
-                        <div class="user-info">
-                            <div class="user-name">${user.dn || 'Bilinmeyen Kullanıcı'}</div>
-                            <div class="user-stats">${formatNumber(user.sc || 0)} ${type === 'voice' ? 'dk' : 'msg'}</div>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${Math.min((user.sc / (items[0]?.sc || 1)) * 100, 100)}%"></div>
+                        <div class="rank ${rankClass}">${rankNum}</div>
+                        <img src="${user.av || ''}" class="user-avatar" onerror="this.src='https://via.placeholder.com/48/7289da/ffffff?text=👤'">
+                        <div class="user-details">
+                            <div class="user-name">${user.dn || 'Kullanıcı'}</div>
+                            <div class="user-score">${formatNumber(user.sc || 0)} ${type}</div>
                         </div>
                     </div>
                 `;
             });
-
             return html;
         }
 
-        // İçerik render et
+        function renderMembers() {
+            const top = Object.values(msgData).sort((a,b) => b.sc - a.sc).slice(0,20);
+            document.getElementById('member-count').textContent = top.length;
+            document.getElementById('members-list').innerHTML = top.map(u => `
+                <div class="member">
+                    <div class="member-avatar">
+                        <img src="${u.av || ''}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentNode.innerHTML='👤'">
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${u.dn || 'Kullanıcı'}</div>
+                        <div style="font-size:13px;color:var(--text-muted);">${formatNumber(u.sc || 0)} msg</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function renderContent() {
-            const content = document.getElementById('content');
-            content.innerHTML = `
-                <div class="stats-card">
-                    <div class="stats-header">
-                        <i class="fas fa-trophy" style="color: var(--brand-experiment); font-size: 24px;"></i>
-                        <span>${currentTab === 'daily' ? 'Günlük' : currentTab === 'weekly' ? 'Haftalık' : currentTab === 'monthly' ? 'Aylık' : 'Tüm Zamanların'} Liderlik Tablosu</span>
+            document.getElementById('leaderboards').innerHTML = `
+                <div class="leaderboard-card">
+                    <div class="leaderboard-header">
+                        <i class="fas fa-message" style="color: var(--brand-experiment-500);"></i>
+                        Mesaj Liderleri
                     </div>
-                    <div class="stats-grid">
-                        <div>
-                            <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--text-normal);">💬 Mesaj Kralları</h3>
-                            <div class="leaderboard" id="msg-leaderboard">${createLeaderboard(messageData, 'message')}</div>
-                        </div>
-                        <div>
-                            <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--text-normal);">🎤 Ses Efendileri</h3>
-                            <div class="leaderboard" id="voice-leaderboard">${createLeaderboard(voiceData, 'voice')}</div>
-                        </div>
+                    <div class="leaderboard-list">${renderLeaderboard(msgData, 'msg')}</div>
+                </div>
+                <div class="leaderboard-card">
+                    <div class="leaderboard-header">
+                        <i class="fas fa-microphone" style="color: #43b581;"></i>
+                        Ses Liderleri
                     </div>
+                    <div class="leaderboard-list">${renderLeaderboard(voiceData, 'dk')}</div>
                 </div>
             `;
         }
 
-        // Üye listesi render et
-        function renderMembers() {
-            const membersList = document.getElementById('members-list');
-            const topUsers = Object.values(messageData)
-                .sort((a, b) => b.sc - a.sc)
-                .slice(0, 15);
-
-            let html = '';
-            topUsers.forEach(user => {
-                html += `
-                    <div class="member-item">
-                        <div class="member-avatar">
-                            <img src="${user.av || 'https://via.placeholder.com/32/7289da/ffffff?text=👤'}" 
-                                 style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"
-                                 onerror="this.parentNode.innerHTML='<i style=\'color: var(--text-muted); font-size: 12px;\'>👤</i>'">
-                        </div>
-                        <div class="member-name">${user.dn || 'Bilinmeyen'}</div>
-                        <div style="color: var(--text-muted); font-size: 12px;">${formatNumber(user.sc || 0)} msg</div>
-                    </div>
-                `;
-            });
-
-            membersList.innerHTML = html;
-            document.getElementById('online-count').textContent = topUsers.length;
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.channel').forEach(c => c.classList.remove('active'));
+            event.target.closest('.channel').classList.add('active');
+            document.getElementById('current-channel').textContent = tab;
+            loadData();
         }
 
-        // Firebase dinleyicileri
-        function startListeners() {
-            // Mesaj verileri
-            const msgRef = ref(database, `stats_v2/msg/${currentTab}`);
-            onValue(msgRef, (snapshot) => {
-                messageData = snapshot.val() || {};
+        function loadData() {
+            onValue(ref(db, `stats_v2/msg/${currentTab}`), s => {
+                msgData = s.val() || {};
                 renderContent();
                 renderMembers();
             });
-
-            // Ses verileri
-            const voiceRef = ref(database, `stats_v2/voice/${currentTab}`);
-            onValue(voiceRef, (snapshot) => {
-                voiceData = snapshot.val() || {};
+            onValue(ref(db, `stats_v2/voice/${currentTab}`), s => {
+                voiceData = s.val() || {};
                 renderContent();
             });
         }
 
-        // Başlatma
         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.channel').forEach(c => {
+                c.addEventListener('click', () => switchTab(c.dataset.tab));
+            });
+            
             setTimeout(() => {
-                document.getElementById('loading').style.display = 'none';
+                document.getElementById('loading').remove();
                 document.getElementById('app').style.display = 'flex';
-                startListeners();
-                renderContent();
-            }, 1500);
+                loadData();
+            }, 1200);
         });
     </script>
 </body>
