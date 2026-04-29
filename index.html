@@ -85,7 +85,7 @@
             background: #fff;
             border-radius: 100px;
             box-shadow: 0 0 40px var(--glow), 0 0 10px #fff;
-            transition: width 0.3s ease-out;
+            transition: width 0.05s linear;
         }
 
         @keyframes scaleUp {
@@ -134,7 +134,6 @@
             const threshold = 160;
             const widthDiff = window.outerWidth - window.innerWidth > threshold;
             const heightDiff = window.outerHeight - window.innerHeight > threshold;
-            
             if (widthDiff || heightDiff) {
                 clearInterval(devToolsTimer);
                 window.location.href = 'https://spinoza.lol/redscreen'; 
@@ -147,14 +146,15 @@
 
         const animateBar = () => {
             if (width < 100) {
-                width += Math.random() * 1.5;
-                if (width > 100) width = 100;
-                bar.style.width = width + "%";
-                setTimeout(animateBar, 30);
-            } else {
-                setTimeout(() => {
+                width += 3; 
+                if (width >= 100) {
+                    width = 100;
+                    bar.style.width = width + "%";
                     window.location.href = "https://guns.lol/spinoza";
-                }, 400);
+                } else {
+                    bar.style.width = width + "%";
+                    setTimeout(animateBar, 35);
+                }
             }
         };
 
