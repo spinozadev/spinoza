@@ -12,15 +12,73 @@
     <style>
         :root { --bg: #030303; --glow: rgba(255, 255, 255, 0.4); }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-user-select: none; user-select: none; cursor: default; }
-        body { background-color: var(--bg); background: radial-gradient(circle at center, #111 0%, #030303 100%); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; font-family: 'Inter', -apple-system, sans-serif; touch-action: none; }
-        body::before { content: ""; position: absolute; width: 150%; height: 150%; background: conic-gradient(from 180deg at 50% 50%, #000 0deg, #0a0a0a 120deg, #000 240deg, #050505 360deg); animation: rotateBg 15s linear infinite; z-index: -1; opacity: 0.6; }
+        body { 
+            background-color: var(--bg); 
+            background: radial-gradient(circle at center, #111 0%, #030303 100%); 
+            height: 100vh; 
+            width: 100vw;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            overflow: hidden; 
+            font-family: 'Inter', -apple-system, sans-serif; 
+            touch-action: none; 
+        }
+        body::before { 
+            content: ""; 
+            position: absolute; 
+            width: 200%; 
+            height: 200%; 
+            background: conic-gradient(from 180deg at 50% 50%, #000 0deg, #0a0a0a 120deg, #000 240deg, #050505 360deg); 
+            animation: rotateBg 15s linear infinite; 
+            z-index: -1; 
+            opacity: 0.6; 
+        }
         @keyframes rotateBg { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .container { width: 85%; max-width: 600px; text-align: center; animation: scaleUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .brand-logo { font-size: clamp(2.2rem, 12vw, 6.5rem); font-weight: 900; color: #fff; letter-spacing: -3px; margin-bottom: 30px; filter: drop-shadow(0 0 30px rgba(255,255,255,0.2)); white-space: nowrap; }
-        .progress-box { width: 100%; height: 10px; background: rgba(255, 255, 255, 0.02); border-radius: 100px; position: relative; border: 1px solid rgba(255, 255, 255, 0.05); padding: 2px; visibility: hidden; }
-        .progress-fill { height: 100%; width: 0%; background: #fff; border-radius: 100px; box-shadow: 0 0 30px var(--glow), 0 0 10px #fff; transition: width 40ms linear; }
+        .container { 
+            width: 100%; 
+            max-width: 500px; 
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: scaleUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
+        }
+        .brand-logo { 
+            font-size: clamp(2.5rem, 15vw, 5.5rem); 
+            font-weight: 900; 
+            color: #fff; 
+            letter-spacing: -4px; 
+            margin-bottom: 25px; 
+            filter: drop-shadow(0 0 30px rgba(255,255,255,0.2)); 
+            text-align: center;
+            width: 100%;
+        }
+        .progress-box { 
+            width: 100%; 
+            height: 10px; 
+            background: rgba(255, 255, 255, 0.02); 
+            border-radius: 100px; 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            padding: 2px; 
+            visibility: hidden; 
+            overflow: hidden;
+        }
+        .progress-fill { 
+            height: 100%; 
+            width: 0%; 
+            background: #fff; 
+            border-radius: 100px; 
+            box-shadow: 0 0 30px var(--glow), 0 0 10px #fff; 
+            transition: width 40ms linear; 
+        }
         @keyframes scaleUp { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        @media (max-width: 480px) { .brand-logo { letter-spacing: -1px; margin-bottom: 20px; } .progress-box { height: 8px; } }
+        @media (max-width: 480px) { 
+            .container { max-width: 85%; }
+            .brand-logo { letter-spacing: -2px; margin-bottom: 20px; } 
+            .progress-box { height: 8px; } 
+        }
     </style>
 </head>
 <body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;" onmousedown="return false;">
@@ -58,7 +116,7 @@
             setTimeout(() => {
                 pbox.style.visibility = "visible";
                 animateBar();
-            }, 400);
+            }, 500);
         };
     </script>
 </body>
