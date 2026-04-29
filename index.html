@@ -2,154 +2,234 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Palyacolar | Discord Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord | Palyacolar Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         @import url('https://fonts.cdnfonts.com/css/gg-sans');
-        
+
         :root {
-            --bg-base: #111214; --bg-sidebar: #1e1f22; --bg-channels: #2b2d31; --bg-main: #313338;
-            --header-h: 48px; --brand: #5865f2; --text-normal: #dbdee1; --text-muted: #949ba4;
-            --green: #23a55a; --yellow: #f0b232; --red: #f23f43;
+            --bg-guilds: #1e1f22;
+            --bg-channels: #2b2d31;
+            --bg-main: #313338;
+            --bg-profile: #232428;
+            --bg-popout: #111214;
+            --brand: #5865f2;
+            --brand-hover: #4752c4;
+            --text-normal: #dbdee1;
+            --text-muted: #949ba4;
+            --header-secondary: #b5bac1;
+            --interactive-normal: #b5bac1;
+            --interactive-hover: #dbdee1;
+            --interactive-active: #fff;
         }
 
-        body { background: var(--bg-base); color: var(--text-normal); font-family: 'gg sans', sans-serif; overflow: hidden; margin: 0; user-select: none; }
-
-        #loader {
-            position: fixed; inset: 0; background: var(--bg-base); z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        body { 
+            background: var(--bg-guilds); 
+            color: var(--text-normal); 
+            font-family: 'gg sans', sans-serif; 
+            margin: 0; 
+            height: 100vh; 
+            overflow: hidden; 
+            user-select: none;
         }
-        .discord-spin { width: 80px; animation: bounce 1s infinite alternate; }
-        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-15px); } }
-        
-        .app-grid { display: grid; grid-template-columns: 72px 240px 1fr; height: 100vh; opacity: 0; transition: opacity 0.5s ease; }
-        .app-grid.ready { opacity: 1; }
 
-        .guilds-bar { background: var(--bg-base); display: flex; flex-direction: column; align-items: center; padding-top: 12px; gap: 8px; border-right: 1px solid #1a1b1e; }
-        .guild-icon { width: 48px; height: 48px; background: var(--bg-channels); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; cursor: pointer; color: white; position: relative; }
-        .guild-icon:hover, .guild-icon.active { border-radius: 16px; background: var(--brand); }
-        .guild-icon.active::before { content: ""; position: absolute; left: -12px; width: 4px; height: 40px; background: white; border-radius: 0 4px 4px 0; }
+        #discord-loader {
+            position: fixed; inset: 0; background: var(--bg-popout);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 99999;
+        }
+        .loader-icon {
+            width: 100px;
+            animation: pulse-discord 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse-discord {
+            0% { transform: scale(0.95); filter: drop-shadow(0 0 0px var(--brand)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 20px var(--brand)); }
+            100% { transform: scale(0.95); filter: drop-shadow(0 0 0px var(--brand)); }
+        }
 
-        .channels-bar { background: var(--bg-sidebar); display: flex; flex-direction: column; }
-        .channel-header { height: var(--header-h); border-bottom: 1px solid #1a1b1e; display: flex; align-items: center; padding: 0 16px; font-weight: 800; color: #fff; font-size: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-        .channel-list { padding: 12px 8px; flex: 1; }
-        .channel-group-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 8px; }
-        .channel-btn { padding: 6px 8px; border-radius: 4px; display: flex; align-items: center; gap: 8px; color: var(--text-muted); cursor: pointer; transition: 0.1s; margin-bottom: 2px; }
-        .channel-btn:hover { background: #35373c; color: #dbdee1; }
-        .channel-btn.active { background: #3f4147; color: white; }
-
-        .profile-footer { background: #232428; padding: 8px; display: flex; align-items: center; gap: 8px; }
-        .footer-av { width: 32px; height: 32px; border-radius: 50%; background: #333; }
-
-        .main-view { background: var(--bg-main); display: flex; flex-direction: column; }
-        .top-nav { height: var(--header-h); border-bottom: 1px solid #26272d; display: flex; align-items: center; padding: 0 16px; gap: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 32px; padding: 32px; }
-        .stat-section { background: rgba(0,0,0,0.05); border-radius: 8px; }
-        .section-header { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid #3f4147; padding-bottom: 8px; margin-bottom: 12px; }
-        
-        .user-card { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 4px; cursor: pointer; transition: 0.1s; border: 1px solid transparent; }
-        .user-card:hover { background: rgba(78, 80, 88, 0.3); border-color: rgba(255,255,255,0.05); }
-        .rank-badge { width: 24px; text-align: center; font-weight: 800; color: #6d6f78; font-size: 13px; }
-
-        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; align-items: center; justify-content: center; }
-        .profile-popout { width: 340px; background: #111214; border-radius: 8px; overflow: hidden; box-shadow: 0 0 24px rgba(0,0,0,0.5); border: 1px solid #2b2d31; }
-        .banner-box { height: 105px; background: var(--brand); position: relative; }
-        .p-avatar { width: 92px; height: 92px; border-radius: 50%; border: 6px solid #111214; position: absolute; top: 60px; left: 16px; background: #111214; }
-        .p-body { padding: 54px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
-        .p-inner { background: #1e1f22; border-radius: 8px; padding: 12px; }
-        .role-pill { background: #2b2d31; border-radius: 4px; padding: 4px 8px; font-size: 11px; display: flex; align-items: center; gap: 4px; border: 1px solid rgba(255,255,255,0.05); }
-        .role-dot { width: 12px; height: 12px; border-radius: 50%; }
-
-        /* Scroller */
-        .custom-scroll::-webkit-scrollbar { width: 8px; }
+        .custom-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+        .custom-scroll::-webkit-scrollbar-corner { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #1a1b1e; border-radius: 4px; border: 2px solid transparent; background-clip: padding-box; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #1e1f22; border-radius: 4px; border: 2px solid var(--bg-main); }
+
+        .guild-item {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: var(--bg-main); display: flex; align-items: center;
+            justify-content: center; transition: all 0.2s ease; cursor: pointer;
+            position: relative; margin-bottom: 8px;
+        }
+        .guild-item:hover, .guild-item.active { border-radius: 16px; background: var(--brand); color: white; }
+        .guild-item.active::before {
+            content: ""; position: absolute; left: -12px; width: 4px; height: 40px;
+            background: white; border-radius: 0 4px 4px 0;
+        }
+        
+        .guild-item:hover::after {
+            content: attr(data-label); position: absolute; left: 65px;
+            background: black; color: white; padding: 6px 12px; border-radius: 4px;
+            font-size: 14px; font-weight: bold; white-space: nowrap; z-index: 100;
+        }
+
+        .rank-card {
+            display: flex; align-items: center; padding: 10px 16px; border-radius: 8px;
+            transition: background 0.1s; cursor: pointer; margin-bottom: 2px;
+            border: 1px solid transparent;
+        }
+        .rank-card:hover { background: rgba(78, 80, 88, 0.25); }
+        .rank-card.top-1 { background: rgba(240, 178, 50, 0.05); border-color: rgba(240, 178, 50, 0.1); }
+        .rank-card.top-1:hover { background: rgba(240, 178, 50, 0.1); }
+
+        .modal-container {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            display: none; align-items: center; justify-content: center; z-index: 10000;
+            backdrop-filter: blur(2px);
+        }
+        .discord-popout {
+            width: 340px; background: var(--bg-popout); border-radius: 8px;
+            overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            animation: popOut 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popOut { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .banner-large { height: 120px; background: var(--brand); position: relative; }
+        .p-avatar-large {
+            width: 94px; height: 94px; border-radius: 50%; border: 7px solid var(--bg-popout);
+            position: absolute; top: 75px; left: 16px; background: var(--bg-popout);
+        }
+        .p-content { padding: 60px 16px 16px; }
+        .p-box { background: var(--bg-sidebar); border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
+
+        .role-chip {
+            background: var(--bg-channels); border-radius: 4px; padding: 4px 8px;
+            font-size: 11px; display: flex; align-items: center; gap: 4px;
+            border: 1px solid rgba(255,255,255,0.03); font-weight: 500;
+        }
     </style>
 </head>
-<body>
+<body class="flex">
 
-    <div id="loader">
-        <img src="https://cdn.prod.website-files.com/6257adef93867e3d0394e296/636e0a6a49f9a757c1aa1750_633d53690623a6064d6023d5_discord-icon.svg" class="discord-spin">
-        <p class="mt-4 text-[#949ba4] font-bold text-xs uppercase tracking-widest">Sistemler Hazırlanıyor...</p>
+    <div id="discord-loader">
+        <img src="https://cdn.prod.website-files.com/6257adef93867e3d0394e296/636e0a6a49f9a757c1aa1750_633d53690623a6064d6023d5_discord-icon.svg" class="loader-icon">
+        <div class="mt-8 text-white font-bold text-sm tracking-widest animate-pulse uppercase">Veriler Senkronize Ediliyor...</div>
     </div>
 
-    <div id="app-root" class="app-grid">
-        <div class="guilds-bar">
-            <div class="guild-icon active"><i class="fa-solid fa-clown text-xl"></i></div>
-            <div class="w-8 h-[2px] bg-[#35373c]"></div>
-            <div class="guild-icon text-[#23a55a] hover:bg-[#23a55a] hover:text-white"><i class="fa-solid fa-plus"></i></div>
+    <div class="w-[72px] bg-[--bg-guilds] flex flex-col items-center py-3 flex-shrink-0">
+        <div class="guild-item active" data-label="Palyacolar">
+            <i class="fa-solid fa-clown text-2xl"></i>
         </div>
+        <div class="w-8 h-[2px] bg-[#35373c] my-1"></div>
+        <div class="guild-item text-green-500 hover:bg-green-500 hover:text-white" data-label="Sunucu Ekle">
+            <i class="fa-solid fa-plus text-xl"></i>
+        </div>
+        <div class="guild-item text-green-500 hover:bg-green-500 hover:text-white" data-label="Keşfet">
+            <i class="fa-solid fa-compass text-xl"></i>
+        </div>
+    </div>
 
-        <div class="channels-bar">
-            <div class="channel-header">PALYACOLAR</div>
-            <div class="channel-list custom-scroll overflow-y-auto">
-                <div class="channel-group-title">Sıralama Listeleri</div>
-                <div onclick="setView('daily')" id="nav-daily" class="channel-btn active"><i class="fa-solid fa-hashtag"></i> günlük-aktiflik</div>
-                <div onclick="setView('weekly')" id="nav-weekly" class="channel-btn"><i class="fa-solid fa-hashtag"></i> haftalık-rekabet</div>
-                <div onclick="setView('monthly')" id="nav-monthly" class="channel-btn"><i class="fa-solid fa-hashtag"></i> aylık-zirve</div>
-                <div onclick="setView('all_time')" id="nav-all_time" class="channel-btn"><i class="fa-solid fa-hashtag"></i> efsaneler-tablosu</div>
-                
-                <div class="channel-group-title mt-4">Arşiv (Geçmiş)</div>
-                <div class="channel-btn opacity-50 cursor-not-allowed"><i class="fa-solid fa-box-archive"></i> eski-sezonlar</div>
+    <div class="w-[240px] bg-[--bg-channels] flex flex-col flex-shrink-0">
+        <div class="h-12 px-4 flex items-center justify-between shadow-sm border-b border-[#1f2023] font-bold text-white">
+            PALYACOLAR <i class="fa-solid fa-chevron-down text-xs"></i>
+        </div>
+        <div class="flex-1 overflow-y-auto custom-scroll py-3">
+            <div class="px-4 mb-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest flex items-center justify-between">
+                İstatistik Kanalları <i class="fa-solid fa-plus text-xs"></i>
             </div>
-            
-            <div class="profile-footer">
-                <img id="bot-av" src="" class="footer-av">
-                <div class="flex-1">
-                    <div class="text-[12px] font-bold text-white leading-none">Palyacolar Bot</div>
-                    <div class="text-[10px] text-green-500 font-medium">Çevrimiçi</div>
-                </div>
-                <div class="flex gap-2 text-gray-400 text-xs">
-                    <i class="fa-solid fa-microphone"></i>
-                    <i class="fa-solid fa-headphones"></i>
-                    <i class="fa-solid fa-gear"></i>
-                </div>
+            <div id="nav-daily" onclick="switchView('daily')" class="mx-2 px-2 py-1.5 rounded flex items-center gap-3 cursor-pointer bg-[#3f4147] text-white">
+                <i class="fa-solid fa-hashtag text-gray-400 text-lg"></i> günlük-aktiflik
+            </div>
+            <div id="nav-weekly" onclick="switchView('weekly')" class="mx-2 px-2 py-1.5 rounded flex items-center gap-3 cursor-pointer text-[#949ba4] hover:bg-[#35373c] hover:text-[#dbdee1] mt-1">
+                <i class="fa-solid fa-hashtag text-gray-400 text-lg"></i> haftalık-rekabet
+            </div>
+            <div id="nav-monthly" onclick="switchView('monthly')" class="mx-2 px-2 py-1.5 rounded flex items-center gap-3 cursor-pointer text-[#949ba4] hover:bg-[#35373c] hover:text-[#dbdee1] mt-1">
+                <i class="fa-solid fa-hashtag text-gray-400 text-lg"></i> aylık-zirve
+            </div>
+            <div id="nav-all_time" onclick="switchView('all_time')" class="mx-2 px-2 py-1.5 rounded flex items-center gap-3 cursor-pointer text-[#949ba4] hover:bg-[#35373c] hover:text-[#dbdee1] mt-1">
+                <i class="fa-solid fa-hashtag text-gray-400 text-lg"></i> efsaneler-tablosu
             </div>
         </div>
-
-        <div class="main-view">
-            <div class="top-nav">
-                <i class="fa-solid fa-hashtag text-[#80848e] text-xl"></i>
-                <span class="font-bold text-white text-[15px]" id="current-view-title">günlük-aktiflik</span>
+        <div class="bg-[#232428] p-2 flex items-center gap-2 h-14">
+            <div class="relative">
+                <img id="bot-av" src="" class="w-8 h-8 rounded-full">
+                <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#232428] rounded-full"></div>
             </div>
-
-            <div class="flex-1 overflow-y-auto custom-scroll">
-                <div class="stats-grid">
-                    <div class="stat-section">
-                        <div class="section-header">Mesajlaşma İstatistikleri</div>
-                        <div id="msg-container" class="space-y-1"></div>
-                    </div>
-                    <div class="stat-section">
-                        <div class="section-header">Ses Aktifliği (Dakika)</div>
-                        <div id="voice-container" class="space-y-1"></div>
-                    </div>
-                </div>
+            <div class="flex-1 overflow-hidden">
+                <div class="text-xs font-bold text-white truncate">Palyacolar Dashboard</div>
+                <div class="text-[10px] text-gray-400">#0001</div>
+            </div>
+            <div class="flex gap-2 text-gray-400">
+                <i class="fa-solid fa-microphone hover:text-white cursor-pointer"></i>
+                <i class="fa-solid fa-gear hover:text-white cursor-pointer"></i>
             </div>
         </div>
     </div>
 
-    <div id="p-modal" class="modal-bg" onclick="this.style.display='none'">
-        <div class="profile-popout" onclick="event.stopPropagation()">
-            <div id="p-banner" class="banner-box"></div>
-            <div class="relative h-8">
-                <img id="p-img" src="" class="p-avatar">
-            </div>
-            <div class="p-body">
-                <div class="p-inner">
-                    <h3 id="p-nick" class="text-xl font-bold text-white leading-tight"></h3>
-                    <p id="p-user" class="text-[#b5bac1] text-sm"></p>
-                    <div class="h-[1px] bg-[#3f4147] my-3"></div>
-                    <p class="text-[10px] font-bold text-gray-300 uppercase mb-1">Durum / Hakkında</p>
-                    <p id="p-status" class="text-sm text-gray-200 italic"></p>
+    <div class="flex-1 bg-[--bg-main] flex flex-col min-w-0">
+        <div class="h-12 px-4 flex items-center gap-2 border-b border-[#26272d] shadow-sm">
+            <i class="fa-solid fa-hashtag text-gray-400 text-xl"></i>
+            <span class="font-bold text-white" id="view-title">günlük-aktiflik</span>
+            <div class="ml-auto flex gap-4 text-gray-400">
+                <i class="fa-solid fa-bell-slash"></i>
+                <i class="fa-solid fa-thumbtack"></i>
+                <i class="fa-solid fa-user-group"></i>
+                <div class="bg-[#1e1f22] px-2 rounded flex items-center gap-2 text-xs">
+                    Arama <i class="fa-solid fa-magnifying-glass scale-75"></i>
                 </div>
-                <div class="p-inner">
-                    <p class="text-[10px] font-bold text-gray-300 uppercase mb-2">Roller</p>
-                    <div id="p-roles" class="flex flex-wrap gap-1.5"></div>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto custom-scroll p-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    
+                    <div>
+                        <div class="flex items-center gap-2 mb-6 text-white font-bold text-xl">
+                            <div class="w-8 h-8 bg-blue-500/20 text-blue-400 rounded flex items-center justify-center">
+                                <i class="fa-solid fa-message"></i>
+                            </div>
+                            Mesajlaşma Liderleri
+                        </div>
+                        <div id="msg-list" class="space-y-0.5">
+                            <div class="animate-pulse flex gap-4 p-4 bg-[#2b2d31] rounded"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-2 mb-6 text-white font-bold text-xl">
+                            <div class="w-8 h-8 bg-green-500/20 text-green-400 rounded flex items-center justify-center">
+                                <i class="fa-solid fa-microphone"></i>
+                            </div>
+                            Ses Aktifliği (Dakika)
+                        </div>
+                        <div id="voice-list" class="space-y-0.5"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="modal-container" onclick="this.style.display='none'">
+        <div class="discord-popout" onclick="event.stopPropagation()">
+            <div id="m-banner" class="banner-large"></div>
+            <div class="relative h-1">
+                <img id="m-avatar" src="" class="p-avatar-large">
+            </div>
+            <div class="p-content">
+                <div class="p-box">
+                    <h2 id="m-display-name" class="text-xl font-bold text-white leading-none"></h2>
+                    <p id="m-username" class="text-[#b5bac1] text-sm mt-1"></p>
                     <div class="h-[1px] bg-[#3f4147] my-3"></div>
-                    <p class="text-[10px] font-bold text-gray-300 uppercase mb-1">Katılım Tarihi</p>
-                    <p id="p-joined" class="text-xs text-[#b5bac1]"></p>
+                    <p class="text-[10px] font-bold text-gray-300 uppercase mb-2 tracking-wider">Durum</p>
+                    <p id="m-status" class="text-sm text-gray-200"></p>
+                </div>
+                <div class="p-box">
+                    <p class="text-[10px] font-bold text-gray-300 uppercase mb-3 tracking-wider">Roller</p>
+                    <div id="m-roles" class="flex flex-wrap gap-1.5"></div>
+                    <div class="h-[1px] bg-[#3f4147] my-3"></div>
+                    <p class="text-[10px] font-bold text-gray-300 uppercase mb-1 tracking-wider">Üyelik Tarihi</p>
+                    <p id="m-joined" class="text-xs text-[#b5bac1]"></p>
                 </div>
             </div>
         </div>
@@ -159,79 +239,102 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const fb = initializeApp({ databaseURL: "https://palyacolar-d9f70-default-rtdb.firebaseio.com/" });
-        const db = getDatabase(fb);
-        let currentMode = 'daily';
-        let statsLoaded = { msg: false, voice: false };
+        const firebaseConfig = { databaseURL: "https://palyacolar-d9f70-default-rtdb.firebaseio.com/" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let currentView = 'daily';
+        let isLoaded = { msg: false, voice: false };
         
         onValue(ref(db, 'stats_v2/meta'), s => {
             if(s.exists()) document.getElementById('bot-av').src = s.val().bot_av;
         });
 
-        window.setView = (mode) => {
-            currentMode = mode;
-            document.querySelectorAll('.channel-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById('nav-'+mode).classList.add('active');
-            document.getElementById('current-view-title').innerText = mode.replace('_', '-');
+        window.switchView = (v) => {
+            currentView = v;
+            document.querySelectorAll('.channel-btn, [id^="nav-"]').forEach(el => {
+                el.classList.remove('bg-[#3f4147]', 'text-white');
+                el.classList.add('text-[#949ba4]');
+            });
+            const active = document.getElementById('nav-'+v);
+            active.classList.add('bg-[#3f4147]', 'text-white');
+            active.classList.remove('text-[#949ba4]');
+            document.getElementById('view-title').innerText = v.replace('_', '-');
             loadData();
         };
 
         function loadData() {
-            onValue(ref(db, `stats_v2/msg/${currentMode}`), s => {
-                render(s.val(), 'msg-container', 'sc', 'mesaj');
-                statsLoaded.msg = true; hideLoader();
+            onValue(ref(db, `stats_v2/msg/${currentView}`), s => {
+                renderList(s.val(), 'msg-list', 'sc', 'mesaj');
+                isLoaded.msg = true;
+                checkLoading();
             });
-            onValue(ref(db, `stats_v2/voice/${currentMode}`), s => {
-                render(s.val(), 'voice-container', 'sc', 'dk');
-                statsLoaded.voice = true; hideLoader();
+            onValue(ref(db, `stats_v2/voice/${currentView}`), s => {
+                renderList(s.val(), 'voice-list', 'sc', 'dk');
+                isLoaded.voice = true;
+                checkLoading();
             });
         }
 
-        function hideLoader() {
-            if(statsLoaded.msg && statsLoaded.voice) {
-                setTimeout(() => {
-                    document.getElementById('loader').style.display = 'none';
-                    document.getElementById('app-root').classList.add('ready');
-                }, 1200);
+        function renderList(data, containerId, field, unit) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+            if(!data) {
+                container.innerHTML = `<div class="p-8 text-center text-gray-500 italic border-2 border-dashed border-[#2b2d31] rounded-lg">Bu dönemde henüz veri toplanmamış...</div>`;
+                return;
             }
-        }
 
-        function render(data, divId, field, unit) {
-            const div = document.getElementById(divId);
-            div.innerHTML = "";
-            if(!data) { div.innerHTML = "<p class='p-4 text-xs text-gray-500'>Henüz bu kategoride veri yok.</p>"; return; }
+            const sorted = Object.values(data).sort((a,b) => b[field] - a[field]).slice(0, 50);
 
-            Object.values(data).sort((a,b) => b[field] - a[field]).slice(0, 30).forEach((u, i) => {
-                div.innerHTML += `
-                    <div class="user-card" onclick='showPopout(${JSON.stringify(u)})'>
-                        <div class="flex items-center gap-3">
-                            <span class="rank-badge">${i+1}</span>
-                            <img src="${u.av}" class="w-8 h-8 rounded-full">
-                            <div>
-                                <div class="text-sm font-bold" style="color:${u.tc}">${u.dn}</div>
-                                <div class="text-[10px] text-gray-500 font-medium">@${u.un}</div>
+            sorted.forEach((u, i) => {
+                const isTop = i === 0 ? 'top-1' : '';
+                const rankColor = i === 0 ? 'text-yellow-500' : (i === 1 ? 'text-gray-300' : (i === 2 ? 'text-orange-400' : 'text-[#6d6f78]'));
+
+                container.innerHTML += `
+                    <div class="rank-card ${isTop}" onclick='openProfile(${JSON.stringify(u)})'>
+                        <div class="flex items-center gap-4 flex-1">
+                            <div class="w-6 text-center font-black ${rankColor} italic">${i+1}</div>
+                            <div class="relative">
+                                <img src="${u.av}" class="w-10 h-10 rounded-full shadow-lg">
+                                <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-4 border-[#313338] rounded-full"></div>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-base" style="color: ${u.tc || '#fff'}">${u.dn}</span>
+                                <span class="text-[11px] text-gray-500 font-medium">@${u.un}</span>
                             </div>
                         </div>
                         <div class="text-right">
-                            <span class="text-sm font-bold text-brand">${u[field]}</span>
-                            <span class="text-[9px] text-gray-500 font-bold uppercase ml-0.5">${unit}</span>
+                            <div class="text-white font-black text-lg leading-none">${u[field]}</div>
+                            <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">${unit}</div>
                         </div>
                     </div>
                 `;
             });
         }
 
-        window.showPopout = (u) => {
-            document.getElementById('p-nick').innerText = u.dn;
-            document.getElementById('p-user').innerText = "@" + u.un;
-            document.getElementById('p-img').src = u.av;
-            document.getElementById('p-banner').style.background = u.bn ? `url(${u.bn}) center/cover` : (u.ac || '#5865f2');
-            document.getElementById('p-status').innerText = u.st || "Palyacolar Dünyasında...";
-            document.getElementById('p-joined').innerText = u.jd;
-            document.getElementById('p-roles').innerHTML = (u.rl || []).map(r => `
-                <div class="role-pill"><div class="role-dot" style="background:${r.c}"></div>${r.n}</div>
+        function checkLoading() {
+            if(isLoaded.msg && isLoaded.voice) {
+                setTimeout(() => {
+                    document.getElementById('discord-loader').style.display = 'none';
+                }, 1500);
+            }
+        }
+
+        window.openProfile = (u) => {
+            const modal = document.getElementById('profile-modal');
+            document.getElementById('m-display-name').innerText = u.dn;
+            document.getElementById('m-username').innerText = u.un;
+            document.getElementById('m-avatar').src = u.av;
+            document.getElementById('m-banner').style.background = u.bn ? `url(${u.bn}) center/cover` : (u.ac || '#5865f2');
+            document.getElementById('m-status').innerText = u.st || "Palyacolar sunucusunda takılıyor.";
+            document.getElementById('m-joined').innerText = u.jd;
+            document.getElementById('m-roles').innerHTML = (u.rl || []).map(r => `
+                <div class="role-chip">
+                    <div class="w-3 h-3 rounded-full" style="background: ${r.c}"></div>
+                    ${r.n}
+                </div>
             `).join('');
-            document.getElementById('p-modal').style.display = 'flex';
+            modal.style.display = 'flex';
         }
 
         loadData();
