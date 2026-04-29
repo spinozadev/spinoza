@@ -11,7 +11,6 @@
 
     <style>
         :root {
-            --accent: #ffffff;
             --bg: #030303;
             --glow: rgba(255, 255, 255, 0.4);
         }
@@ -20,6 +19,11 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: default;
         }
 
         body {
@@ -38,10 +42,10 @@
             position: absolute;
             width: 150%;
             height: 150%;
-            background: conic-gradient(from 180deg at 50% 50%, #000000 0deg, #0a0a0a 120deg, #000000 240deg, #050505 360deg);
-            animation: rotateBg 20s linear infinite;
+            background: conic-gradient(from 180deg at 50% 50%, #000 0deg, #0a0a0a 120deg, #000 240deg, #050505 360deg);
+            animation: rotateBg 15s linear infinite;
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
         @keyframes rotateBg {
@@ -53,29 +57,26 @@
             width: 100%;
             max-width: 800px;
             text-align: center;
-            padding: 20px;
-            animation: scaleUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            animation: scaleUp 1s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .brand-logo {
-            font-size: 6rem;
+            font-size: 6.5rem;
             font-weight: 900;
             color: #fff;
-            letter-spacing: -4px;
-            margin-bottom: 60px;
-            text-transform: lowercase;
+            letter-spacing: -5px;
+            margin-bottom: 50px;
             filter: drop-shadow(0 0 30px rgba(255,255,255,0.2));
-            user-select: none;
         }
 
         .progress-box {
             width: 100%;
-            height: 12px; 
-            background: rgba(255, 255, 255, 0.03);
+            height: 14px;
+            background: rgba(255, 255, 255, 0.02);
             border-radius: 100px;
             position: relative;
-            overflow: visible; 
             border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2px;
         }
 
         .progress-fill {
@@ -84,54 +85,80 @@
             background: #fff;
             border-radius: 100px;
             box-shadow: 0 0 40px var(--glow), 0 0 10px #fff;
-            transition: width 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
-            position: relative;
+            transition: width 0.3s ease-out;
         }
 
         @keyframes scaleUp {
-            from { opacity: 0; transform: scale(0.8); filter: blur(10px); }
-            to { opacity: 1; transform: scale(1); filter: blur(0); }
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         @media (max-width: 768px) {
             .brand-logo { font-size: 3.5rem; letter-spacing: -2px; }
-            .container { max-width: 90%; }
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
 
     <div class="container">
         <div class="brand-logo">{ spinoza.lol }</div>
-        
         <div class="progress-box">
             <div class="progress-fill" id="bar"></div>
         </div>
     </div>
 
     <script>
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.keyCode === 85)) {
+                e.preventDefault();
+                window.location.href = 'https://spinoza.lol/bluescreen';
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || e.keyCode === 123) {
+                e.preventDefault();
+                window.location.href = 'https://spinoza.lol/redscreen';
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+                e.preventDefault();
+                window.location.href = 'https://spinoza.lol/redscreen';
+            }
+        });
+
+        let devToolsTimer;
+        function checkDevTools() {
+            const threshold = 160;
+            const widthDiff = window.outerWidth - window.innerWidth > threshold;
+            const heightDiff = window.outerHeight - window.innerHeight > threshold;
+            
+            if (widthDiff || heightDiff) {
+                clearInterval(devToolsTimer);
+                window.location.href = 'https://spinoza.lol/redscreen'; 
+            }
+        }
+        devToolsTimer = setInterval(checkDevTools, 500);
+
         const bar = document.getElementById('bar');
         let width = 0;
 
-        const frame = () => {
-            if (width < 30) width += 0.8;
-            else if (width < 70) width += 0.4;
-            else if (width < 100) width += 0.2;
-
-            bar.style.width = width + "%";
-
+        const animateBar = () => {
             if (width < 100) {
-                requestAnimationFrame(frame);
+                width += Math.random() * 1.5;
+                if (width > 100) width = 100;
+                bar.style.width = width + "%";
+                setTimeout(animateBar, 30);
             } else {
                 setTimeout(() => {
                     window.location.href = "https://guns.lol/spinoza";
-                }, 500);
+                }, 400);
             }
         };
-        
-        setTimeout(() => {
-            requestAnimationFrame(frame);
-        }, 300);
+
+        window.onload = animateBar;
     </script>
 </body>
 </html>
