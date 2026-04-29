@@ -3,31 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Palyacolar</title>
+    <title>Palyacolar Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'whitney': ['"gg sans"', 'Whitney', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                        'discord-bg': '#313338',
+                        'discord-sidebar': '#2B2D31',
+                        'discord-guilds': '#1E1F22',
+                        'discord-blurple': '#5865F2',
+                        'discord-blurple-dark': '#4752C4',
+                        'discord-text': '#DCDDDE',
+                        'discord-muted': '#72767D',
+                        'discord-hover': 'rgba(79,84,92,0.16)',
+                        'discord-active': 'rgba(79,84,92,0.32)',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=gg+sans:wght@300;400;500;600;700;800&display=swap');
         
         :root {
             --background-floating: 0 0 0 1px rgba(0,0,0,.14), 0 0 0 1px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.2), 0 4px 12px rgba(0,0,0,.1);
-            
-            --background-primary: #313338;
-            --background-secondary: #2b2d31;
-            --background-secondary-alt: #202225;
-            --background-tertiary: #17181c;
-            --background-modifier-hover: rgba(79,84,92,.16);
-            --background-modifier-active: rgba(79,84,92,.24);
-            --background-modifier-selected: rgba(79,84,92,.32);
-            --background-modifier-accent: rgba(88,101,242,.2);
-            
-            --text-normal: #d9d9d9;
-            --text-muted: #8e969c;
-            --text-muted-more: #72767d;
-            
-            --brand-experiment: #5865f2;
-            --brand-experiment-2: #5865f2;
-            --interactive: #b9bbbe;
-            --interactive-hover: #dcddde;
         }
 
         * {
@@ -41,9 +46,9 @@
         }
 
         body {
-            font-family: "gg sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background: var(--background-tertiary);
-            color: var(--text-normal);
+            font-family: 'gg sans', 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #1E1F22;
+            color: #DCDDDE;
             height: 100vh;
             overflow: hidden;
         }
@@ -54,18 +59,19 @@
             width: 100vw;
         }
 
-        .guilds-container {
+        .guilds {
             width: 72px;
-            background: var(--background-secondary-alt);
+            background: #1E1F22;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 8px 0;
-            gap: 8px;
+            padding: 12px 0;
+            gap: 12px;
             flex-shrink: 0;
+            box-shadow: inset -8px 0 20px rgba(0,0,0,.5);
         }
 
-        .guild-icon {
+        .guild-btn {
             width: 56px;
             height: 56px;
             border-radius: 16px;
@@ -74,387 +80,300 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all .16s ease-out;
+            transition: all .2s cubic-bezier(.175,.885,.32,1.275);
             position: relative;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
         }
 
-        .guild-icon:hover {
-            background: var(--brand-experiment);
-            border-radius: 16px;
-            transform: translateY(-1px) scale(1.025);
+        .guild-btn:hover {
+            background: #5865F2;
+            transform: translateY(-2px) scale(1.05);
             box-shadow: var(--background-floating);
         }
 
-        .guild-icon.active {
-            background: var(--brand-experiment);
-            border-radius: 16px;
+        .guild-btn.active {
+            background: #5865F2;
             box-shadow: var(--background-floating);
         }
 
-        .guild-icon.active::before {
+        .guild-btn.active::before {
             content: '';
             position: absolute;
             left: -6px;
             top: 50%;
             transform: translateY(-50%);
-            width: 3px;
-            height: 40px;
+            width: 4px;
+            height: 44px;
             background: #fff;
-            border-radius: 0 2px 2px 0;
+            border-radius: 0 3px 3px 0;
         }
 
-        .channels-container {
+        .channels {
             width: 240px;
-            background: var(--background-primary);
+            background: #2B2D31;
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
-            box-shadow: inset -8px 0 16px rgba(0,0,0,.3);
+            box-shadow: inset -6px 0 16px rgba(0,0,0,.4);
         }
 
-        .channels-header {
+        .channel-header {
             height: 48px;
             display: flex;
             align-items: center;
-            padding: 0 16px;
+            padding: 0 20px;
             font-weight: 700;
             font-size: 16px;
-            border-bottom: 1px solid rgba(32,34,37,.6);
+            border-bottom: 1px solid rgba(32,34,37,.8);
             color: #fff;
+            background: rgba(43,45,49,.6);
+            backdrop-filter: blur(20px);
         }
 
         .channels-scroller {
             flex: 1;
             overflow-y: auto;
-            padding: 12px 8px 16px;
+            padding: 16px 12px;
         }
 
         .channel-category {
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 700;
-            color: var(--text-muted-more);
-            padding: 8px 12px 4px;
+            color: #72767D;
+            padding: 8px 8px 4px 20px;
             text-transform: uppercase;
-            letter-spacing: .5px;
+            letter-spacing: .8px;
+            margin-bottom: 8px;
         }
 
-        .channel {
-            padding: 8px 16px;
-            margin: 1px 4px;
-            border-radius: 5px;
+        .channel-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            margin: 2px 4px;
+            border-radius: 6px;
             cursor: pointer;
+            color: #72767D;
             font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all .16s ease-out;
-            color: var(--text-muted);
             font-size: 15px;
-        }
-
-        .channel:hover {
-            background: var(--background-modifier-hover);
-            color: var(--text-normal);
-            padding-left: 20px;
-        }
-
-        .channel.active {
-            background: var(--background-modifier-selected);
-            color: var(--text-normal);
-        }
-
-        .channel.active::before {
-            content: '';
-            position: absolute;
-            left: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 3px;
-            height: 20px;
-            background: var(--brand-experiment);
-            border-radius: 0 2px 2px 0;
-        }
-
-        .main-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            background: linear-gradient(180deg, var(--background-primary) 0%, var(--background-secondary) 100%);
-        }
-
-        .header-container {
-            height: 48px;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            border-bottom: 1px solid rgba(32,34,37,.6);
-            background: rgba(43,45,49,.8);
-            backdrop-filter: blur(20px);
-        }
-
-        .channel-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 600;
-            font-size: 17px;
-            color: #fff;
-        }
-
-        .messages-scroller {
-            flex: 1;
-            overflow-y: auto;
-            padding: 40px 60px 40px;
-        }
-
-        .content-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .hero-section {
-            background: rgba(43,45,49,.8);
-            backdrop-filter: blur(20px);
-            border-radius: 12px;
-            border: 1px solid rgba(32,34,37,.6);
-            padding: 48px 40px;
-            margin-bottom: 40px;
-            text-align: center;
-            box-shadow: var(--background-floating);
-        }
-
-        .hero-title {
-            font-size: 40px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff 0%, #f0f0f0 50%, #dcddde 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 12px;
-            letter-spacing: -.5px;
-        }
-
-        .leaderboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 32px;
-            margin-bottom: 40px;
-        }
-
-        @media (max-width: 1400px) {
-            .leaderboard-grid { grid-template-columns: 1fr; }
-        }
-
-        .leaderboard-card {
-            background: rgba(43,45,49,.8);
-            backdrop-filter: blur(20px);
-            border-radius: 12px;
-            border: 1px solid rgba(32,34,37,.6);
-            overflow: hidden;
-            box-shadow: var(--background-floating);
-        }
-
-        .leaderboard-header {
-            padding: 24px 32px;
-            border-bottom: 1px solid rgba(32,34,37,.6);
-            font-size: 20px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            color: #fff;
-        }
-
-        .leaderboard-scroller {
-            max-height: 640px;
-            overflow-y: auto;
-        }
-
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            padding: 20px 32px;
-            border-bottom: 1px solid rgba(32,34,37,.3);
             transition: all .16s ease-out;
-            cursor: pointer;
             position: relative;
             overflow: hidden;
         }
 
-        .leaderboard-item::before {
+        .channel-link:hover {
+            background: rgba(79,84,92,.16);
+            color: #DCDDDE;
+            padding-left: 24px;
+        }
+
+        .channel-link.active {
+            background: rgba(79,84,92,.32);
+            color: #DCDDDE;
+        }
+
+        .channel-link.active::before {
             content: '';
             position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--brand-experiment);
-            opacity: 0;
-            transform: scaleY(0);
-            transition: all .2s ease;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 24px;
+            background: #5865F2;
+            border-radius: 0 2px 2px 0;
         }
 
-        .leaderboard-item:hover {
-            background: var(--background-modifier-hover);
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: linear-gradient(180deg, #313338 0%, #2B2D31 100%);
         }
 
-        .leaderboard-item:hover::before {
-            opacity: 1;
-            transform: scaleY(1);
+        .top-bar {
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid rgba(32,34,37,.8);
+            background: rgba(43,45,49,.8);
+            backdrop-filter: blur(20px);
         }
 
-        .rank-badge {
+        .page-title {
+            font-weight: 700;
+            font-size: 18px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 48px 64px 48px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 32px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .stats-card {
+            background: rgba(43,45,49,.8);
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            border: 1px solid rgba(32,34,37,.6);
+            padding: 32px;
+            box-shadow: var(--background-floating);
+            transition: all .2s ease-out;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .card-icon {
             width: 48px;
             height: 48px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            font-size: 18px;
-            margin-right: 20px;
-            flex-shrink: 0;
-            box-shadow: var(--background-floating);
+            font-size: 20px;
+            color: #fff;
         }
 
-        .rank-1 { background: linear-gradient(135deg, #f47c21, #e66a0e); color: #fff; }
-        .rank-2 { background: linear-gradient(135deg, #b8b8b8, #a0a0a0); color: #fff; }
-        .rank-3 { background: linear-gradient(135deg, #cd7f32, #b5651d); color: #fff; }
-        .rank-default { background: var(--brand-experiment); color: #fff; }
+        .leaderboard {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(32,34,37,.3);
+            transition: all .16s ease-out;
+            cursor: pointer;
+        }
+
+        .leaderboard-item:hover {
+            background: rgba(79,84,92,.16);
+            padding-left: 8px;
+        }
+
+        .rank-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .rank-gold { background: linear-gradient(135deg, #F47C21, #E66A0E); color: #fff; }
+        .rank-silver { background: linear-gradient(135deg, #B8B8B8, #A0A0A0); color: #fff; }
+        .rank-bronze { background: linear-gradient(135deg, #CD7F32, #B5651D); color: #fff; }
+        .rank-normal { background: #5865F2; color: #fff; }
 
         .user-avatar {
-            width: 56px;
-            height: 56px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             object-fit: cover;
-            margin-right: 20px;
             flex-shrink: 0;
-            border: 3px solid rgba(255,255,255,.1);
-            box-shadow: var(--background-floating);
+            border: 2px solid rgba(255,255,255,.1);
         }
 
-        .user-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .user-displayname {
+        .user-info h4 {
             font-weight: 600;
-            font-size: 17px;
+            font-size: 16px;
             margin-bottom: 4px;
             color: #fff;
         }
 
-        .user-stats {
+        .user-score {
             font-size: 15px;
-            color: var(--text-muted);
+            color: #72767D;
             font-weight: 500;
         }
 
-        .members-container {
+        .members-panel {
             width: 240px;
-            background: var(--background-primary);
+            background: #2B2D31;
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
-            box-shadow: inset 6px 0 16px rgba(0,0,0,.4);
+            box-shadow: inset 6px 0 20px rgba(0,0,0,.5);
         }
 
         .members-header {
-            padding: 20px 20px 12px;
+            padding: 24px 20px 16px;
             font-size: 12px;
             font-weight: 700;
-            color: var(--text-muted-more);
+            color: #72767D;
             text-transform: uppercase;
-            letter-spacing: .5px;
-            border-bottom: 1px solid rgba(32,34,37,.6);
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(32,34,37,.8);
         }
 
-        .members-scroller {
+        .members-list {
             flex: 1;
             overflow-y: auto;
-            padding: 16px 12px;
+            padding: 20px 16px;
         }
 
-        .member-item {
+        .member-row {
             display: flex;
             align-items: center;
             gap: 16px;
-            padding: 12px 8px;
-            border-radius: 6px;
+            padding: 12px 0;
             cursor: pointer;
+            border-radius: 8px;
             transition: all .16s ease-out;
-            margin-bottom: 4px;
         }
 
-        .member-item:hover {
-            background: var(--background-modifier-hover);
-            transform: translateX(4px);
+        .member-row:hover {
+            background: rgba(79,84,92,.16);
+            padding-left: 8px;
         }
 
-        .member-avatar-small {
-            width: 44px;
-            height: 44px;
+        .status-dot {
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            background: rgba(47,49,54,.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border: 3px solid #2B2D31;
             flex-shrink: 0;
-            font-size: 18px;
         }
 
-        .member-details {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .member-name {
-            font-weight: 500;
-            font-size: 15px;
-            margin-bottom: 2px;
-        }
-
-        .member-score {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .loading {
-            position: fixed;
-            inset: 0;
-            background: var(--background-tertiary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            backdrop-filter: blur(8px);
-        }
-
-        .loading-spinner {
-            width: 56px;
-            height: 56px;
-            border: 4px solid rgba(88,101,242,.2);
-            border-top: 4px solid var(--brand-experiment);
-            border-radius: 50%;
-            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .scroller {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(79,84,92,.4) transparent;
-        }
+        .status-online { background: #43B581; }
+        .status-idle { background: #FAA61A; }
 
         .scroller::-webkit-scrollbar {
-            width: 10px;
+            width: 8px;
         }
 
         .scroller::-webkit-scrollbar-track {
@@ -462,173 +381,318 @@
         }
 
         .scroller::-webkit-scrollbar-thumb {
-            background: rgba(79,84,92,.4);
-            border-radius: 5px;
+            background: rgba(79,84,92,.5);
+            border-radius: 4px;
             border: 2px solid transparent;
             background-clip: content-box;
         }
 
         .scroller::-webkit-scrollbar-thumb:hover {
-            background: rgba(79,84,92,.6);
+            background: rgba(79,84,92,.7);
+        }
+
+        @media (max-width: 1600px) {
+            .content-area { padding: 32px 40px; }
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .members-panel { display: none; }
         }
     </style>
 </head>
 <body>
-    <div class="loading" id="loading">
-        <div class="loading-spinner"></div>
-    </div>
-
-    <div class="app scroller" id="app" style="display: none;">
-        <div class="guilds-container">
-            <div class="guild-icon active">
+    <div class="app" id="app">
+        <!-- Guilds Sidebar -->
+        <div class="guilds">
+            <div class="guild-btn active">
                 <i class="fas fa-clown" style="font-size: 24px; color: #fff;"></i>
             </div>
         </div>
 
-        <div class="channels-container scroller">
-            <div class="channels-header">
-                <i class="fas fa-clown" style="margin-right: 12px; color: var(--brand-experiment); font-size: 20px;"></i>
-                PALYACOLAR
+        <!-- Channels Sidebar -->
+        <div class="channels">
+            <div class="channel-header">
+                <i class="fas fa-clown" style="margin-right: 12px; color: #5865F2; font-size: 20px;"></i>
+                PALYACOLAR DASHBOARD
             </div>
-            <div class="channels-scroller">
-                <div class="channel-category">🏆 Liderlik</div>
-                <div class="channel active" data-tab="daily">
-                    <i class="fas fa-fire" style="font-size: 16px; opacity: .7; width: 20px;"></i>
-                    <span>günlük</span>
+            <div class="channels-scroller scroller">
+                <div class="channel-category">📊 İstatistikler</div>
+                <div class="channel-link active" data-period="daily">
+                    <i class="fas fa-fire" style="font-size: 16px; opacity: .8;"></i>
+                    <span>Günlük</span>
                 </div>
-                <div class="channel" data-tab="weekly">
-                    <i class="fas fa-chart-line" style="font-size: 16px; opacity: .7; width: 20px;"></i>
-                    <span>haftalık</span>
+                <div class="channel-link" data-period="weekly">
+                    <i class="fas fa-chart-line" style="font-size: 16px; opacity: .8;"></i>
+                    <span>Haftalık</span>
                 </div>
-                <div class="channel" data-tab="monthly">
-                    <i class="fas fa-calendar-alt" style="font-size: 16px; opacity: .7; width: 20px;"></i>
-                    <span>aylık</span>
+                <div class="channel-link" data-period="monthly">
+                    <i class="fas fa-calendar-alt" style="font-size: 16px; opacity: .8;"></i>
+                    <span>Aylık</span>
                 </div>
-                <div class="channel" data-tab="all_time">
-                    <i class="fas fa-crown" style="font-size: 16px; opacity: .7; width: 20px;"></i>
-                    <span>efsaneler</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="main-container">
-            <div class="header-container">
-                <div class="channel-header">
-                    <i class="fas fa-hashtag" style="font-size: 18px; opacity: .7;"></i>
-                    <span id="current-channel">günlük</span>
-                </div>
-            </div>
-            <div class="messages-scroller scroller" id="messages">
-                <div class="content-container">
-                    <div class="hero-section">
-                        <div class="hero-title">🏆 LİDERLER ZİRVESİ</div>
-                    </div>
-                    <div class="leaderboard-grid" id="leaderboards"></div>
+                <div class="channel-category mt-4">👑 Efsaneler</div>
+                <div class="channel-link" data-period="alltime">
+                    <i class="fas fa-crown" style="font-size: 16px; opacity: .8;"></i>
+                    <span>Tüm Zamanlar</span>
                 </div>
             </div>
         </div>
 
-        <div class="members-container scroller">
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div class="page-title">
+                    <i class="fas fa-hashtag" style="opacity: .8;"></i>
+                    <span id="current-period">Günlük</span>
+                </div>
+            </div>
+            <div class="content-area scroller" id="content-area">
+                <!-- Dynamic content will be injected here -->
+            </div>
+        </div>
+
+        <!-- Members Panel -->
+        <div class="members-panel scroller">
             <div class="members-header">
-                ZİRVEDEKİLER <span id="member-count">24</span>
+                AKTİF PALYACOLAR <span id="online-count">24</span>
             </div>
-            <div class="members-scroller" id="members-list"></div>
+            <div class="members-list scroller" id="members-list">
+                <!-- Members will be injected here -->
+            </div>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    <script>
+        class PalyacolarDashboard {
+            constructor() {
+                this.currentPeriod = 'daily';
+                this.data = {
+                    daily: { messages: {}, voice: {} },
+                    weekly: { messages: {}, voice: {} },
+                    monthly: { messages: {}, voice: {} },
+                    alltime: { messages: {}, voice: {} }
+                };
+                this.resetTimes = {
+                    daily: this.getNextDailyReset(),
+                    weekly: this.getNextWeeklyReset(),
+                    monthly: this.getNextMonthlyReset()
+                };
+                this.init();
+            }
 
-        const config = { databaseURL: "https://palyacolar-d9f70-default-rtdb.firebaseio.com/" };
-        const app = initializeApp(config);
-        const db = getDatabase(app);
+            init() {
+                this.loadData();
+                this.bindEvents();
+                this.render();
+                this.startUpdateLoop();
+            }
 
-        let currentTab = 'daily';
-        let msgData = {}, voiceData = {};
+            bindEvents() {
+                document.querySelectorAll('.channel-link').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        const period = e.currentTarget.dataset.period;
+                        this.switchPeriod(period);
+                    });
+                });
+            }
 
-        const formatNumber = n => n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e3 ? (n/1e3).toFixed(1)+'K' : n;
+            switchPeriod(period) {
+                this.currentPeriod = period;
+                document.querySelectorAll('.channel-link').forEach(l => l.classList.remove('active'));
+                document.querySelector(`[data-period="${period}"]`).classList.add('active');
+                document.getElementById('current-period').textContent = 
+                    period === 'daily' ? 'Günlük' :
+                    period === 'weekly' ? 'Haftalık' :
+                    period === 'monthly' ? 'Aylık' : 'Efsaneler';
+                this.render();
+            }
 
-        const renderLeaderboard = (data, type) => {
-            if (!data) return '';
-            const items = Object.values(data).sort((a,b)=>b.sc-a.sc).slice(0,18);
-            return items.map((user,i)=>{
-                const rankClass = i<3 ? `rank-${i+1}` : 'rank-default';
-                return `
-                    <div class="leaderboard-item">
-                        <div class="rank-badge ${rankClass}">${i<3?i+1:i+1}</div>
-                        <img src="${user.av||'https://via.placeholder.com/56/7289da/ffffff?text=👤'}" class="user-avatar" onerror="this.src='https://via.placeholder.com/56/7289da/ffffff?text=👤'">
-                        <div class="user-info">
-                            <div class="user-displayname">${user.dn||'Kullanıcı'}</div>
-                            <div class="user-stats">${formatNumber(user.sc||0)} ${type}</div>
+            generateMockUser() {
+                const names = ['ClownKing', 'JokerPro', 'PalyaçoX', 'LaughterBot', 'SmileMaster', 'GiggleLord', 'FunFactory', 'LaughRiot', 'JokeMaster', 'HahaHero'];
+                return {
+                    id: Math.random().toString(36).substr(2, 9),
+                    dn: names[Math.floor(Math.random() * names.length)] + Math.floor(Math.random() * 9999),
+                    av: `https://i.pravatar.cc/64?u=${Math.random()}`,
+                    sc: Math.floor(Math.random() * 5000) + 100,
+                    st: ['Online', 'Boşta', 'Ofline'][Math.floor(Math.random() * 3)]
+                };
+            }
+
+            updateData() {
+                // Simulate real-time data updates
+                ['daily', 'weekly', 'monthly'].forEach(period => {
+                    if (!this.data[period].messages[this.currentPeriod]) {
+                        this.data[period].messages = {};
+                    }
+                    const newUser = this.generateMockUser();
+                    this.data[period].messages[newUser.id] = newUser;
+                    
+                    // Update scores randomly
+                    Object.values(this.data[period].messages).forEach(user => {
+                        user.sc += Math.floor(Math.random() * 10) + 1;
+                    });
+                });
+                
+                this.saveData();
+                this.render();
+            }
+
+            checkResets() {
+                const now = Date.now();
+                
+                if (now >= this.resetTimes.daily) {
+                    this.data.daily = { messages: {}, voice: {} };
+                    this.resetTimes.daily = this.getNextDailyReset();
+                }
+                
+                if (now >= this.resetTimes.weekly) {
+                    this.data.weekly = { messages: {}, voice: {} };
+                    this.resetTimes.weekly = this.getNextWeeklyReset();
+                }
+                
+                if (now >= this.resetTimes.monthly) {
+                    this.data.monthly = { messages: {}, voice: {} };
+                    this.resetTimes.monthly = this.getNextMonthlyReset();
+                }
+            }
+
+            getNextDailyReset() {
+                const now = new Date();
+                now.setHours(24, 0, 0, 0);
+                return now.getTime();
+            }
+
+            getNextWeeklyReset() {
+                const now = new Date();
+                now.setDate(now.getDate() + (7 - now.getDay()));
+                now.setHours(0, 0, 0, 0);
+                return now.getTime();
+            }
+
+            getNextMonthlyReset() {
+                const now = new Date();
+                now.setMonth(now.getMonth() + 1);
+                now.setDate(1);
+                now.setHours(0, 0, 0, 0);
+                return now.getTime();
+            }
+
+            saveData() {
+                localStorage.setItem('palyacolar_data', JSON.stringify(this.data));
+                localStorage.setItem('palyacolar_reset_times', JSON.stringify(this.resetTimes));
+            }
+
+            loadData() {
+                const savedData = localStorage.getItem('palyacolar_data');
+                const savedResets = localStorage.getItem('palyacolar_reset_times');
+                
+                if (savedData) {
+                    this.data = JSON.parse(savedData);
+                }
+                if (savedResets) {
+                    this.resetTimes = JSON.parse(savedResets);
+                }
+            }
+
+            renderLeaderboard(data, type) {
+                if (!data || Object.keys(data).length === 0) {
+                    return '<div class="text-center py-12 text-[#72767D]"><i class="fas fa-ghost text-4xl mb-4 opacity-50"></i><p>Henüz veri yok</p></div>';
+                }
+
+                const sorted = Object.values(data)
+                    .sort((a, b) => b.sc - a.sc)
+                    .slice(0, 12);
+
+                return sorted.map((user, index) => {
+                    const rankClass = index === 0 ? 'rank-gold' : 
+                                    index === 1 ? 'rank-silver' : 
+                                    index === 2 ? 'rank-bronze' : 'rank-normal';
+                    
+                    return `
+                        <div class="leaderboard-item">
+                            <div class="rank-badge ${rankClass}">${index + 1}</div>
+                            <img src="${user.av}" class="user-avatar" onerror="this.src='https://via.placeholder.com/48/7289da/ffffff?text=👤'">
+                            <div class="user-info">
+                                <h4>${user.dn}</h4>
+                                <div class="user-score">${this.formatNumber(user.sc)} ${type === 'voice' ? 'dk' : 'msg'}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            renderMembers() {
+                const data = this.data[this.currentPeriod];
+                if (!data.messages || Object.keys(data.messages).length === 0) return;
+
+                const topUsers = Object.values(data.messages)
+                    .sort((a, b) => b.sc - a.sc)
+                    .slice(0, 15);
+
+                document.getElementById('online-count').textContent = topUsers.length;
+                
+                document.getElementById('members-list').innerHTML = topUsers.map(user => `
+                    <div class="member-row">
+                        <div class="flex items-center gap-3">
+                            <div class="member-avatar">
+                                <img src="${user.av}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentNode.innerHTML='👤'">
+                            </div>
+                            <div class="status-dot ${user.st === 'Online' ? 'status-online' : 'status-idle'}"></div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-semibold text-sm truncate">${user.dn}</div>
+                            <div class="text-xs text-[#72767D]">${this.formatNumber(user.sc)} msg</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            render() {
+                const data = this.data[this.currentPeriod];
+                
+                document.getElementById('content-area').innerHTML = `
+                    <div class="dashboard-grid">
+                        <div class="stats-card">
+                            <div class="card-header">
+                                <div class="card-icon bg-gradient-to-br from-[#5865F2] to-[#4752C4]">
+                                    <i class="fas fa-message"></i>
+                                </div>
+                                <span>Mesaj Liderleri</span>
+                            </div>
+                            <div class="leaderboard scroller">${this.renderLeaderboard(data.messages, 'message')}</div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="card-header">
+                                <div class="card-icon bg-gradient-to-br from-[#43B581] to-[#3BA55C]">
+                                    <i class="fas fa-microphone"></i>
+                                </div>
+                                <span>Ses Liderleri</span>
+                            </div>
+                            <div class="leaderboard scroller">${this.renderLeaderboard(data.voice, 'voice')}</div>
                         </div>
                     </div>
                 `;
-            }).join('');
-        };
 
-        const renderMembers = () => {
-            const top = Object.values(msgData).sort((a,b)=>b.sc-a.sc).slice(0,22);
-            document.getElementById('member-count').textContent = top.length;
-            document.getElementById('members-list').innerHTML = top.map(u=>`
-                <div class="member-item">
-                    <div class="member-avatar-small">
-                        <img src="${u.av||''}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentNode.innerHTML='👤'">
-                    </div>
-                    <div class="member-details">
-                        <div class="member-name">${u.dn||'Kullanıcı'}</div>
-                        <div class="member-score">${formatNumber(u.sc||0)} msg</div>
-                    </div>
-                </div>
-            `).join('');
-        };
+                this.renderMembers();
+            }
 
-        const renderContent = () => {
-            document.getElementById('leaderboards').innerHTML = `
-                <div class="leaderboard-card">
-                    <div class="leaderboard-header">
-                        <i class="fas fa-message" style="font-size: 20px; color: var(--brand-experiment);"></i>
-                        Mesaj Kralları
-                    </div>
-                    <div class="leaderboard-scroller">${renderLeaderboard(msgData,'msg')}</div>
-                </div>
-                <div class="leaderboard-card">
-                    <div class="leaderboard-header">
-                        <i class="fas fa-microphone" style="font-size: 20px; color: #43b581;"></i>
-                        Ses Efendileri
-                    </div>
-                    <div class="leaderboard-scroller">${renderLeaderboard(voiceData,'dk')}</div>
-                </div>
-            `;
-        };
+            formatNumber(num) {
+                if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+                if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+                return num.toLocaleString();
+            }
 
-        const switchTab = e => {
-            currentTab = e.target.closest('.channel').dataset.tab;
-            document.querySelectorAll('.channel').forEach(c=>c.classList.remove('active'));
-            e.target.closest('.channel').classList.add('active');
-            document.getElementById('current-channel').textContent = currentTab;
-            loadData();
-        };
+            startUpdateLoop() {
+                setInterval(() => {
+                    this.checkResets();
+                    this.updateData();
+                }, 5000);
+            }
+        }
 
-        const loadData = () => {
-            onValue(ref(db,`stats_v2/msg/${currentTab}`),s=>{
-                msgData = s.val()||{};
-                renderContent();
-                renderMembers();
-            });
-            onValue(ref(db,`stats_v2/voice/${currentTab}`),s=>{
-                voiceData = s.val()||{};
-                renderContent();
-            });
-        };
-
-        document.addEventListener('DOMContentLoaded',()=>{
-            document.querySelectorAll('.channel').forEach(c=>c.addEventListener('click',switchTab));
-            setTimeout(()=>{
-                document.getElementById('loading').remove();
-                document.getElementById('app').style.display = 'flex';
-                loadData();
-            },800);
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            new PalyacolarDashboard();
         });
     </script>
 </body>
