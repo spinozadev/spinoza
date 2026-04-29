@@ -8,210 +8,762 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.cdnfonts.com/css/gg-sans');
+        @import url('https://fonts.cdnfonts.com/css/uni-neue');
 
         :root {
-            /* Discord v12 Color Palette */
+            /* Discord v12+ Ultimate Color Palette */
             --bg-darkest: #0e0f10;
+            --bg-darker: #121418;
             --bg-guilds: #1e1f22;
             --bg-sidebar: #2b2d31;
             --bg-main: #313338;
+            --bg-secondary: #36393f;
             --bg-members: #2b2d31;
-            --bg-modifier-selected: rgba(78, 80, 88, 0.6);
-            --bg-modifier-hover: rgba(78, 80, 88, 0.3);
+            --bg-modifier-selected: rgba(79,84,92,0.6);
+            --bg-modifier-hover: rgba(79,84,92,0.3);
+            --bg-modifier-active: rgba(116,127,144,0.24);
+            --bg-modifier-selected-2: rgba(116,127,144,0.16);
             
-            --brand: #5865f2;
-            --text-normal: #dbdee1;
-            --text-muted: #949ba4;
+            --brand-500: #5865f2;
+            --brand-600: #4752c4;
+            --text-normal: #dcddde;
+            --text-muted: #8e969c;
+            --text-muted-more: #72767d;
             --header-primary: #ffffff;
-            --green: #23a55a;
-            --yellow: #f0b232;
+            --header-secondary: #b9bbbe;
+            --interactive-normal: #b9bbbe;
+            --interactive-hover: #dcddde;
+            --green-400: #23a55a;
+            --yellow-400: #faa61a;
+            --yellow-500: #f0b232;
+            --red-400: #f04747;
+            --purple-400: #a855f7;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            outline: none; 
+        }
         
         body { 
             background: var(--bg-darkest); 
             color: var(--text-normal); 
-            font-family: 'gg sans', sans-serif; 
+            font-family: 'gg sans', 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
             height: 100vh; 
             overflow: hidden;
             display: flex;
         }
 
-        /* --- PRE-LOADER (DISCORD STYLE) --- */
+        /* ULTIMATE PRE-LOADER */
         #ultimate-loader {
-            position: fixed; inset: 0; background: var(--bg-darkest);
+            position: fixed; inset: 0; background: linear-gradient(135deg, var(--bg-darkest) 0%, var(--bg-darker) 100%);
             display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000000;
         }
+        .discord-shimmer {
+            background: linear-gradient(90deg, #1e1f22 0%, #2b2d31 50%, #1e1f22 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
         .discord-loading-icon {
-            width: 80px; height: 80px; position: relative;
-            animation: discord-bounce 0.8s infinite alternate ease-in-out;
+            width: 90px; height: 90px; position: relative;
+            animation: discord-float 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(88,101,242,0.4));
         }
-        @keyframes discord-bounce {
-            from { transform: scale(1); opacity: 0.8; }
-            to { transform: scale(1.1); opacity: 1; }
+        @keyframes discord-float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+        .loading-text {
+            background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        /* --- LAYOUT ENGINE --- */
-        .app-container { display: flex; width: 100%; height: 100vh; opacity: 0; transition: opacity 0.4s ease; }
-        .app-container.ready { opacity: 1; }
+        /* LAYOUT ENGINE v2 */
+        .app-container { 
+            display: flex; 
+            width: 100%; 
+            height: 100vh; 
+            opacity: 0; 
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .app-container.ready { 
+            opacity: 1; 
+            transform: translateY(0);
+        }
 
-        /* Left: Guilds */
-        .side-guilds { width: 72px; background: var(--bg-darkest); display: flex; flex-direction: column; align-items: center; padding-top: 12px; gap: 8px; flex-shrink: 0; }
-        .guild-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--bg-sidebar); display: flex; align-items: center; justify-content: center; transition: 0.2s; cursor: pointer; color: #fff; position: relative; }
-        .guild-btn:hover, .guild-btn.active { border-radius: 16px; background: var(--brand); }
-        .guild-btn.active::before { content: ""; position: absolute; left: -12px; width: 4px; height: 40px; background: #fff; border-radius: 0 4px 4px 0; }
+        /* Guilds Sidebar - Premium */
+        .side-guilds { 
+            width: 72px; 
+            background: var(--bg-guilds); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 16px 0;
+            gap: 12px; 
+            flex-shrink: 0;
+            position: relative;
+            box-shadow: inset -8px 0 16px rgba(0,0,0,0.3);
+        }
+        .guild-btn { 
+            width: 52px; 
+            height: 52px; 
+            border-radius: 16px; 
+            background: rgba(47,49,54,0.6); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer; 
+            color: #fff; 
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+        .guild-btn::before {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            border-radius: 14px;
+            background: var(--bg-guilds);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .guild-btn:hover::before,
+        .guild-btn.active::before { opacity: 1; }
+        
+        .guild-btn:hover, .guild-btn.active { 
+            background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(88,101,242,0.4);
+        }
+        .guild-btn.active {
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.2), 0 8px 25px rgba(88,101,242,0.4);
+        }
+        .guild-btn.active::after { 
+            content: ""; 
+            position: absolute; 
+            left: -8px; 
+            top: 50%; 
+            transform: translateY(-50%);
+            width: 3px; 
+            height: 36px; 
+            background: var(--brand-500); 
+            border-radius: 0 2px 2px 0;
+            box-shadow: 0 0 10px rgba(88,101,242,0.6);
+        }
 
-        /* Middle-Left: Channels */
-        .side-channels { width: 240px; background: var(--bg-sidebar); display: flex; flex-direction: column; flex-shrink: 0; }
-        .nav-header { height: 48px; padding: 0 16px; display: flex; align-items: center; font-weight: 800; border-bottom: 1px solid rgba(0,0,0,0.2); cursor: pointer; color: #fff; }
-        .nav-header:hover { background: var(--bg-modifier-hover); }
+        /* Channels Sidebar - Ultimate */
+        .side-channels { 
+            width: 240px; 
+            background: var(--bg-sidebar); 
+            display: flex; 
+            flex-direction: column; 
+            flex-shrink: 0;
+            box-shadow: inset -4px 0 12px rgba(0,0,0,0.4);
+        }
+        .nav-header { 
+            height: 48px; 
+            padding: 0 16px; 
+            display: flex; 
+            align-items: center; 
+            font-weight: 800; 
+            font-size: 14px;
+            border-bottom: 1px solid rgba(32,34,37,0.6); 
+            cursor: pointer; 
+            color: var(--header-primary);
+            position: relative;
+            transition: background 0.2s;
+        }
+        .nav-header::after {
+            content: '';
+            position: absolute;
+            right: 16px;
+            width: 0;
+            height: 20px;
+            border-right: 2px solid var(--brand-500);
+            transition: width 0.3s ease;
+        }
+        .nav-header:hover { 
+            background: rgba(79,84,92,0.3);
+        }
+        .nav-header:hover::after { width: 4px; }
 
-        /* Middle-Right: Chat Area */
-        .main-chat { flex: 1; background: var(--bg-main); display: flex; flex-direction: column; min-width: 0; }
-        .chat-header { height: 48px; padding: 0 16px; display: flex; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.2); gap: 12px; }
+        /* Main Chat - Premium Design */
+        .main-chat { 
+            flex: 1; 
+            background: linear-gradient(to bottom, var(--bg-main) 0%, var(--bg-secondary) 100%);
+            display: flex; 
+            flex-direction: column; 
+            min-width: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .chat-header { 
+            height: 48px; 
+            padding: 0 20px; 
+            display: flex; 
+            align-items: center; 
+            border-bottom: 1px solid rgba(32,34,37,0.6); 
+            gap: 12px;
+            backdrop-filter: blur(20px);
+        }
 
-        /* Right: Member List (The Professional Touch) */
-        .side-members { width: 240px; background: var(--bg-sidebar); display: flex; flex-direction: column; flex-shrink: 0; padding: 12px 8px; }
+        /* Members Sidebar - Pro */
+        .side-members { 
+            width: 240px; 
+            background: var(--bg-members); 
+            display: flex; 
+            flex-direction: column;
+            flex-shrink: 0; 
+            padding: 0;
+            box-shadow: inset 4px 0 12px rgba(0,0,0,0.4);
+        }
 
-        /* --- COMPONENT STYLES --- */
-        .scroller { overflow-y: auto; overflow-x: hidden; scrollbar-gutter: stable; }
-        .scroller::-webkit-scrollbar { width: 8px; }
-        .scroller::-webkit-scrollbar-thumb { background: var(--bg-darkest); border-radius: 4px; }
+        /* SCROLLBAR ULTIMATE */
+        .scroller { 
+            overflow-y: auto; 
+            overflow-x: hidden; 
+            scrollbar-gutter: stable;
+            scrollbar-width: thin;
+        }
+        .scroller::-webkit-scrollbar { 
+            width: 12px; 
+            height: 12px;
+        }
+        .scroller::-webkit-scrollbar-track { 
+            background: transparent; 
+        }
+        .scroller::-webkit-scrollbar-thumb { 
+            background: rgba(79,84,92,0.5); 
+            border-radius: 6px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        .scroller::-webkit-scrollbar-thumb:hover { 
+            background: rgba(116,127,144,0.8);
+        }
 
-        .channel-link { margin: 2px 8px; padding: 6px 8px; border-radius: 4px; display: flex; align-items: center; gap: 8px; color: var(--text-muted); cursor: pointer; font-weight: 500; font-size: 14px; }
-        .channel-link:hover { background: var(--bg-modifier-hover); color: var(--text-normal); }
-        .channel-link.active { background: var(--bg-modifier-selected); color: #fff; }
+        /* CHANNEL LINKS v2 */
+        .channel-link { 
+            margin: 1px 12px; 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            color: var(--text-muted); 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 15px;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .channel-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--brand-500);
+            transform: scaleY(0);
+            transition: transform 0.2s ease;
+        }
+        .channel-link:hover { 
+            background: var(--bg-modifier-hover);
+            color: var(--text-normal);
+            padding-left: 20px;
+        }
+        .channel-link:hover::before { transform: scaleY(1); }
+        .channel-link.active { 
+            background: var(--bg-modifier-selected);
+            color: var(--header-primary);
+        }
+        .channel-link.active::before { transform: scaleY(1); }
 
-        /* MEMBER CARDS (NO BUG ZONE) */
+        /* SECTION HEADERS */
+        .section-header {
+            padding: 12px 20px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted-more);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(32,34,37,0.6);
+        }
+
+        /* MEMBER ROWS - ULTIMATE */
         .member-row {
-            display: flex; align-items: center; padding: 8px; border-radius: 4px; cursor: pointer;
-            transition: 0.1s; gap: 12px; position: relative;
+            display: flex; 
+            align-items: center; 
+            padding: 10px 12px; 
+            border-radius: 6px; 
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            gap: 12px; 
+            position: relative;
+            margin: 1px 0;
         }
-        .member-row:hover { background: var(--bg-modifier-hover); }
+        .member-row:hover { 
+            background: var(--bg-modifier-hover);
+            transform: translateX(4px);
+        }
+        .member-row.podium-1 { background: linear-gradient(135deg, rgba(240,178,50,0.3), rgba(240,178,50,0.1)); }
+        .member-row.podium-2 { background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(192,192,192,0.1)); }
+        .member-row.podium-3 { background: linear-gradient(135deg, rgba(205,127,50,0.2), rgba(205,127,50,0.1)); }
         
         .avatar-wrap {
-            width: 32px; height: 32px; flex-shrink: 0; /* FIXED PP BUG */
+            width: 40px; 
+            height: 40px; 
+            flex-shrink: 0;
             position: relative;
         }
-        .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        .status-dot { position: absolute; bottom: -2px; right: -2px; width: 12px; height: 12px; border-radius: 50%; border: 3px solid var(--bg-sidebar); }
+        .avatar-img { 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            object-fit: cover;
+            border: 3px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        .member-row:hover .avatar-img {
+            transform: scale(1.1);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
+        .status-dot { 
+            position: absolute; 
+            bottom: 1px; 
+            right: 1px; 
+            width: 14px; 
+            height: 14px; 
+            border-radius: 50%; 
+            border: 3px solid var(--bg-members);
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.1);
+        }
 
-        /* STATS PROGRESS BARS */
-        .stat-line { margin-top: 4px; height: 4px; width: 100%; background: rgba(0,0,0,0.2); border-radius: 2px; overflow: hidden; }
-        .stat-progress { height: 100%; background: var(--brand); transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        /* PROGRESS BARS v2 */
+        .stat-line { 
+            margin-top: 6px; 
+            height: 6px; 
+            width: 100%; 
+            background: rgba(32,34,37,0.8); 
+            border-radius: 3px; 
+            overflow: hidden;
+            position: relative;
+        }
+        .stat-progress { 
+            height: 100%; 
+            border-radius: 3px;
+            transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: progress-shine 2s infinite;
+        }
+        @keyframes progress-shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
 
-        /* PROFILE MODAL (ULTIMATE) */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 2000000; backdrop-filter: blur(4px); }
-        .profile-v10 { width: 380px; background: var(--bg-darkest); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
-        .banner-top { height: 120px; background: var(--brand); position: relative; }
-        .avatar-popout { width: 94px; height: 94px; border-radius: 50%; border: 6px solid var(--bg-darkest); position: absolute; top: 75px; left: 16px; background: var(--bg-darkest); }
-        .p-section { padding: 55px 16px 16px; }
-        .p-info-card { background: #1e1f22; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+        /* STATS CARDS - ULTIMATE */
+        .stats-card {
+            background: rgba(14,15,16,0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-1);
+        }
+        .stats-card-alt::before { background: var(--gradient-3); }
+
+        /* PODIUM DISPLAY */
+        .podium-display {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            margin: 32px 0;
+        }
+        .podium-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+        .podium-badge {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .podium-1 .podium-badge { background: linear-gradient(135deg, #f0b232, #e6a700); transform: translateY(-20px); }
+        .podium-2 .podium-badge { background: linear-gradient(135deg, #c0c0c0, #a8a8a8); }
+        .podium-3 .podium-badge { background: linear-gradient(135deg, #cd7f32, #b5651d); }
+
+        /* ULTIMATE MODAL v3 */
+        .modal-overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.9); 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 2000000; 
+            backdrop-filter: blur(8px);
+        }
+        .profile-v10 { 
+            width: 440px; 
+            background: rgba(14,15,16,0.95); 
+            border-radius: 16px; 
+            overflow: hidden; 
+            border: 1px solid rgba(255,255,255,0.06);
+            backdrop-filter: blur(30px);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
+            animation: modal-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes modal-pop {
+            from { opacity: 0; transform: scale(0.7) translateY(50px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .banner-top { 
+            height: 140px; 
+            background: var(--gradient-1);
+            position: relative;
+            overflow: hidden;
+        }
+        .banner-top::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: banner-shimmer 3s infinite;
+        }
+        @keyframes banner-shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        .avatar-popout { 
+            width: 110px; 
+            height: 110px; 
+            border-radius: 50%; 
+            border: 8px solid rgba(14,15,16,0.95); 
+            position: absolute; 
+            top: 90px; 
+            left: 24px; 
+            background: var(--bg-darkest);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        .avatar-popout:hover { transform: scale(1.05); }
         
-        .role-badge { background: #2b2d31; border-radius: 4px; padding: 4px 8px; font-size: 11px; display: flex; align-items: center; gap: 6px; color: #dbdee1; border: 1px solid rgba(255,255,255,0.02); }
+        .p-section { padding: 75px 24px 24px; }
+        .p-info-card { 
+            background: rgba(30,31,34,0.8); 
+            border-radius: 12px; 
+            padding: 20px; 
+            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+        }
+        .role-badge { 
+            background: rgba(47,49,54,0.8); 
+            border-radius: 6px; 
+            padding: 6px 12px; 
+            font-size: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            color: var(--text-normal); 
+            border: 1px solid rgba(255,255,255,0.05);
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .role-badge:hover { 
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        /* BUTTONS */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(88,101,242,0.4);
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        .btn-primary:hover::before { left: 100%; }
+
+        /* RESPONSIVE */
+        @media (max-width: 1400px) {
+            .side-members { width: 200px; }
+            .side-channels { width: 220px; }
+        }
     </style>
 </head>
 <body>
 
+    <!-- ULTIMATE LOADER -->
     <div id="ultimate-loader">
-        <img src="https://cdn.prod.website-files.com/6257adef93867e3d0394e296/636e0a6a49f9a757c1aa1750_633d53690623a6064d6023d5_discord-icon.svg" class="discord-loading-icon">
-        <p class="text-white mt-6 font-bold text-xs uppercase tracking-widest animate-pulse">Palyacolar Sistemi Başlatılıyor</p>
+        <div class="discord-loading-icon">
+            <i class="fa-solid fa-clown text-4xl text-white"></i>
+        </div>
+        <div class="loading-text mt-8 font-bold text-sm uppercase tracking-widest animate-pulse">
+            Palyacolar Extreme Sistemi<br>
+            <span class="text-xs opacity-75 tracking-normal">Firebase Senkronizasyonu Aktif</span>
+        </div>
+        <div class="mt-12 w-24 h-2 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full discord-shimmer"></div>
     </div>
 
     <div class="app-container" id="app">
+        <!-- GUILDS -->
         <div class="side-guilds">
-            <div class="guild-btn active"><i class="fa-solid fa-clown text-xl"></i></div>
-            <div class="w-8 h-[2px] bg-zinc-800"></div>
-            <div class="guild-btn text-green-500 hover:bg-green-500 hover:text-white"><i class="fa-solid fa-plus text-lg"></i></div>
+            <div class="guild-btn active">
+                <i class="fa-solid fa-clown text-2xl"></i>
+            </div>
+            <div class="w-6 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+            <div class="guild-btn">
+                <i class="fa-solid fa-plus text-xl"></i>
+            </div>
+            <div class="guild-btn">
+                <i class="fa-solid fa-crown text-yellow-400 text-xl"></i>
+            </div>
         </div>
 
+        <!-- CHANNELS -->
         <div class="side-channels">
-            <div class="nav-header">PALYACOLAR <i class="fa-solid fa-chevron-down text-xs ml-auto"></i></div>
-            <div class="flex-1 scroller">
-                <div class="p-4 flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-widest">
-                    İstatistik Panelleri
-                </div>
-                <div onclick="switchPage('daily')" id="nav-daily" class="channel-link active"><i class="fa-solid fa-hashtag text-lg"></i> günlük-aktiflik</div>
-                <div onclick="switchPage('weekly')" id="nav-weekly" class="channel-link"><i class="fa-solid fa-hashtag text-lg"></i> haftalık-rekabet</div>
-                <div onclick="switchPage('monthly')" id="nav-monthly" class="channel-link"><i class="fa-solid fa-hashtag text-lg"></i> aylık-zirve</div>
-                <div onclick="switchPage('all_time')" id="nav-all_time" class="channel-link"><i class="fa-solid fa-hashtag text-lg"></i> efsaneler-tablosu</div>
+            <div class="nav-header">
+                <i class="fa-solid fa-clown mr-3 text-brand-500"></i>
+                PALYACOLAR EXTREME
+                <i class="fa-solid fa-chevron-down text-xs ml-auto transition-transform duration-200"></i>
             </div>
-            <div class="bg-[#232428] p-2 flex items-center gap-2">
-                <div class="avatar-wrap">
-                    <img id="bot-av" src="" class="avatar-img">
-                    <div class="status-dot bg-green-500"></div>
+            
+            <div class="flex-1 scroller">
+                <div class="section-header">🏆 İstatistik Panelleri</div>
+                <div onclick="switchPage('daily')" id="nav-daily" class="channel-link active">
+                    <i class="fa-solid fa-fire text-brand-500"></i>
+                    Günlük Aktiflik
                 </div>
-                <div class="flex-1 min-w-0">
-                    <div class="text-xs font-bold text-white truncate">Palyacolar Bot</div>
-                    <div class="text-[10px] text-gray-400">#ACTIVE</div>
+                <div onclick="switchPage('weekly')" id="nav-weekly" class="channel-link">
+                    <i class="fa-solid fa-chart-line text-purple-400"></i>
+                    Haftalık Rekabet
                 </div>
-                <div class="flex gap-2 text-gray-400">
-                    <i class="fa-solid fa-gear hover:text-white cursor-pointer"></i>
+                <div onclick="switchPage('monthly')" id="nav-monthly" class="channel-link">
+                    <i class="fa-solid fa-trophy text-yellow-400"></i>
+                    Aylık Zirve
+                </div>
+                <div onclick="switchPage('all_time')" id="nav-all_time" class="channel-link">
+                    <i class="fa-solid fa-crown text-gradient-1"></i>
+                    Efsaneler Tablosu
+                </div>
+            </div>
+
+            <!-- BOT INFO -->
+            <div class="bg-gradient-to-r from-brand-600 to-brand-500 p-4 border-t border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="avatar-wrap">
+                        <img id="bot-av" src="" class="avatar-img">
+                        <div class="status-dot bg-green-400"></div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm font-bold text-white truncate">🤡 Palyacolar Extreme</div>
+                        <div class="text-xs text-white/60">#Çevrimiçi</div>
+                    </div>
+                    <i class="fa-solid fa-gear text-white/70 hover:text-white cursor-pointer transition-colors p-2"></i>
                 </div>
             </div>
         </div>
 
+        <!-- MAIN CHAT -->
         <div class="main-chat">
             <div class="chat-header">
-                <i class="fa-solid fa-hashtag text-gray-400 text-xl"></i>
-                <span id="page-title" class="font-bold text-white">günlük-aktiflik</span>
-                <div class="ml-auto flex items-center gap-4 text-gray-400">
-                    <i class="fa-solid fa-bell-slash"></i>
-                    <i class="fa-solid fa-thumbtack"></i>
-                    <i class="fa-solid fa-user-group text-white"></i>
+                <div class="flex items-center gap-3 bg-white/5 px-3 py-1 rounded-full">
+                    <i class="fa-solid fa-hashtag text-brand-400 text-xl"></i>
+                    <span id="page-title" class="font-bold text-white text-lg">günlük-aktiflik</span>
+                </div>
+                <div class="ml-auto flex items-center gap-4 text-white/60">
+                    <i class="fa-solid fa-bell-slash p-2 hover:bg-white/10 rounded-lg cursor-pointer transition-all"></i>
+                    <i class="fa-solid fa-thumbtack p-2 hover:bg-white/10 rounded-lg cursor-pointer transition-all"></i>
+                    <i class="fa-solid fa-user-group text-lg"></i>
                 </div>
             </div>
             
-            <div class="flex-1 scroller p-6">
-                <div class="max-w-5xl mx-auto">
-                    <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-lg p-6 mb-8 shadow-xl">
-                        <h1 class="text-2xl font-black text-white italic">SUNUCU ŞAMPİYONLARI</h1>
-                        <p class="text-indigo-100 text-sm opacity-80">Gerçek zamanlı Firebase senkronizasyonu ile anlık veri akışı.</p>
+            <div class="flex-1 scroller p-8">
+                <div class="max-w-6xl mx-auto">
+                    <!-- HERO BANNER -->
+                    <div class="stats-card text-center mb-12 relative">
+                        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2">
+                            <div class="w-20 h-20 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center shadow-2xl">
+                                <i class="fa-solid fa-fire text-2xl text-black font-bold"></i>
+                            </div>
+                        </div>
+                        <h1 class="text-4xl font-black bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent mb-4">
+                            SUNUCU ŞAMPİYONLARI
+                        </h1>
+                        <p class="text-xl text-white/70 font-medium">Gerçek zamanlı Firebase senkronizasyonu ile anlık veri akışı ✨</p>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div class="bg-black/10 rounded-lg p-4">
-                            <h2 class="text-white font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-message text-indigo-400"></i> Mesajlaşma Sıralaması</h2>
-                            <div id="list-msg" class="space-y-1"></div>
+                    <!-- PODIUM -->
+                    <div class="podium-display mb-12">
+                        <div class="podium-item podium-3">
+                            <div class="podium-badge">🥉</div>
+                            <div class="text-center">
+                                <div class="text-sm font-bold text-white/80">#3</div>
+                                <div id="podium-3" class="text-2xl font-black text-yellow-400 mt-2"></div>
+                            </div>
                         </div>
-                        <div class="bg-black/10 rounded-lg p-4">
-                            <h2 class="text-white font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-microphone text-green-400"></i> Ses Süreleri (Dk)</h2>
-                            <div id="list-voice" class="space-y-1"></div>
+                        <div class="podium-item podium-1 relative">
+                            <div class="podium-badge text-3xl">👑</div>
+                            <div class="text-center">
+                                <div class="text-sm font-bold text-white/80">#1</div>
+                                <div id="podium-1" class="text-4xl font-black bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 bg-clip-text text-transparent mt-4 drop-shadow-2xl"></div>
+                            </div>
+                        </div>
+                        <div class="podium-item podium-2">
+                            <div class="podium-badge">🥈</div>
+                            <div class="text-center">
+                                <div class="text-sm font-bold text-white/80">#2</div>
+                                <div id="podium-2" class="text-2xl font-black text-yellow-400 mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STATS GRIDS -->
+                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                        <div class="stats-card">
+                            <h2 class="text-2xl font-black mb-8 flex items-center gap-3 text-white">
+                                <i class="fa-solid fa-message text-brand-400 text-2xl"></i>
+                                Mesajlaşma Krallığı
+                            </h2>
+                            <div id="list-msg" class="space-y-2"></div>
+                        </div>
+                        <div class="stats-card stats-card-alt">
+                            <h2 class="text-2xl font-black mb-8 flex items-center gap-3 text-white">
+                                <i class="fa-solid fa-microphone text-green-400 text-2xl"></i>
+                                Ses Efendileri (Dakika)
+                            </h2>
+                            <div id="list-voice" class="space-y-2"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- MEMBERS -->
         <div class="side-members scroller">
-            <p class="text-[10px] font-bold text-gray-500 uppercase px-2 mb-2">Zirvedekiler — <span id="online-count">30</span></p>
-            <div id="list-sidebar"></div>
+            <div class="section-header px-4 pt-4 pb-2">
+                Zirvedekiler — <span id="online-count" class="text-brand-400 font-black">30</span>
+            </div>
+            <div id="list-sidebar" class="px-2 pb-4"></div>
         </div>
     </div>
 
+    <!-- ULTIMATE MODAL -->
     <div id="modal-wrap" class="modal-overlay" onclick="this.style.display='none'">
         <div class="profile-v10" onclick="event.stopPropagation()">
             <div id="p-banner" class="banner-top"></div>
-            <div class="relative h-4">
+            <div class="relative -mt-8 ml-8">
                 <img id="p-avatar" src="" class="avatar-popout">
             </div>
             <div class="p-section">
                 <div class="p-info-card">
-                    <h2 id="p-dn" class="text-xl font-bold text-white"></h2>
-                    <p id="p-un" class="text-gray-400 text-sm font-medium"></p>
-                    <div class="h-[1px] bg-white/5 my-3"></div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Durum</p>
-                    <p id="p-status" class="text-sm text-gray-200 italic"></p>
+                    <h2 id="p-dn" class="text-2xl font-black text-white mb-1"></h2>
+                    <p id="p-un" class="text-white/60 text-lg font-medium mb-6"></p>
+                    <div class="h-[2px] bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 rounded-full"></div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="text-xs font-bold text-white/60 uppercase tracking-wider">Durum</div>
+                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    </div>
+                    <p id="p-status" class="text-lg text-white/90 italic font-medium leading-relaxed"></p>
                 </div>
                 <div class="p-info-card">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Roller</p>
-                    <div id="p-roles" class="flex flex-wrap gap-1.5"></div>
-                    <div class="h-[1px] bg-white/5 my-3"></div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Sunucuya Katılım</p>
-                    <p id="p-date" class="text-xs text-gray-400"></p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-xs font-bold text-white/60 uppercase tracking-wider">Roller</div>
+                        <div class="text-xs text-white/40">5 rol</div>
+                    </div>
+                    <div id="p-roles" class="flex flex-wrap gap-2 mb-8"></div>
+                    <div class="h-[2px] bg-gradient-to-r from-transparent via-white/20 to-transparent my-6 rounded-full"></div>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <div class="text-xs font-bold text-white/60 uppercase tracking-wider mb-1">Sunucuya Katılım</div>
+                            <p id="p-date" class="text-white/80 font-medium"></p>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-white/60 uppercase tracking-wider mb-1">Hesap Oluşturma</div>
+                            <p class="text-white/80 font-medium">2 yıl önce</p>
+                        </div>
+                    </div>
                 </div>
-                <button class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-bold transition text-sm">DM GÖNDER</button>
+                <button class="btn-primary w-full text-lg font-bold py-4 mb-2">
+                    <i class="fa-solid fa-comment-dots mr-2"></i>
+                    DM GÖNDER
+                </button>
+                <button class="w-full py-3 text-white/70 font-semibold border border-white/20 rounded-lg hover:bg-white/5 transition-all">
+                    <i class="fa-solid fa-user-plus mr-2"></i>
+                    Profili Görüntüle
+                </button>
             </div>
         </div>
     </div>
@@ -227,11 +779,12 @@
 
         let currentPage = 'daily';
         let syncData = { m: false, v: false };
+        let msgData = {}, voiceData = {};
 
         // Meta Sync
         onValue(ref(db, 'stats_v2/meta'), s => {
             if(s.exists()){
-                document.getElementById('bot-av').src = s.val().bot_av;
+                document.getElementById('bot-av').src = s.val().bot_av || 'https://cdn.discordapp.com/attachments/123/456/discord.png';
             }
         });
 
@@ -244,48 +797,104 @@
         };
 
         function load() {
+            // Messages
             onValue(ref(db, `stats_v2/msg/${currentPage}`), s => {
+                msgData = s.val() || {};
                 render(s.val(), 'list-msg', 'sc', 'mesaj');
-                renderSidebar(s.val());
-                syncData.m = true; checkSync();
+                renderSidebar();
+                renderPodium();
+                syncData.m = true; 
+                checkSync();
             });
+            
+            // Voice
             onValue(ref(db, `stats_v2/voice/${currentPage}`), s => {
+                voiceData = s.val() || {};
                 render(s.val(), 'list-voice', 'sc', 'dk');
-                syncData.v = true; checkSync();
+                syncData.v = true; 
+                checkSync();
             });
         }
 
         function checkSync() {
             if(syncData.m && syncData.v) {
                 setTimeout(() => {
-                    document.getElementById('ultimate-loader').style.display = 'none';
-                    document.getElementById('app').classList.add('ready');
-                }, 1000);
+                    document.getElementById('ultimate-loader').style.opacity = '0';
+                    document.getElementById('ultimate-loader').style.pointerEvents = 'none';
+                    setTimeout(() => {
+                        document.getElementById('ultimate-loader').style.display = 'none';
+                        document.getElementById('app').classList.add('ready');
+                    }, 400);
+                }, 1200);
             }
+        }
+
+        function renderPodium() {
+            const msgSorted = Object.values(msgData).sort((a,b) => b.sc - a.sc);
+            const voiceSorted = Object.values(voiceData).sort((a,b) => b.sc - a.sc);
+            
+            // Update podium
+            if(msgSorted[0]) document.getElementById('podium-1').innerText = msgSorted[0].dn;
+            if(msgSorted[1]) document.getElementById('podium-2').innerText = msgSorted[1].dn;
+            if(msgSorted[2]) document.getElementById('podium-3').innerText = msgSorted[2].dn;
         }
 
         function render(data, containerId, field, unit) {
             const div = document.getElementById(containerId);
             div.innerHTML = "";
-            if(!data) { div.innerHTML = "<p class='p-4 text-gray-500 italic'>Veri bulunamadı...</p>"; return; }
+            if(!data) { 
+                div.innerHTML = "<div class='p-8 text-center'><i class='fa-solid fa-ghost text-4xl text-white/30 mb-4'></i><p class='text-white/40 italic'>Henüz veri yok...</p></div>"; 
+                return; 
+            }
 
-            const sorted = Object.values(data).sort((a,b) => b[field] - a[field]).slice(0, 40);
-            const maxVal = sorted[0][field];
+            const sorted = Object.values(data).sort((a,b) => b[field] - a[field]).slice(0, 25);
+            const maxVal = sorted[0][field] || 1;
 
             sorted.forEach((u, i) => {
-                const perc = (u[field] / maxVal) * 100;
+                const perc = Math.min((u[field] / maxVal) * 100, 100);
+                const rankColor = i === 0 ? '#f0b232' : i === 1 ? '#c0c0c0' : i === 2 ? '#cd7f32' : 'var(--brand-500)';
+                const isPodium = i < 3;
+                
                 div.innerHTML += `
-                    <div class="member-row" onclick='openProfile(${JSON.stringify(u)})'>
+                    <div class="member-row ${isPodium ? 'podium-${i+1}' : ''}" onclick='openProfile(${JSON.stringify(u)})'>
                         <div class="avatar-wrap">
-                            <img src="${u.av}" class="avatar-img">
+                            <img src="${u.av || 'https://via.placeholder.com/40'}" class="avatar-img" onerror="this.src='https://via.placeholder.com/40/36393f/ffffff?text=👤'">
+                            <div class="status-dot bg-green-400"></div>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="flex justify-between items-end mb-1">
-                                <span class="text-sm font-bold truncate" style="color:${u.tc}">${u.dn}</span>
-                                <span class="text-[11px] font-black text-white">${u[field]} <span class="text-gray-500 font-normal">${unit}</span></span>
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-base font-black truncate pr-4" style="color:${u.tc || '#dcddde'}">${u.dn}</span>
+                                <span class="text-sm font-black text-white px-2 py-1 bg-black/30 rounded-full">${formatNumber(u[field])}</span>
+                                <span class="text-xs text-white/60 font-normal">${unit}</span>
                             </div>
                             <div class="stat-line">
-                                <div class="stat-progress" style="width:${perc}%; background:${i < 3 ? 'var(--yellow)' : 'var(--brand)'}"></div>
+                                <div class="stat-progress" style="width:${perc}%; background:${rankColor}"></div>
+                            </div>
+                            ${isPodium ? `<div class="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400/20 border-2 border-yellow-400/50 rounded-full flex items-center justify-center text-yellow-400 font-black text-sm">#${i+1}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderSidebar() {
+            const div = document.getElementById('list-sidebar');
+            const msgSorted = Object.values(msgData).sort((a,b) => b.sc - a.sc).slice(0, 20);
+            div.innerHTML = "";
+            
+            document.getElementById('online-count').innerText = msgSorted.length;
+            msgSorted.forEach((u, i) => {
+                div.innerHTML += `
+                    <div class="member-row opacity-85 hover:opacity-100" onclick='openProfile(${JSON.stringify(u)})'>
+                        <div class="avatar-wrap">
+                            <img src="${u.av || 'https://via.placeholder.com/40'}" class="avatar-img grayscale-[0.2]" onerror="this.src='https://via.placeholder.com/40/36393f/ffffff?text=👤'">
+                            <div class="status-dot bg-green-400"></div>
+                        </div>
+                        <div class="flex-1 min-w-0 pr-2">
+                            <div class="text-base font-bold truncate" style="color:${u.tc || '#dcddde'}">${u.dn}</div>
+                            <div class="flex items-center gap-2 text-xs text-white/50 mt-1">
+                                <div class="w-2 h-2 bg-brand-500 rounded-full"></div>
+                                ${formatNumber(u.sc)} mesaj
                             </div>
                         </div>
                     </div>
@@ -293,43 +902,36 @@
             });
         }
 
-        function renderSidebar(data) {
-            const div = document.getElementById('list-sidebar');
-            div.innerHTML = "";
-            if(!data) return;
-            const sorted = Object.values(data).sort((a,b) => b.sc - a.sc).slice(0, 30);
-            document.getElementById('online-count').innerText = sorted.length;
-
-            sorted.forEach(u => {
-                div.innerHTML += `
-                    <div class="member-row opacity-80 hover:opacity-100" onclick='openProfile(${JSON.stringify(u)})'>
-                        <div class="avatar-wrap">
-                            <img src="${u.av}" class="avatar-img grayscale-[0.3]">
-                        </div>
-                        <div class="flex-1 truncate">
-                            <p class="text-sm font-bold truncate" style="color:${u.tc}">${u.dn}</p>
-                            <p class="text-[10px] text-gray-500 truncate">${u.st || 'Aktif'}</p>
-                        </div>
-                    </div>
-                `;
-            });
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
         }
 
         window.openProfile = (u) => {
-            document.getElementById('p-dn').innerText = u.dn;
-            document.getElementById('p-un').innerText = "@" + u.un;
-            document.getElementById('p-avatar').src = u.av;
-            document.getElementById('p-banner').style.background = u.bn ? `url(${u.bn}) center/cover` : (u.ac || 'var(--brand)');
-            document.getElementById('p-status').innerText = u.st || "Palyacolar dünyasında bir efsane.";
-            document.getElementById('p-date').innerText = u.jd || "Eski Üye";
-            document.getElementById('p-roles').innerHTML = (u.rl || []).map(r => `
-                <div class="role-badge">
-                    <div class="w-3 h-3 rounded-full" style="background:${r.c}"></div> ${r.n}
-                </div>
-            `).join('');
+            document.getElementById('p-dn').innerText = u.dn || 'Bilinmeyen Kullanıcı';
+            document.getElementById('p-un').innerText = "@" + (u.un || 'kullanici');
+            document.getElementById('p-avatar').src = u.av || 'https://via.placeholder.com/110/36393f/ffffff?text=👤';
+            document.getElementById('p-banner').style.background = u.bn ? `url(${u.bn}) center/cover` : (u.ac || 'var(--gradient-1)');
+            document.getElementById('p-status').innerText = u.st || "Palyacolar Extreme'de zirveyi zorluyor... 💪";
+            document.getElementById('p-date').innerText = u.jd || "Efsanevi Üye";
+            
+            const rolesDiv = document.getElementById('p-roles');
+            rolesDiv.innerHTML = '';
+            const roles = u.rl || [{n: 'Palyacı', c: '#f0b232'}, {n: 'Extreme', c: '#5865f2'}];
+            roles.slice(0, 6).forEach(r => {
+                rolesDiv.innerHTML += `
+                    <div class="role-badge">
+                        <div class="w-3 h-3 rounded-full" style="background:${r.c}"></div> 
+                        ${r.n}
+                    </div>
+                `;
+            });
+            
             document.getElementById('modal-wrap').style.display = 'flex';
         }
 
+        // Initialize
         load();
     </script>
 </body>
