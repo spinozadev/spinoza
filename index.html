@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.7, user-scalable=no" />
+    
+    <link rel="icon" href="https://spinoza.lol/img/palyaco.ico" type="image/x-icon">
+    
     <meta property="og:title" content="Spinoza">
     <meta property="og:image" content="spinoza.lol/img/discordpp.png">
     <meta property="og:site_name" content="spinoza.lol">
@@ -85,7 +88,7 @@
             background: #fff;
             border-radius: 100px;
             box-shadow: 0 0 40px var(--glow), 0 0 10px #fff;
-            transition: width 0.05s linear;
+            transition: none; 
         }
 
         @keyframes scaleUp {
@@ -108,6 +111,7 @@
     </div>
 
     <script>
+        // Korumalar
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.keyCode === 85)) {
                 e.preventDefault();
@@ -140,7 +144,7 @@
             }
         }
         devToolsTimer = setInterval(checkDevTools, 500);
-
+        
         const bar = document.getElementById('bar');
         let width = 0;
 
@@ -159,8 +163,11 @@
         };
 
         window.onload = () => {
-            bar.style.width = "0%"; 
-            setTimeout(animateBar, 100);
+            bar.style.width = "0%";
+            setTimeout(() => {
+                bar.style.transition = "width 0.1s linear";
+                animateBar();
+            }, 100);
         };
     </script>
 </body>
